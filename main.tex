@@ -660,11 +660,11 @@ Chỉ một số phân mảnh tần suất đọc vượt trội mới được 
 \chapter{Quy Trình Xử Lý Và Tối Ưu Hóa Truy Vấn Phân Tán}
 
 \section{Tổng Quan Về Kiến Trúc Xử Lý Truy Vấn Phân Tán}
-Trong hệ quản trị cơ sở dữ liệu phân tán (DDBMS), dữ liệu được lưu trữ phân tán trên nhiều trạm (sites hoặc nodes) kết nối qua mạng máy tính[cite: 2]. Sự thay đổi về mặt kiến trúc phần cứng này kéo theo sự thay đổi căn bản trong cơ chế biên dịch, tối ưu hóa và thực thi câu lệnh truy vấn[cite: 2].
+Trong hệ quản trị cơ sở dữ liệu phân tán (DDBMS), dữ liệu được lưu trữ phân tán trên nhiều trạm (sites hoặc nodes) kết nối qua mạng máy tính. Sự thay đổi về mặt kiến trúc phần cứng này kéo theo sự thay đổi căn bản trong cơ chế biên dịch, tối ưu hóa và thực thi câu lệnh truy vấn.
 
-Khác với hệ thống tập trung nơi chi phí thực thi chủ yếu bị chi phối bởi thao tác I/O đọc/ghi đĩa từ hoặc ổ cứng thể rắn (SSD) và chu kỳ tính toán của CPU, trong môi trường phân tán, \textbf{chi phí truyền thông qua mạng (Network Communication Cost)} đóng vai trò là điểm nghẽn lớn nhất (bottleneck) do băng thông hữu hạn và độ trễ đường truyền cao[cite: 2].
+Khác với hệ thống tập trung nơi chi phí thực thi chủ yếu bị chi phối bởi thao tác I/O đọc/ghi đĩa từ hoặc ổ cứng thể rắn (SSD) và chu kỳ tính toán của CPU, trong môi trường phân tán, \textbf{chi phí truyền thông qua mạng (Network Communication Cost)} đóng vai trò là điểm nghẽn lớn nhất (bottleneck) do băng thông hữu hạn và độ trễ đường truyền cao.
 
-Để biến đổi một câu lệnh truy vấn khai báo cấp cao (như SQL) từ người dùng thành các thao tác vật lý tối ưu trên mạng lưới phân tán, kiến trúc xử lý truy vấn phân tán tiêu chuẩn được tổ chức thành quy trình phân tầng gồm 3 giai đoạn trọng tâm[cite: 2]:
+Để biến đổi một câu lệnh truy vấn khai báo cấp cao (như SQL) từ người dùng thành các thao tác vật lý tối ưu trên mạng lưới phân tán, kiến trúc xử lý truy vấn phân tán tiêu chuẩn được tổ chức thành quy trình phân tầng gồm 3 giai đoạn trọng tâm:
 
 \begin{figure}[!ht]
 \centering
@@ -707,42 +707,42 @@ Khác với hệ thống tập trung nơi chi phí thực thi chủ yếu bị c
 
 \subsection{Phân rã truy vấn (Query Decomposition)}
 \subsubsection{Khái niệm và Mục tiêu}
-Phân rã truy vấn là bước tiếp nhận câu truy vấn SQL viết trên \textbf{lược đồ quan hệ toàn cục (Global Relational Schema)}[cite: 2]. Ở bước này, hệ thống \textbf{trừu tượng hóa hoàn toàn} môi trường phân tán: không quan tâm đến việc dữ liệu được phân mảnh thế nào, nhân bản ở đâu hay lưu trữ tại site vật lý nào[cite: 2].
+Phân rã truy vấn là bước tiếp nhận câu truy vấn SQL viết trên \textbf{lược đồ quan hệ toàn cục (Global Relational Schema)}. Ở bước này, hệ thống \textbf{trừu tượng hóa hoàn toàn} môi trường phân tán: không quan tâm đến việc dữ liệu được phân mảnh thế nào, nhân bản ở đâu hay lưu trữ tại site vật lý nào.
 
-Mục tiêu chính là dịch câu truy vấn khai báo sang dạng biểu diễn hình thức nội bộ -- một \textbf{Cây đại số quan hệ toàn cục (Global Relational Algebra Tree)} -- đồng thời áp dụng các phép biến đổi đại số tương đương để đơn giản hóa cây truy vấn[cite: 2].
+Mục tiêu chính là dịch câu truy vấn khai báo sang dạng biểu diễn hình thức nội bộ -- một \textbf{Cây đại số quan hệ toàn cục (Global Relational Algebra Tree)} -- đồng thời áp dụng các phép biến đổi đại số tương đương để đơn giản hóa cây truy vấn.
 
 \subsubsection{Các tiểu bước trong Phân rã truy vấn}
-Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ thuật[cite: 2]:
+Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ thuật:
 \begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
     \item \textbf{Phân tích cú pháp và kiểm tra ngữ nghĩa (Parsing and Semantic Analysis):}
     \begin{itemize}
-        \item \textit{Kiểm tra cú pháp:} Đảm bảo câu lệnh tuân thủ ngữ pháp chuẩn của SQL[cite: 2].
-        \item \textit{Kiểm tra từ điển dữ liệu (Catalog Lookup):} Xác thực tên bảng, tên thuộc tính xem có tồn tại trong lược đồ toàn cục hay không; kiểm tra tương thích kiểu dữ liệu[cite: 2].
-        \item \textit{Kiểm tra quyền truy cập (Authorization):} Xác minh người dùng có đủ đặc quyền (\texttt{SELECT}, \texttt{UPDATE},...) trên các quan hệ được tham chiếu[cite: 2].
+        \item \textit{Kiểm tra cú pháp:} Đảm bảo câu lệnh tuân thủ ngữ pháp chuẩn của SQL.
+        \item \textit{Kiểm tra từ điển dữ liệu (Catalog Lookup):} Xác thực tên bảng, tên thuộc tính xem có tồn tại trong lược đồ toàn cục hay không; kiểm tra tương thích kiểu dữ liệu.
+        \item \textit{Kiểm tra quyền truy cập (Authorization):} Xác minh người dùng có đủ đặc quyền (\texttt{SELECT}, \texttt{UPDATE},...) trên các quan hệ được tham chiếu.
     \end{itemize}
     \item \textbf{Chuẩn hóa biểu thức điều kiện (Normalization):}
-    Mệnh đề \texttt{WHERE} được đưa về các dạng chuẩn đại số logic[cite: 2]:
+    Mệnh đề \texttt{WHERE} được đưa về các dạng chuẩn đại số logic:
     \begin{itemize}
-        \item \textbf{Dạng chuẩn hội (Conjunctive Normal Form -- CNF):} Là chuỗi các mệnh đề tuyển nối với nhau bằng phép AND[cite: 2]:
+        \item \textbf{Dạng chuẩn hội (Conjunctive Normal Form -- CNF):} Là chuỗi các mệnh đề tuyển nối với nhau bằng phép AND:
         \[P = (p_{11} \vee p_{12} \vee \dots) \wedge (p_{21} \vee p_{22} \vee \dots) \wedge \dots\]
-        Dạng này đặc biệt thuận tiện cho việc thực hiện quy tắc phân rã phép chọn (Cascade of Selections)[cite: 2].
-        \item \textbf{Dạng chuẩn tuyển (Disjunctive Normal Form -- DNF):} Là chuỗi các mệnh đề hội nối với nhau bằng phép OR[cite: 2]:
+        Dạng này đặc biệt thuận tiện cho việc thực hiện quy tắc phân rã phép chọn (Cascade of Selections).
+        \item \textbf{Dạng chuẩn tuyển (Disjunctive Normal Form -- DNF):} Là chuỗi các mệnh đề hội nối với nhau bằng phép OR:
         \[P = (p_{11} \wedge p_{12} \wedge \dots) \vee (p_{21} \wedge p_{22} \wedge \dots) \vee \dots\]
     \end{itemize}
     \item \textbf{Phân tích ngữ nghĩa và loại bỏ dư thừa (Semantic Analysis \& Contradiction Elimination):}
-    Hệ thống kiểm tra tính khả thi của các vị từ[cite: 2]. Nếu một nhánh vị từ tự mâu thuẫn (như $A > 100 \wedge A < 50$), nhánh đó được đánh giá là False và bị loại bỏ ngay từ cây logic[cite: 2]. Đồng thời áp dụng tính chất bắc cầu: nếu $A = B$ và $B = 10$, hệ thống suy diễn thêm vị từ $A = 10$[cite: 2].
+    Hệ thống kiểm tra tính khả thi của các vị từ. Nếu một nhánh vị từ tự mâu thuẫn (như $A > 100 \wedge A < 50$), nhánh đó được đánh giá là False và bị loại bỏ ngay từ cây logic. Đồng thời áp dụng tính chất bắc cầu: nếu $A = B$ và $B = 10$, hệ thống suy diễn thêm vị từ $A = 10$.
     \item \textbf{Tối ưu hóa đại số logic toàn cục (Algebraic Optimization):}
-    Áp dụng các quy tắc tương đương đại số quan hệ độc lập phân tán nhằm giảm kích thước dữ liệu trung gian[cite: 2]:
+    Áp dụng các quy tắc tương đương đại số quan hệ độc lập phân tán nhằm giảm kích thước dữ liệu trung gian:
     \begin{itemize}
-        \item \textbf{Đẩy sớm phép chọn (Push Down Selections):} $\sigma_\theta(R \bowtie S) \equiv (\sigma_\theta(R)) \bowtie S$ nếu điều kiện $\theta$ chỉ liên quan đến quan hệ $R$, giúp giảm nhanh số lượng bộ trước khi thực hiện phép nối đắt đỏ[cite: 2].
-        \item \textbf{Đẩy sớm phép chiếu (Push Down Projections):} $\Pi_L(R \bowtie S) \equiv \Pi_L(\Pi_{L_1}(R) \bowtie \Pi_{L_2}(S))$, loại bỏ sớm các cột không cần thiết để giảm độ rộng dòng dữ liệu[cite: 2].
-        \item \textbf{Nhóm các toán tử đơn nguyên:} Gom các chuỗi phép chọn và chiếu liên tiếp để thực thi trong cùng một lần duyệt dữ liệu[cite: 2].
+        \item \textbf{Đẩy sớm phép chọn (Push Down Selections):} $\sigma_\theta(R \bowtie S) \equiv (\sigma_\theta(R)) \bowtie S$ nếu điều kiện $\theta$ chỉ liên quan đến quan hệ $R$, giúp giảm nhanh số lượng bộ trước khi thực hiện phép nối đắt đỏ.
+        \item \textbf{Đẩy sớm phép chiếu (Push Down Projections):} $\Pi_L(R \bowtie S) \equiv \Pi_L(\Pi_{L_1}(R) \bowtie \Pi_{L_2}(S))$, loại bỏ sớm các cột không cần thiết để giảm độ rộng dòng dữ liệu.
+        \item \textbf{Nhóm các toán tử đơn nguyên:} Gom các chuỗi phép chọn và chiếu liên tiếp để thực thi trong cùng một lần duyệt dữ liệu.
     \end{itemize}
 \end{enumerate}
 
 \subsection{Bản địa hóa dữ liệu (Data Localization)}
 \subsubsection{Khái niệm và Bối cảnh}
-Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu[cite: 2]. Tại đây, tính trong suốt phân mảnh (Fragmentation Transparency) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu[cite: 2]. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}[cite: 2].
+Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu. Tại đây, tính trong suốt phân mảnh (Fragmentation Transparency) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}.
 
 \subsubsection{Các dạng phân mảnh và Quy tắc tái thiết}
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
@@ -752,63 +752,63 @@ Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào gi
 \end{enumerate}
 
 \subsubsection{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}
-Kỹ thuật Rút gọn phân mảnh sử dụng đại số quan hệ và logic toán học để triệt tiêu các nhánh rỗng[cite: 2]:
+Kỹ thuật Rút gọn phân mảnh sử dụng đại số quan hệ và logic toán học để triệt tiêu các nhánh rỗng:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Phân phối phép chọn qua phép hợp:} $\sigma_C (R_1 \cup R_2) \equiv \sigma_C (R_1) \cup \sigma_C (R_2)$[cite: 2].
-    \item \textbf{Kiểm tra mâu thuẫn vị từ (Predicate Contradiction Check):} Mỗi phân mảnh $R_i$ gắn liền với vị từ phân mảnh $\phi_i$[cite: 2]. Biểu thức truy vấn trên mảnh trở thành $\sigma_C(R_i) \equiv \sigma_{C \wedge \phi_i}(R)$[cite: 2]. Nếu $(C \wedge \phi_i) \equiv \text{False}$, phân mảnh $R_i$ chắc chắn không chứa bộ nào thỏa mãn: $\sigma_{C \wedge \phi_i}(R) = \emptyset$[cite: 2]. Hệ thống cắt tỉa toàn bộ nhánh $R_i$ khỏi cây truy vấn[cite: 2].
-    \item \textbf{Phân phối phép chọn và chiếu qua phép nối:} Nếu điều kiện chọn $C$ và danh sách chiếu chỉ nằm hoàn toàn trong một phân mảnh dọc $R_1$, các phân mảnh dọc khác không cần tham gia vào phép nối tái thiết[cite: 2].
+    \item \textbf{Phân phối phép chọn qua phép hợp:} $\sigma_C (R_1 \cup R_2) \equiv \sigma_C (R_1) \cup \sigma_C (R_2)$.
+    \item \textbf{Kiểm tra mâu thuẫn vị từ (Predicate Contradiction Check):} Mỗi phân mảnh $R_i$ gắn liền với vị từ phân mảnh $\phi_i$. Biểu thức truy vấn trên mảnh trở thành $\sigma_C(R_i) \equiv \sigma_{C \wedge \phi_i}(R)$. Nếu $(C \wedge \phi_i) \equiv \text{False}$, phân mảnh $R_i$ chắc chắn không chứa bộ nào thỏa mãn: $\sigma_{C \wedge \phi_i}(R) = \emptyset$. Hệ thống cắt tỉa toàn bộ nhánh $R_i$ khỏi cây truy vấn.
+    \item \textbf{Phân phối phép chọn và chiếu qua phép nối:} Nếu điều kiện chọn $C$ và danh sách chiếu chỉ nằm hoàn toàn trong một phân mảnh dọc $R_1$, các phân mảnh dọc khác không cần tham gia vào phép nối tái thiết.
 \end{itemize}
 
 \subsection{Tối ưu hóa toàn cục (Global Optimization)}
 \subsubsection{Khái niệm và Mục tiêu}
-Tối ưu hóa toàn cục là bước quyết định kế hoạch vật lý để thực thi cây truy vấn phân mảnh đã rút gọn, trả lời bài toán: \textit{``Thao tác nào được thực hiện trước, thuật toán nào được áp dụng, và phép toán đó diễn ra tại trạm nào?''}[cite: 2] Mục tiêu là tìm kế hoạch thực thi phân tán sao cho tổng tài nguyên tiêu thụ hoặc thời gian đáp ứng (\textit{Response Time}) là nhỏ nhất[cite: 2].
+Tối ưu hóa toàn cục là bước quyết định kế hoạch vật lý để thực thi cây truy vấn phân mảnh đã rút gọn, trả lời bài toán: \textit{``Thao tác nào được thực hiện trước, thuật toán nào được áp dụng, và phép toán đó diễn ra tại trạm nào?''} Mục tiêu là tìm kế hoạch thực thi phân tán sao cho tổng tài nguyên tiêu thụ hoặc thời gian đáp ứng (\textit{Response Time}) là nhỏ nhất.
 
 \subsubsection{Mô hình ước lượng chi phí phân tán}
-Hàm mục tiêu chi phí trong DDBMS bao gồm 3 thành phần chính[cite: 2]:
+Hàm mục tiêu chi phí trong DDBMS bao gồm 3 thành phần chính:
 \[
 \text{Total Cost} = \text{Cost}_{\text{CPU}} + \text{Cost}_{\text{I/O}} + \text{Cost}_{\text{COM}}
 \]
-Trong đó[cite: 2]:
+Trong đó:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item $\text{Cost}_{\text{CPU}}$: Chi phí tính toán CPU cho so sánh bộ, băm, sắp xếp[cite: 2].
-    \item $\text{Cost}_{\text{I/O}}$: Đo bằng số khối đĩa truy xuất ($b \times t_T$) cộng số lần tìm kiếm ngẫu nhiên ($S \times t_S$)[cite: 2].
-    \item $\text{Cost}_{\text{COM}}$: Chi phí truyền thông mạng, đóng vai trò chi phối trên mạng WAN[cite: 2]:
+    \item $\text{Cost}_{\text{CPU}}$: Chi phí tính toán CPU cho so sánh bộ, băm, sắp xếp.
+    \item $\text{Cost}_{\text{I/O}}$: Đo bằng số khối đĩa truy xuất ($b \times t_T$) cộng số lần tìm kiếm ngẫu nhiên ($S \times t_S$).
+    \item $\text{Cost}_{\text{COM}}$: Chi phí truyền thông mạng, đóng vai trò chi phối trên mạng WAN:
     \[\text{Cost}_{\text{COM}} = \text{Message Delay (Độ trễ khởi tạo)} + \frac{\text{Data Size (Kích thước dữ liệu)}}{\text{Bandwidth (Băng thông)}}\]
 \end{itemize}
 
 \subsubsection{Không gian tìm kiếm và các quyết định tối ưu}
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Xác định thứ tự thực hiện phép nối (Join Ordering):} Áp dụng quy hoạch động hoặc Heuristic để hạn chế sinh kích thước dữ liệu trung gian lớn[cite: 2].
-    \item \textbf{Định vị toán tử và trạm thực thi (Site Selection):} Đặt toán tử nối tại Site 1, Site 2 hoặc Site trung gian tùy thuộc vào tương quan kích thước sau khi đã lọc cục bộ[cite: 2].
+    \item \textbf{Xác định thứ tự thực hiện phép nối (Join Ordering):} Áp dụng quy hoạch động hoặc Heuristic để hạn chế sinh kích thước dữ liệu trung gian lớn.
+    \item \textbf{Định vị toán tử và trạm thực thi (Site Selection):} Đặt toán tử nối tại Site 1, Site 2 hoặc Site trung gian tùy thuộc vào tương quan kích thước sau khi đã lọc cục bộ.
     \item \textbf{Các chiến lược nối phân tán:}
     \begin{itemize}
-        \item \textit{Truyền toàn bộ (Data Shipping):} Gửi nguyên vẹn quan hệ nhỏ hơn sang trạm chứa quan hệ lớn hơn[cite: 2].
-        \item \textit{Kỹ thuật Nửa nối (Semi-join Optimization):} Định nghĩa $R \ltimes_A S = \Pi_R (R \bowtie_A S)$[cite: 2]. Sử dụng phép chiếu lấy tập khóa nối $Temp = \Pi_A(S)$, gửi sang trạm chứa $R$ để lọc lấy $R' = R \ltimes S$, rồi mới gửi $R'$ về trạm của $S$[cite: 2]. Điều kiện có lợi: $\text{Size}(\Pi_A(S)) + \text{Size}(R \ltimes S) < \text{Size}(R)$[cite: 2].
-        \item \textit{Bloom Join:} Sử dụng mảng bit băm (Bloom Filter) kích thước vài KB để lọc nhanh dữ liệu trước khi truyền qua mạng[cite: 2].
+        \item \textit{Truyền toàn bộ (Data Shipping):} Gửi nguyên vẹn quan hệ nhỏ hơn sang trạm chứa quan hệ lớn hơn.
+        \item \textit{Kỹ thuật Nửa nối (Semi-join Optimization):} Định nghĩa $R \ltimes_A S = \Pi_R (R \bowtie_A S)$. Sử dụng phép chiếu lấy tập khóa nối $Temp = \Pi_A(S)$, gửi sang trạm chứa $R$ để lọc lấy $R' = R \ltimes S$, rồi mới gửi $R'$ về trạm của $S$. Điều kiện có lợi: $\text{Size}(\Pi_A(S)) + \text{Size}(R \ltimes S) < \text{Size}(R)$.
+        \item \textit{Bloom Join:} Sử dụng mảng bit băm (Bloom Filter) kích thước vài KB để lọc nhanh dữ liệu trước khi truyền qua mạng.
     \end{itemize}
 \end{itemize}
 
 \section{Bài Toán Định Lượng Minh Họa Phép Toán Semi-Join}
-Để minh chứng tường minh cách phép toán Semi-join giảm thiểu dung lượng đường truyền mạng, xét một bài toán định lượng cụ thể[cite: 2]:
+Để minh chứng tường minh cách phép toán Semi-join giảm thiểu dung lượng đường truyền mạng, xét một bài toán định lượng cụ thể:
 
 \subsection{Bối cảnh và Thông số Kỹ thuật}
-Hệ thống CSDL phân tán gồm 2 trạm kết nối qua mạng WAN[cite: 2]:
+Hệ thống CSDL phân tán gồm 2 trạm kết nối qua mạng WAN:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Site 1 (Hà Nội):} Lưu trữ bảng \textbf{Customer ($R$)} chứa thông tin khách hàng[cite: 2]:
+    \item \textbf{Site 1 (Hà Nội):} Lưu trữ bảng \textbf{Customer ($R$)} chứa thông tin khách hàng:
     \begin{itemize}
-        \item Số lượng bản ghi: $100.000$ dòng[cite: 2].
-        \item Kích thước một bản ghi: $l_R = 200\text{ bytes}$ (gồm \texttt{CustomerID} [4 bytes], \texttt{Name}, \texttt{Address},...)[cite: 2].
-        \item Tổng kích thước bảng $R$: $100.000 \times 200\text{ bytes} = 20.000.000\text{ bytes} = 20\text{ MB} = 20.000\text{ KB}$[cite: 2].
-        \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$)[cite: 2].
+        \item Số lượng bản ghi: $100.000$ dòng.
+        \item Kích thước một bản ghi: $l_R = 200\text{ bytes}$ (gồm \texttt{CustomerID} [4 bytes], \texttt{Name}, \texttt{Address},...).
+        \item Tổng kích thước bảng $R$: $100.000 \times 200\text{ bytes} = 20.000.000\text{ bytes} = 20\text{ MB} = 20.000\text{ KB}$.
+        \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$).
     \end{itemize}
-    \item \textbf{Site 2 (TP.HCM):} Lưu trữ bảng \textbf{VIP\_Orders ($S$)} chứa đơn hàng giá trị cao[cite: 2]:
+    \item \textbf{Site 2 (TP.HCM):} Lưu trữ bảng \textbf{VIP\_Orders ($S$)} chứa đơn hàng giá trị cao:
     \begin{itemize}
-        \item Số lượng bản ghi: $1.000$ dòng[cite: 2].
-        \item Kích thước một bản ghi: $l_S = 50\text{ bytes}$[cite: 2].
-        \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$)[cite: 2].
-        \item \textit{Đặc điểm tập dữ liệu:} $1.000$ đơn hàng VIP này chỉ liên quan đến \textbf{500 khách hàng duy nhất} ($\Pi_{\text{CustomerID}}(S)$ chứa đúng $500$ giá trị ID)[cite: 2].
+        \item Số lượng bản ghi: $1.000$ dòng.
+        \item Kích thước một bản ghi: $l_S = 50\text{ bytes}$.
+        \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$).
+        \item \textit{Đặc điểm tập dữ liệu:} $1.000$ đơn hàng VIP này chỉ liên quan đến \textbf{500 khách hàng duy nhất} ($\Pi_{\text{CustomerID}}(S)$ chứa đúng $500$ giá trị ID).
     \end{itemize}
-    \item \textbf{Yêu cầu truy vấn:} Thực hiện phép nối $R \bowtie_{\text{CustomerID}} S$ và trả kết quả tại \textbf{Site 2}[cite: 2].
+    \item \textbf{Yêu cầu truy vấn:} Thực hiện phép nối $R \bowtie_{\text{CustomerID}} S$ và trả kết quả tại \textbf{Site 2}.
 \end{itemize}
 
 \subsection{Phân tích So sánh 2 Chiến lược Thực thi}
@@ -821,14 +821,14 @@ Site 1 đóng gói và truyền toàn bộ bảng Customer ($R$) qua mạng sang
 
 \paragraph{Chiến lược 2: Kỹ thuật giảm tải bằng Semi-join ($R \ltimes S$):}
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Bước 1 (Site 2 $\rightarrow$ Site 1):} Site 2 trích xuất danh sách các mã CustomerID duy nhất: $\text{Temp} = \Pi_{\text{CustomerID}}(S)$ và gửi sang Site 1[cite: 2]:
+    \item \textbf{Bước 1 (Site 2 $\rightarrow$ Site 1):} Site 2 trích xuất danh sách các mã CustomerID duy nhất: $\text{Temp} = \Pi_{\text{CustomerID}}(S)$ và gửi sang Site 1:
     \[\text{Dung lượng B1} = 500 \text{ mã ID} \times 4 \text{ bytes} = 2.000 \text{ bytes} = \mathbf{2 \text{ KB}}\]
-    \item \textbf{Bước 2 (Tại Site 1):} Site 1 thực hiện Semi-join: $R' = R \ltimes S = R \bowtie \text{Temp}$, thu được đúng $500$ dòng khách hàng đầy đủ[cite: 2].
-    \item \textbf{Bước 3 (Site 1 $\rightarrow$ Site 2):} Site 1 gửi tập $R'$ đã thu gọn sang Site 2[cite: 2]:
+    \item \textbf{Bước 2 (Tại Site 1):} Site 1 thực hiện Semi-join: $R' = R \ltimes S = R \bowtie \text{Temp}$, thu được đúng $500$ dòng khách hàng đầy đủ.
+    \item \textbf{Bước 3 (Site 1 $\rightarrow$ Site 2):} Site 1 gửi tập $R'$ đã thu gọn sang Site 2:
     \[\text{Dung lượng B3} = 500 \text{ dòng} \times 200 \text{ bytes} = 100.000 \text{ bytes} = \mathbf{100 \text{ KB}}\]
-    \item \textbf{Bước 4 (Tại Site 2):} Site 2 tiến hành nối $R' \bowtie S$ để hoàn tất kết quả[cite: 2].
+    \item \textbf{Bước 4 (Tại Site 2):} Site 2 tiến hành nối $R' \bowtie S$ để hoàn tất kết quả.
 \end{enumerate}
-Tổng dung lượng dữ liệu truyền qua mạng của Semi-join[cite: 2]:
+Tổng dung lượng dữ liệu truyền qua mạng của Semi-join:
 \[
 \text{Tổng dung lượng truyền} = \text{Dung lượng B1} + \text{Dung lượng B3} = 2 \text{ KB} + 100 \text{ KB} = \mathbf{102 \text{ KB}}
 \]
@@ -854,31 +854,31 @@ Thời gian truyền (Băng thông 10 Mbps) & $\approx 16\text{ giây}$ & $\appr
 
 \subsection{Nguyên tắc Áp dụng và Trade-off Kỹ thuật}
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Hiệu quả cốt lõi:} Semi-join đạt mức tiết kiệm tới $99,5\%$ dung lượng đường truyền nhờ loại bỏ $99.500$ bản ghi không tham gia vào kết quả nối ngay tại nguồn[cite: 2].
-    \item \textbf{Điều kiện áp dụng tối ưu:} Phát huy tác dụng tối đa khi \textbf{độ chọn lọc (Selectivity)} của phép nối thấp (chỉ tỷ lệ nhỏ các bộ của bảng lớn thỏa mãn điều kiện nối)[cite: 2].
-    \item \textbf{Đánh đổi kỹ thuật (Trade-off):} Semi-join phát sinh thêm 1 lượt bắt tay mạng (Latency Round-trip) và chi phí xử lý phép chiếu/nối trung gian[cite: 2]. Bộ tối ưu hóa chỉ chọn Semi-join khi chi phí dung lượng tiết kiệm được vượt trội so với độ trễ phát sinh do thông điệp bổ sung[cite: 2].
+    \item \textbf{Hiệu quả cốt lõi:} Semi-join đạt mức tiết kiệm tới $99,5\%$ dung lượng đường truyền nhờ loại bỏ $99.500$ bản ghi không tham gia vào kết quả nối ngay tại nguồn.
+    \item \textbf{Điều kiện áp dụng tối ưu:} Phát huy tác dụng tối đa khi \textbf{độ chọn lọc (Selectivity)} của phép nối thấp (chỉ tỷ lệ nhỏ các bộ của bảng lớn thỏa mãn điều kiện nối).
+    \item \textbf{Đánh đổi kỹ thuật (Trade-off):} Semi-join phát sinh thêm 1 lượt bắt tay mạng (Latency Round-trip) và chi phí xử lý phép chiếu/nối trung gian. Bộ tối ưu hóa chỉ chọn Semi-join khi chi phí dung lượng tiết kiệm được vượt trội so với độ trễ phát sinh do thông điệp bổ sung.
 \end{itemize}
 
 \section{Phân Tích Tình Huống Xuyên Suốt (Case Study Truy Vấn Đa Trạm)}
 
 \subsection{Bối cảnh Hệ thống}
-Xét hệ thống quản lý bán hàng của một chuỗi bán lẻ gồm hai quan hệ toàn cục[cite: 2]:
+Xét hệ thống quản lý bán hàng của một chuỗi bán lẻ gồm hai quan hệ toàn cục:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \texttt{Customer(CustomerID, Name, City, Balance)}[cite: 2]
-    \item \texttt{Orders(OrderID, CustomerID, OrderDate, TotalAmount)}[cite: 2]
+    \item \texttt{Customer(CustomerID, Name, City, Balance)}
+    \item \texttt{Orders(OrderID, CustomerID, OrderDate, TotalAmount)}
 \end{itemize}
-Cấu hình phân tán[cite: 2]:
+Cấu hình phân tán:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Quan hệ \texttt{Customer} được \textbf{phân mảnh ngang} theo thành phố[cite: 2]:
+    \item Quan hệ \texttt{Customer} được \textbf{phân mảnh ngang} theo thành phố:
     \begin{itemize}
-        \item $C_1 = \sigma_{\text{City = 'Hanoi'}}(Customer)$ lưu tại \textbf{Site 1 (Hà Nội)} ($5.000$ bộ, $100\text{ B/bộ} \rightarrow 500\text{ KB}$)[cite: 2].
-        \item $C_2 = \sigma_{\text{City = 'Saigon'}}(Customer)$ lưu tại \textbf{Site 2 (Sài Gòn)} ($10.000$ bộ, $100\text{ B/bộ} \rightarrow 1\text{ MB}$)[cite: 2].
-        \item $C_3 = \sigma_{\text{City = 'Danang'}}(Customer)$ lưu tại \textbf{Site 3 (Đà Nẵng)} ($2.000$ bộ, $100\text{ B/bộ} \rightarrow 200\text{ KB}$)[cite: 2].
+        \item $C_1 = \sigma_{\text{City = 'Hanoi'}}(Customer)$ lưu tại \textbf{Site 1 (Hà Nội)} ($5.000$ bộ, $100\text{ B/bộ} \rightarrow 500\text{ KB}$).
+        \item $C_2 = \sigma_{\text{City = 'Saigon'}}(Customer)$ lưu tại \textbf{Site 2 (Sài Gòn)} ($10.000$ bộ, $100\text{ B/bộ} \rightarrow 1\text{ MB}$).
+        \item $C_3 = \sigma_{\text{City = 'Danang'}}(Customer)$ lưu tại \textbf{Site 3 (Đà Nẵng)} ($2.000$ bộ, $100\text{ B/bộ} \rightarrow 200\text{ KB}$).
     \end{itemize}
-    \item Quan hệ \texttt{Orders} không phân mảnh, đặt tập trung tại \textbf{Site 4 (Data Center -- Huế)} với $1.000.000$ đơn hàng ($50\text{ B/bộ} \rightarrow 50\text{ MB}$)[cite: 2].
+    \item Quan hệ \texttt{Orders} không phân mảnh, đặt tập trung tại \textbf{Site 4 (Data Center -- Huế)} với $1.000.000$ đơn hàng ($50\text{ B/bộ} \rightarrow 50\text{ MB}$).
 \end{itemize}
 
-Truy vấn của người dùng phát xuất từ \textbf{Site 1}[cite: 2]:
+Truy vấn của người dùng phát xuất từ \textbf{Site 1}:
 \begin{lstlisting}
 SELECT C.Name, O.OrderID, O.TotalAmount
 FROM Customer C JOIN Orders O ON C.CustomerID = O.CustomerID
@@ -888,10 +888,10 @@ WHERE C.City = 'Hanoi' AND O.TotalAmount > 10000000;
 \subsection{Diễn tiến qua 3 Bước Xử lý}
 
 \paragraph{Giai đoạn 1: Phân rã truy vấn (Query Decomposition):}
-Áp dụng quy tắc tương đương đẩy phép chọn và chiếu xuống trước phép nối[cite: 2]:
+Áp dụng quy tắc tương đương đẩy phép chọn và chiếu xuống trước phép nối:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Lọc Customer với $\sigma_{\text{City = 'Hanoi'}}$; Lọc Orders với $\sigma_{\text{TotalAmount > 10000000}}$[cite: 2].
-    \item Chiếu các cột cần thiết: trên Customer lấy $\Pi_{\text{CustomerID, Name}}$, trên Orders lấy $\Pi_{\text{CustomerID, OrderID, TotalAmount}}$[cite: 2].
+    \item Lọc Customer với $\sigma_{\text{City = 'Hanoi'}}$; Lọc Orders với $\sigma_{\text{TotalAmount > 10000000}}$.
+    \item Chiếu các cột cần thiết: trên Customer lấy $\Pi_{\text{CustomerID, Name}}$, trên Orders lấy $\Pi_{\text{CustomerID, OrderID, TotalAmount}}$.
 \end{itemize}
 Biểu thức đại số quan hệ logic toàn cục:
 \begin{multline*}
@@ -901,13 +901,13 @@ T_1 = \Pi_{\text{Name, OrderID, TotalAmount}} \Big( \Pi_{\text{CustomerID, Name}
 
 \paragraph{Giai đoạn 2: Bản địa hóa dữ liệu (Data Localization):}
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Thay thế quan hệ toàn cục bằng biểu thức tái thiết[cite: 2]:} $Customer = C_1 \cup C_2 \cup C_3$. Biểu thức trở thành[cite: 2]:
+    \item \textbf{Thay thế quan hệ toàn cục bằng biểu thức tái thiết:} $Customer = C_1 \cup C_2 \cup C_3$. Biểu thức trở thành:
     \[\sigma_{\text{City = 'Hanoi'}}(C_1 \cup C_2 \cup C_3) \equiv \sigma_{\text{City = 'Hanoi'}}(C_1) \cup \sigma_{\text{City = 'Hanoi'}}(C_2) \cup \sigma_{\text{City = 'Hanoi'}}(C_3)\]
-    \item \textbf{Rút gọn phân mảnh (Fragment Pruning)[cite: 2]:}
+    \item \textbf{Rút gọn phân mảnh (Fragment Pruning):}
     \begin{itemize}
-        \item Với $C_1$: $(\text{City = 'Hanoi'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{True} \implies$ Giữ lại nhánh $C_1$[cite: 2].
-        \item Với $C_2$: $(\text{City = 'Saigon'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{False} \implies \emptyset$ (Cắt tỉa)[cite: 2].
-        \item Với $C_3$: $(\text{City = 'Danang'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{False} \implies \emptyset$ (Cắt tỉa)[cite: 2].
+        \item Với $C_1$: $(\text{City = 'Hanoi'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{True} \implies$ Giữ lại nhánh $C_1$.
+        \item Với $C_2$: $(\text{City = 'Saigon'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{False} \implies \emptyset$ (Cắt tỉa).
+        \item Với $C_3$: $(\text{City = 'Danang'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{False} \implies \emptyset$ (Cắt tỉa).
     \end{itemize}
 \end{enumerate}
 Cây truy vấn phân mảnh sau rút gọn:
@@ -915,22 +915,22 @@ Cây truy vấn phân mảnh sau rút gọn:
 T_2 = \Pi_{\text{Name, OrderID, TotalAmount}} \Big( \Pi_{\text{CustomerID, Name}}(C_1) \\
 \bowtie_{\text{CustomerID}} \Pi_{\text{CustomerID, OrderID, TotalAmount}}(\sigma_{\text{TotalAmount > 10M}}(Orders)) \Big)
 \end{multline*}
-\textit{Hệ thống hoàn toàn loại trừ Site 2 và Site 3 ra khỏi kế hoạch thực thi[cite: 2].}
+\textit{Hệ thống hoàn toàn loại trừ Site 2 và Site 3 ra khỏi kế hoạch thực thi.}
 
 \paragraph{Giai đoạn 3: Tối ưu hóa toàn cục (Global Optimization):}
-Dữ liệu cần xử lý[cite: 2]:
+Dữ liệu cần xử lý:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item $C_1$ tại \textbf{Site 1 (Hà Nội)}: $5.000$ bộ, chiếu lấy (CustomerID, Name) ($30\text{ B/bộ}$), kích thước $\text{Size}(C_1') = 150\text{ KB}$[cite: 2].
-    \item Orders tại \textbf{Site 4 (Huế)}: Sau khi lọc $\sigma_{\text{TotalAmount > 10M}}$, còn $20.000$ đơn hàng, chiếu lấy (CustomerID, OrderID, TotalAmount) ($20\text{ B/bộ}$), kích thước $\text{Size}(O') = 400\text{ KB}$[cite: 2].
+    \item $C_1$ tại \textbf{Site 1 (Hà Nội)}: $5.000$ bộ, chiếu lấy (CustomerID, Name) ($30\text{ B/bộ}$), kích thước $\text{Size}(C_1') = 150\text{ KB}$.
+    \item Orders tại \textbf{Site 4 (Huế)}: Sau khi lọc $\sigma_{\text{TotalAmount > 10M}}$, còn $20.000$ đơn hàng, chiếu lấy (CustomerID, OrderID, TotalAmount) ($20\text{ B/bộ}$), kích thước $\text{Size}(O') = 400\text{ KB}$.
 \end{itemize}
-Bộ tối ưu hóa áp dụng Semi-join ($C_1' \ltimes O'$)[cite: 2]:
+Bộ tối ưu hóa áp dụng Semi-join ($C_1' \ltimes O'$):
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Site 1 gửi danh sách CustomerID từ $C_1'$: $5.000 \text{ ID} \times 4\text{ bytes} = 20\text{ KB}$ sang Site 4[cite: 2].
-    \item Site 4 dùng $20\text{ KB}$ này lọc $O'$, chỉ còn lại $3.000$ đơn hàng thuộc về khách hàng Hà Nội[cite: 2].
-    \item Site 4 gửi $3.000$ đơn hàng này về Site 1: $3.000 \times 20\text{ bytes} = 60\text{ KB}$[cite: 2].
-    \item Site 1 thực hiện nối cục bộ tạo kết quả cuối cùng[cite: 2].
+    \item Site 1 gửi danh sách CustomerID từ $C_1'$: $5.000 \text{ ID} \times 4\text{ bytes} = 20\text{ KB}$ sang Site 4.
+    \item Site 4 dùng $20\text{ KB}$ này lọc $O'$, chỉ còn lại $3.000$ đơn hàng thuộc về khách hàng Hà Nội.
+    \item Site 4 gửi $3.000$ đơn hàng này về Site 1: $3.000 \times 20\text{ bytes} = 60\text{ KB}$.
+    \item Site 1 thực hiện nối cục bộ tạo kết quả cuối cùng.
 \end{enumerate}
-\textbf{Tổng dữ liệu truyền qua mạng:} $20\text{ KB} + 60\text{ KB} = \mathbf{80\text{ KB}}$ (tiết kiệm $80\%$ dung lượng so với $400\text{ KB}$ khi truyền trực tiếp)[cite: 2].
+\textbf{Tổng dữ liệu truyền qua mạng:} $20\text{ KB} + 60\text{ KB} = \mathbf{80\text{ KB}}$ (tiết kiệm $80\%$ dung lượng so với $400\text{ KB}$ khi truyền trực tiếp).
 
 \section{Tổng Kết Và So Sánh Các Giai Đoạn Xử Lý Truy Vấn}
 
@@ -951,7 +951,7 @@ Trọng tâm tối ưu & Giảm số lượng bộ và thuộc tính trung gian 
 \end{tabularx}
 \end{table}
 
-Ba giai đoạn \textbf{Phân rã truy vấn}, \textbf{Bản địa hóa dữ liệu} và \textbf{Tối ưu hóa toàn cục} tạo thành chu trình chuyển đổi hoàn chỉnh trong DDBMS: đảm bảo câu lệnh dịch chính xác, loại trừ các vùng dữ liệu không liên quan và đưa ra kế hoạch thực thi tối thiểu hóa chi phí truyền thông mạng[cite: 2].
+Ba giai đoạn \textbf{Phân rã truy vấn}, \textbf{Bản địa hóa dữ liệu} và \textbf{Tối ưu hóa toàn cục} tạo thành chu trình chuyển đổi hoàn chỉnh trong DDBMS: đảm bảo câu lệnh dịch chính xác, loại trừ các vùng dữ liệu không liên quan và đưa ra kế hoạch thực thi tối thiểu hóa chi phí truyền thông mạng.
 
 % =======================================================
 % CHƯƠNG 4: GIAO DỊCH, CAM KẾT VÀ KIỂM SOÁT ĐỒNG THỜI (TIẾN)

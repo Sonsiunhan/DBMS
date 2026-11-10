@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.19)  10 NOV 2026 23:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.19)  10 NOV 2026 23:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1119,8 +1119,8 @@ Overfull \hbox (7.05925pt too wide) in paragraph at lines 876--877
  []
 
 
-Overfull \hbox (117.75728pt too wide) in paragraph at lines 894--895
-[]\T5/cmr/m/n/12 Chi¸u c¡c cët c¦n thi¸t: tr¶n Customer l§y $\OT1/cmr/m/n/12 ^^E[]$\T5/cmr/m/n/12 , tr¶n Orders l§y $\OT1/cmr/m/n/12 ^^E[]$\T5/cmr/m/n/12 [cite:
+Overfull \hbox (96.2209pt too wide) in paragraph at lines 894--895
+[]\T5/cmr/m/n/12 Chi¸u c¡c cët c¦n thi¸t: tr¶n Customer l§y $\OT1/cmr/m/n/12 ^^E[]$\T5/cmr/m/n/12 , tr¶n Orders l§y $\OT1/cmr/m/n/12 ^^E[]$\T5/cmr/m/n/12 . 
  []
 
 [21] [22] [23]
@@ -1178,9 +1178,9 @@ Here is how much of TeX's memory you used:
  56530 multiletter control sequences out of 15000+600000
  665098 words of font info for 107 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 84i,14n,104p,759b,2001s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,14n,104p,732b,2001s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/sonsiunhan/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk> </home/sonsiunhan/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnitt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt8.pfb>
-Output written on main.pdf (46 pages, 926042 bytes).
+Output written on main.pdf (46 pages, 925097 bytes).
 PDF statistics:
  982 PDF objects out of 1000 (max. 8388607)
  849 compressed objects within 9 object streams

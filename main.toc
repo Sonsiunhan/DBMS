@@ -63,7 +63,7 @@
 \contentsline {paragraph}{Giai đoạn 1: Phân rã truy vấn (Query Decomposition):}{21}{subsection.3.4.2}%
 \contentsline {paragraph}{Giai đoạn 2: Bản địa hóa dữ liệu (Data Localization):}{22}{subsection.3.4.2}%
 \contentsline {paragraph}{Giai đoạn 3: Tối ưu hóa toàn cục (Global Optimization):}{22}{Item.21}%
-\contentsline {section}{\numberline {3.5}Tổng Kết Và So Sánh Các Giai Đoạn Xử Lý Truy Vấn}{23}{section.3.5}%
+\contentsline {section}{\numberline {3.5}Tổng Kết Và So Sánh Các Giai Đoạn Xử Lý Truy Vấn}{22}{section.3.5}%
 \contentsline {chapter}{\numberline {4}Quản Lý Giao Dịch Và Kiểm Soát Đồng Thời Phân Tán}{24}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Tổng Quan Giao Dịch Và Kiến Trúc Xử Lý Phân Tán}{24}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Giao dịch phân tán là gì?}{24}{subsection.4.1.1}%
