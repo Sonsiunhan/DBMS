@@ -1,0 +1,1476 @@
+\documentclass[12pt,a4paper]{report}
+
+% =======================================================
+% CÁC GÓI THƯ VIỆN ĐỊNH DẠNG & TIẾNG VIỆT
+% =======================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper, left=3cm, right=2cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shadows, calc, positioning, arrows.meta, shapes.geometric}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[framemethod=tikz]{mdframed}
+
+% =======================================================
+% CẤU HÌNH TÔ MÀU CODE (LISTINGS) & HỘP NỔI BẬT (MDFRAMED)
+% =======================================================
+\definecolor{myblue}{RGB}{25, 80, 155}
+\definecolor{mybg}{RGB}{245, 248, 253}
+\definecolor{codegreen}{RGB}{0, 130, 50}
+\definecolor{codepurple}{RGB}{125, 15, 170}
+
+% Cấu hình Hộp Ví dụ Minh họa có bóng đổ nhạt và viền bo tròn
+\mdfdefinestyle{viduStyle}{%
+    linecolor=myblue,
+    linewidth=1.2pt,
+    roundcorner=4pt,
+    backgroundcolor=mybg,
+    innertopmargin=8pt,
+    innerbottommargin=8pt,
+    innerleftmargin=10pt,
+    innerrightmargin=10pt,
+    shadow=true,
+    shadowsize=3pt,
+    shadowcolor=black!10
+}
+
+% =======================================================
+% CẤU HÌNH HỘP VÍ DỤ KHÔNG BỊ CẮT ĐÔI TRANG (MINIPAGE + MDFRAMED)
+% =======================================================
+\newenvironment{viduBox}[1]{%
+    \par\vspace{6pt}\noindent
+    \begin{minipage}{\textwidth}
+    \begin{mdframed}[style=viduStyle]%
+    \noindent\textbf{\color{myblue}Ví dụ: #1}\par\vspace{4pt}\small
+}{%
+    \end{mdframed}%
+    \end{minipage}\par\vspace{6pt}
+}
+
+% Cấu hình tô màu cú pháp SQL (căn lề chuẩn tránh chạm viền mdframed)
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{myblue}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=6pt,
+    xleftmargin=15pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=none
+}
+
+% Cấu hình liên kết PDF tiệp màu thương hiệu học thuật
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=myblue,
+    urlcolor=myblue
+}
+
+% Cấu hình Header và Footer cho nội dung
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt} % Tăng chiều cao Header tránh cảnh báo quá dòng
+\fancyhead[L]{\small Báo cáo BTL: Hệ Quản trị Cơ sở Dữ liệu}
+\fancyhead[R]{\small Nhóm 11 -- Đề tài B6}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\renewcommand{\baselinestretch}{1.3} % Giãn dòng chuẩn 1.3
+
+\begin{document}
+
+% =======================================================
+% 1. TRANG BÌA CÓ KHUNG VIỀN ĐÔI CHUẨN ĐH CÔNG NGHỆ (UET)
+% =======================================================
+\begin{titlepage}
+    % Vẽ khung viền đôi bằng TikZ
+    \begin{tikzpicture}[remember picture, overlay]
+        % Khung ngoài nét đậm
+        \draw[line width=1.5pt]
+            ([xshift=2.5cm, yshift=-2.0cm]current page.north west)
+            rectangle
+            ([xshift=-1.5cm, yshift=2.0cm]current page.south east);
+        % Khung trong nét thanh cách khung ngoài 1.5mm
+        \draw[line width=0.5pt]
+            ([xshift=2.65cm, yshift=-2.15cm]current page.north west)
+            rectangle
+            ([xshift=-1.65cm, yshift=2.15cm]current page.south east);
+    \end{tikzpicture}
+
+    \centering
+    \vspace*{-0.5cm}
+
+    % Tiêu đề cơ quan / trường
+    {\fontsize{13pt}{16pt}\selectfont \textbf{ĐẠI HỌC QUỐC GIA HÀ NỘI}\par}
+    \vspace{0.2cm}
+    {\fontsize{14pt}{18pt}\selectfont \textbf{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ}\par}
+    \vspace{0.3cm}
+    \rule{0.45\textwidth}{1pt}\par
+
+    \vspace{1.2cm}
+
+    % Logo trường
+    \includegraphics[width=3.2cm]{uet_logo.png}\par
+
+    \vspace{1.5cm}
+
+    % Thông tin môn học & loại báo cáo
+    {\fontsize{16pt}{20pt}\selectfont \textbf{BÁO CÁO BÀI TẬP LỚN}\par}
+    \vspace{0.4cm}
+    {\fontsize{13pt}{16pt}\selectfont \textbf{MÔN: HỆ QUẢN TRỊ CƠ SỞ DỮ LIỆU}\par}
+    \vspace{0.2cm}
+    {\fontsize{12pt}{15pt}\selectfont \textbf{MÃ LỚP HỌC PHẦN: INT3202 3}\par}
+
+    \vspace{1.2cm}
+
+    % Tên đề tài
+    {\fontsize{16pt}{22pt}\selectfont \textbf{ĐỀ TÀI B6:}\par}
+    \vspace{0.3cm}
+    {\fontsize{15pt}{21pt}\selectfont \textbf{NGHIÊN CỨU KIẾN TRÚC VÀ CƠ CHẾ HOẠT ĐỘNG}\par}
+    \vspace{0.15cm}
+    {\fontsize{15pt}{21pt}\selectfont \textbf{CỦA HỆ QUẢN TRỊ CƠ SỞ DỮ LIỆU PHÂN TÁN}\par}
+
+    \vfill
+
+    % Khối thông tin Giảng viên & Sinh viên
+    \begin{minipage}[t]{0.88\textwidth}
+        \fontsize{12pt}{16pt}\selectfont
+        \begin{tabular}{ll}
+            \textbf{Giảng viên hướng dẫn:} & GVC. ThS. Vũ Bá Duy \\[0.4cm]
+            \textbf{Nhóm sinh viên thực hiện:} & Nhóm 11 \\[0.2cm]
+            \multicolumn{2}{l}{1. Lê Bá Sơn (Nhóm trưởng) \hfill MSSV: 24020294} \\
+            \multicolumn{2}{l}{2. Lê Bá Minh Hiếu \hfill MSSV: 24020125} \\
+            \multicolumn{2}{l}{3. Nguyễn Văn Tiến \hfill MSSV: 24020321} \\
+        \end{tabular}
+    \end{minipage}
+
+    \vspace{1.2cm}
+
+    {\fontsize{12pt}{15pt}\selectfont \textbf{HÀ NỘI -- 2026}\par}
+    \vspace*{0.2cm}
+\end{titlepage}
+
+\pagenumbering{roman} % Đánh số trang La Mã cho phần mở đầu
+
+% =======================================================
+% 2. LỜI MỞ ĐẦU & BẢNG PHÂN CÔNG ĐÓNG GÓP (TRỌN TRONG 1 TRANG)
+% =======================================================
+\chapter*{Lời Mở Đầu}
+\addcontentsline{toc}{chapter}{Lời Mở Đầu}
+\vspace*{-0.5cm}
+
+Trong bối cảnh dữ liệu số gia tăng đột biến và các hệ thống dịch vụ trực tuyến đòi hỏi tính sẵn sàng cao cùng khả năng phục vụ toàn cầu, các hệ quản trị cơ sở dữ liệu tập trung truyền thống ngày càng bộc lộ những hạn chế rõ rệt về hiệu năng truy xuất và khả năng mở rộng. Để vượt qua các rào cản đó, \textbf{Hệ Quản trị Cơ sở Dữ liệu Phân tán (Distributed Database Management System -- DDBMS)} đã ra đời và phát triển thành nền tảng trọng yếu trong thiết kế kiến trúc phần mềm hiện đại.
+
+Báo cáo bài tập lớn này được thực hiện trong khuôn khổ học phần \textbf{Hệ Quản trị Cơ sở Dữ liệu} nhằm nghiên cứu chuyên sâu và toàn diện về \textbf{Đề tài B6: Nghiên cứu kiến trúc và cơ chế hoạt động của hệ quản trị cơ sở dữ liệu phân tán}. Toàn bộ nội dung tập trung làm rõ 3 trụ cột lý thuyết cốt lõi:
+
+\begin{enumerate}[topsep=2pt, itemsep=1pt, parsep=0pt, leftmargin=1cm]
+    \item Tổng quan kiến trúc hệ thống, kiến trúc phân tầng ANSI/SPARC mở rộng và các kỹ thuật phân mảnh dữ liệu.
+    \item Quy trình xử lý và chiến lược tối ưu hóa truy vấn phân tán xuyên mạng (đặc biệt là kỹ thuật Semi-join).
+    \item Quản lý giao dịch, các giao thức cam kết phân tán (2PC, 3PC), kiểm soát đồng thời và bài toán đánh đổi theo định lý CAP.
+\end{enumerate}
+
+Nhóm chúng em xin chân thành cảm ơn thầy \textbf{GVC. ThS. Vũ Bá Duy} đã tận tình giảng dạy và cung cấp những nguồn tài liệu tham khảo chuẩn mực trong suốt thời gian qua.
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng phân công nhiệm vụ của từng thành viên:}
+
+\vspace{0.2cm}
+\begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{|c|l|c|X|}
+        \hline
+        \textbf{STT} & \textbf{Họ và tên} & \textbf{Mã SV} & \textbf{Nội dung phụ trách chính} \\
+        \hline
+        1 & Lê Bá Sơn (NT) & 24020294 & Tổng quan, Mô hình kiến trúc DDBMS và Kỹ thuật phân mảnh dữ liệu \\
+        \hline
+        2 & Lê Bá Minh Hiếu & 24020125 & Quy trình xử lý và Tối ưu hóa truy vấn phân tán (Semi-join) \\
+        \hline
+        3 & Nguyễn Văn Tiến & 24020321 & Quản lý giao dịch, Kiểm soát đồng thời và Nhất quán phân tán (2PC, CAP) \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\newpage
+
+% =======================================================
+% 3. MỤC LỤC TỰ ĐỘNG
+% =======================================================
+\tableofcontents
+\newpage
+
+\pagenumbering{arabic} % Bắt đầu đánh số trang số 1, 2, 3
+
+% =======================================================
+% CHƯƠNG 1: TỔNG QUAN VỀ HỆ CSDL PHÂN TÁN (SƠN)
+% =======================================================
+\chapter{Tổng Quan Về Hệ Quản Trị Cơ Sở Dữ Liệu Phân Tán}
+
+\section{Đặt Vấn Đề và Động Lực Phát Triển}
+Trong các ứng dụng quy mô lớn hiện đại, lượng dữ liệu sinh ra gia tăng liên tục cùng nhu cầu phục vụ người dùng trải rộng ở nhiều khu vực địa lý. Các hệ quản trị cơ sở dữ liệu tập trung truyền thống đối mặt với giới hạn mở rộng phần cứng đắt đỏ, rủi ro đơn điểm lỗi, cũng như độ trễ mạng cao khi người dùng ở xa truy cập về máy chủ trung tâm. 
+
+Hệ Quản trị Cơ sở Dữ liệu Phân tán ra đời nhằm giải quyết triệt để các hạn chế trên bằng cách mở rộng theo chiều ngang, cho phép kết nối các máy tính phổ thông thành một cụm xử lý thống nhất, tăng cường tính sẵn sàng, khả năng chịu lỗi và tính cục bộ trong truy xuất dữ liệu.
+
+\section{Khái Niệm và Bản Chất của DDBMS}
+
+\subsection{Khái niệm Hệ CSDL Phân tán}
+Hệ cơ sở dữ liệu phân tán (Distributed Database System) là một hệ thống gồm tập hợp nhiều cơ sở dữ liệu có mối liên hệ logic chặt chẽ, được phân bố và lưu trữ vật lý trên nhiều nút mạng khác nhau trong một hệ thống mạng máy tính. Toàn bộ các tài nguyên này được quản lý đồng thời bởi các DBMS thành phần có khả năng hoạt động tự trị nhất định.
+
+\subsection{Phân biệt Hệ phân tán và Hệ thống xử lý tập trung}
+Sự khác biệt cốt lõi giữa hai hệ thống được tổng hợp trong Bảng \ref{tab:so_sanh_tap_trung_phan_tan}:
+
+% Bảng so sánh đã khắc phục hoàn toàn lỗi giãn chữ và chuẩn hóa câu chữ học thuật
+\begin{table}[h!]
+\centering
+\caption{So sánh Hệ CSDL Tập trung và Hệ CSDL Phân tán}
+\label{tab:so_sanh_tap_trung_phan_tan}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Tiêu chí} & \textbf{Hệ CSDL Tập trung} & \textbf{Hệ CSDL Phân tán} \\ \hline
+\textbf{Vị trí lưu trữ} & Đặt tại một nút mạng trung tâm duy nhất. & Phân mảnh và lưu trữ trên nhiều nút mạng vật lý độc lập. \\ \hline
+\textbf{Bản chất dữ liệu} & Nguyên khối tại chỗ, không phân rã logic. & Phân tán vật lý, liên kết logic qua lược đồ toàn cục. \\ \hline
+\textbf{Quản trị} & Một DBMS trung tâm điều khiển. & Nhiều DBMS thành phần phối hợp điều phối và đồng bộ. \\ \hline
+\textbf{Chịu lỗi (SPOF)} & Điểm nghẽn đơn điểm lỗi; lỗi trạm chính sẽ gián đoạn toàn hệ thống. & Khả năng chịu lỗi cao; một nút bị sập, các nút còn lại vẫn tiếp tục phục vụ. \\ \hline
+\textbf{Khả năng mở rộng} & Mở rộng chiều dọc, phụ thuộc giới hạn phần cứng máy chủ. & Mở rộng chiều ngang linh hoạt bằng cách bổ sung nút mới. \\ \hline
+\textbf{Tối ưu truy vấn} & Tập trung tối ưu chi phí Disk I/O và tính toán CPU. & Cân đối thêm chi phí truyền thông mạng (băng thông, độ trễ liên trạm). \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Các Mức Độ Trong Suốt (Transparency)}
+Tính trong suốt là khả năng che giấu các chi tiết kỹ thuật phức tạp liên quan đến hạ tầng mạng vật lý, cấu trúc phân mảnh và cơ chế đồng bộ giữa các trạm, giúp người dùng thao tác như trên một CSDL tập trung duy nhất.
+
+\subsection{Trong suốt phân mảnh (Fragmentation Transparency)}
+Là cấp độ trong suốt cao nhất trong tổ chức dữ liệu. Người dùng viết câu lệnh SQL trực tiếp trên các quan hệ toàn cục mà không cần quan tâm bảng gốc bị bẻ nhỏ theo hình thức nào (ngang, dọc hay hỗn hợp). Hệ thống tự động thay thế tên bảng toàn cục bằng các biểu thức tái tạo ($\bigcup$ hoặc $\bowtie$).
+
+\begin{viduBox}{Thao tác SQL trong môi trường trong suốt phân mảnh}
+Xét CSDL có quan hệ toàn cục $\text{NhanVien}(\underline{\text{MaNV}}, \text{HoTen}, \text{Luong}, \text{MaCN})$. Dữ liệu phân mảnh ngang theo chi nhánh: $\text{NV\_HN}$ (Trạm 1) và $\text{NV\_HCM}$ (Trạm 2).
+
+Lập trình viên truy vấn trực tiếp trên bảng toàn cục:
+\begin{lstlisting}
+SELECT MaNV, HoTen, Luong 
+FROM NhanVien 
+WHERE Luong > 15000000;
+\end{lstlisting}
+
+DDBMS ngầm dịch tự động thành truy vấn phân tán thực thi tại các trạm:
+\begin{lstlisting}
+SELECT MaNV, HoTen, Luong FROM NV_HN WHERE Luong > 15000000
+UNION ALL
+SELECT MaNV, HoTen, Luong FROM NV_HCM WHERE Luong > 15000000;
+\end{lstlisting}
+\end{viduBox}
+
+\subsection{Trong suốt nhân bản (Replication Transparency)}
+Tính trong suốt nhân bản đảm bảo người dùng và ứng dụng hoàn toàn không cần biết một quan hệ hay một phân mảnh dữ liệu có tồn tại bản sao hay không, số lượng bản sao là bao nhiêu và chúng đang được lưu trữ tại những nút mạng nào. Dữ liệu nhân bản được trừu tượng hóa như chỉ có một bản duy nhất trên toàn hệ thống.
+
+Cơ chế điều phối ngầm của DDBMS mang lại các ưu thế vượt trội:
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Tự động tối ưu hóa và phân tải truy vấn đọc:} Khi phát sinh thao tác đọc, DDBMS tự động chọn bản sao có chi phí mạng thấp nhất hoặc nút có tải xử lý nhẹ nhất để phục vụ, giúp gia tăng đáng kể thông lượng truy xuất của toàn hệ thống.
+    \item \textbf{Duy trì nhất quán tự động khi ghi dữ liệu:} Khi có thao tác thay đổi dữ liệu, DDBMS tự động điều phối đồng bộ thay đổi tới tất cả các bản sao liên quan thông qua các giao thức kiểm soát nhất quán mà không đòi hỏi tầng ứng dụng phải phát nhiều lệnh ghi riêng biệt.
+    \item \textbf{Đảm bảo tính sẵn sàng cao:} Nếu một trạm chứa bản sao gặp sự cố phần cứng hoặc mất kết nối mạng, hệ thống tự động chuyển hướng truy vấn sang các bản sao còn lại, duy trì dịch vụ liên tục.
+\end{itemize}
+
+\subsection{Trong suốt vị trí (Location Transparency)}
+Tính trong suốt vị trí đảm bảo người dùng và chương trình ứng dụng có thể truy xuất, thao tác trên dữ liệu mà không cần biết dữ liệu đó đang đặt tại vị trí nào. Mọi ánh xạ từ tên bảng logic sang địa chỉ vật lý thực tế đều do DDBMS tự động phân giải thông qua Danh mục Hệ thống Toàn cục (Global System Catalog).
+
+Giá trị cốt lõi của tính trong suốt vị trí thể hiện qua các khía cạnh:
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Độc lập dữ liệu vật lý:} Tách rời hoàn toàn tầng logic ứng dụng khỏi hạ tầng mạng. Lập trình viên chỉ cần viết các câu lệnh SQL chuẩn trên lược đồ toàn cục như một CSDL tập trung duy nhất, loại bỏ hoàn toàn việc phải mở nhiều kết nối hay tự viết mã điều hướng luồng truy vấn cho từng máy chủ.
+    \item \textbf{Tự do tái cấu trúc và di chuyển dữ liệu:} Quản trị viên có thể linh hoạt di chuyển các phân mảnh giữa các nút mạng hoặc thay đổi địa chỉ IP máy chủ. Khi đó, hệ thống chỉ cần cập nhật System Catalog mà không cần sửa đổi mã nguồn ứng dụng.
+    \item \textbf{Tăng cường khả năng chịu lỗi và mở rộng:} Cho phép hệ thống ngầm chuyển hướng truy vấn sang các nút dự phòng hoặc phân tán tải sang các trạm mới thêm vào cụm mà người dùng cuối không hề nhận thấy sự thay đổi về mặt kiến trúc.
+\end{itemize}
+
+\subsection{Trong suốt giao dịch (Distributed Transaction Transparency)}
+Tính trong suốt giao dịch đảm bảo rằng một giao dịch phân tán được thực thi một cách trọn vẹn và an toàn mà người dùng hay lập trình viên không cần can thiệp vào các tiến trình điều phối vật lý phức tạp bên dưới. 
+
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Trong suốt tương tranh:} Cho phép nhiều giao dịch từ nhiều nút mạng thao tác đồng thời trên cùng các tập dữ liệu phân tán nhưng vẫn đảm bảo tính khả tuần tự. Lập trình viên không cần tự viết mã quản lý khóa hay kiểm tra tranh chấp tài nguyên; DDBMS tự động duy trì tính cô lập thông qua các giải thuật và các cơ chế phát hiện bế tắc toàn cục.
+    
+    \item \textbf{Trong suốt sự cố và phục hồi:} Đảm bảo tính nguyên tử và tính bền vững. Khi một giao dịch cập nhật đồng thời nhiều trạm, nếu một trạm bị mất điện hoặc đường truyền mạng bị ngắt quãng giữa chừng, DDBMS sẽ tự động kích hoạt cơ chế hủy bỏ và khôi phục đồng bộ trạng thái ban đầu trên toàn bộ các trạm còn lại thông qua các giao thức cam kết phân tán như Cam kết hai pha (2PC) hoặc Ba pha (3PC) mà không để lại dữ liệu rác hay trạng thái bất nhất.
+\end{itemize}
+
+% =======================================================
+% CHƯƠNG 2: KIẾN TRÚC HỆ THỐNG VÀ KỸ THUẬT PHÂN MẢNH (SƠN)
+% =======================================================
+\chapter{Kiến Trúc Hệ Thống Và Kỹ Thuật Phân Mảnh Dữ Liệu}
+
+\section{Kiến Trúc Tham Chiếu Của Hệ Phân Tán}
+
+\subsection{Kiến trúc phân tầng ANSI/SPARC mở rộng cho DDBMS}
+Theo nghiên cứu kinh điển của Özsu và Valduriez \cite{ozsu}, cấu trúc logic của một DDBMS được chuẩn hóa bằng việc mở rộng kiến trúc ANSI/SPARC truyền thống thành mô hình 5 tầng phân cấp rõ rệt giữa góc nhìn toàn cục và góc nhìn cục bộ:
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+    node distance=0.55cm,
+    box/.style={rectangle, draw=myblue, fill=mybg, rounded corners=4pt, text width=9.6cm, align=center, minimum height=0.78cm, font=\small},
+    localbox/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=4pt, text width=4.5cm, align=center, minimum height=0.75cm, font=\footnotesize},
+    arrow/.style={-{Stealth[length=2.5mm]}, thick, draw=myblue}
+]
+    % 1. Các tầng toàn cục (Global Levels) - Bắt đầu trực tiếp từ GCS
+    \node[box] (gcs) {\textbf{1. Lược đồ Quan niệm Toàn cục (Global Conceptual Schema -- GCS)}};
+    \node[box, below=of gcs] (fs) {\textbf{2. Lược đồ Phân mảnh (Fragmentation Schema -- FS)}};
+    \node[box, below=of fs] (as) {\textbf{3. Lược đồ Định vị / Cấp phát (Allocation Schema -- AS)}};
+    
+    % 2. Các tầng cục bộ (Local Levels) - Đối xứng hoàn hảo
+    \node[localbox, below=1.05cm of as, xshift=-2.45cm] (lcs1) {\textbf{4. LCS Trạm 1}\\\scriptsize (Local Conceptual Schema)};
+    \node[localbox, below=1.05cm of as, xshift=2.45cm] (lcs2) {\textbf{4. LCS Trạm 2}\\\scriptsize (Local Conceptual Schema)};
+    
+    \node[localbox, below=0.55cm of lcs1] (lis1) {\textbf{5. LIS Trạm 1}\\\scriptsize (Local Internal Schema / Data)};
+    \node[localbox, below=0.55cm of lcs2] (lis2) {\textbf{5. LIS Trạm 2}\\\scriptsize (Local Internal Schema / Data)};
+
+    % 3. Đường nối dọc giữa các tầng toàn cục
+    \draw[arrow] (gcs) -- (fs);
+    \draw[arrow] (fs) -- (as);
+
+    % 4. Nhánh rẽ chữ T đối xứng xuống các trạm
+    \coordinate (fork) at ($(as.south) + (0, -0.35cm)$);
+    \draw[thick, draw=myblue] (as.south) -- (fork);
+    \draw[arrow] (fork) -| (lcs1.north);
+    \draw[arrow] (fork) -| (lcs2.north);
+
+    % 5. Đường nối xuống tầng vật lý nội bộ
+    \draw[arrow] (lcs1) -- (lis1);
+    \draw[arrow] (lcs2) -- (lis2);
+\end{tikzpicture}
+\vspace{0.3cm}
+\caption{Mô hình kiến trúc phân tầng chuẩn của DDBMS (Mở rộng từ ANSI/SPARC)}
+\label{fig:ddbms_architecture}
+\end{figure}
+
+% Nếu muốn cố định tuyệt đối không cho bất kỳ dòng chữ nào lọt xuống đáy trang 5:
+% \newpage 
+
+Hệ thống được chia thành 5 mức trừu tượng chính:
+\begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Global Conceptual Schema (GCS):} Mô tả toàn bộ cấu trúc logic của cơ sở dữ liệu phân tán ở mức toàn thể, độc lập hoàn toàn với việc dữ liệu bị cắt nhỏ hay lưu tại nút nào.
+    \item \textbf{Fragmentation Schema (FS):} Xác định ánh xạ 1--N, biểu diễn quy tắc logic mà theo đó mỗi quan hệ toàn cục trong GCS được phân rã thành các phân mảnh nhỏ hơn.
+    \item \textbf{Allocation Schema (AS):} Chỉ định vị trí nút mạng vật lý cụ thể lưu trữ từng phân mảnh cùng số lượng bản sao nhân bản.
+    \item \textbf{Local Conceptual Schema (LCS):} Mô tả cấu trúc logic của phần dữ liệu được giao quản lý tại chính máy chủ cục bộ đó.
+    \item \textbf{Local Internal Schema (LIS):} Tầng vật lý cấp thấp tại từng nút, quản lý trực tiếp cấu trúc chỉ mục, bộ nhớ và tệp tin trên ổ đĩa.
+\end{enumerate}
+
+\subsection{Mô hình Client--Server, Collaborating Server và Middleware}
+Về mặt triển khai hạ tầng phần mềm và mạng, Hệ quản trị CSDL phân tán được phân loại theo ba mô hình kiến trúc điều phối chính:
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+    scale=0.98, transform shape,
+    % Định kiểu tiêu đề
+    title/.style={font=\small\bfseries\color{myblue}},
+    % Định kiểu hộp: ôm sát chữ, tỷ lệ cân đối
+    cli/.style={rectangle, draw=myblue!80, fill=myblue!8, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=3.5pt},
+    box/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, font=\small\bfseries, align=center, inner sep=4pt},
+    peerbox/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, font=\footnotesize\bfseries, align=center, inner sep=3.5pt, text width=1.55cm},
+    midbox/.style={rectangle, draw=myblue, fill=orange!15, rounded corners=3pt, font=\footnotesize\bfseries, align=center, inner sep=4pt, text width=2.6cm},
+    dbbox/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=2.5pt, font=\scriptsize\bfseries, align=center, inner sep=3pt, text width=1.25cm},
+    % Mũi tên to, rõ ràng và sắc nét
+    arr/.style={-{Stealth[length=2.8mm, width=1.8mm]}, thick, draw=myblue},
+    darr/.style={{Stealth[length=2.5mm, width=1.6mm]}-{Stealth[length=2.5mm, width=1.6mm]}, thick, draw=codegreen}
+]
+    % ================= KHOI (a): CLIENT - SERVER =================
+    \node[title] at (2.0, 3.2) {(a) Client--Server};
+    
+    \node[cli] (c1) at (1.2, 2.25) {Client 1};
+    \node[cli] (c2) at (2.8, 2.25) {Client 2};
+    \node[box, text width=2.85cm] (srv) at (2.0, 0.75) {DBMS Server};
+    
+    \draw[arr] (c1.south) -- (srv.north -| c1.south);
+    \draw[arr] (c2.south) -- (srv.north -| c2.south);
+
+    % Vách phân cách 1
+    \draw[dotted, thick, gray!45] (4.2, 0.15) -- (4.2, 3.2);
+
+    % ================= KHOI (b): COLLABORATING SERVER =================
+    \node[title] at (6.6, 3.2) {(b) Collaborating (P2P)};
+    
+    \node[peerbox] (p1) at (5.3, 2.15) {Server A};
+    \node[peerbox] (p2) at (7.9, 2.15) {Server B};
+    \node[peerbox] (p3) at (6.6, 0.5) {Server C};
+    
+    \draw[darr] (p1) -- (p2);
+    \draw[darr] (p1.south) -- (p3.north west);
+    \draw[darr] (p2.south) -- (p3.north east);
+
+    % Vách phân cách 2
+    \draw[dotted, thick, gray!45] (9.0, 0.15) -- (9.0, 3.2);
+
+    % ================= KHOI (c): MIDDLEWARE =================
+    \node[title] at (11.4, 3.2) {(c) Middleware};
+    
+    \node[cli, minimum width=1.6cm] (cm) at (11.4, 2.5) {Client};
+    \node[midbox] (mw) at (11.4, 1.45) {Middleware};
+    \node[dbbox] (db1) at (10.45, 0.5) {DB 1};
+    \node[dbbox] (db2) at (12.35, 0.5) {DB 2};
+    
+    \draw[arr] (cm.south) -- (mw.north);
+    \draw[arr] (mw.south -| db1.north) -- (db1.north);
+    \draw[arr] (mw.south -| db2.north) -- (db2.north);
+
+\end{tikzpicture}
+\vspace{-0.1cm}
+\caption{Ba mô hình kiến trúc hạ tầng điều phối trong DDBMS}
+\label{fig:ddbms_infrastructure_models}
+\vspace{0.1cm}
+\end{figure}
+
+\subsubsection{Mô hình Client--Server}
+Phân tách rõ ràng giữa máy khách (\textit{Client}) và máy chủ cơ sở dữ liệu (\textit{Server}):
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=1pt]
+    \item \textbf{Cơ chế hoạt động:} Phía Client đảm nhận việc xử lý giao diện người dùng, tiếp nhận nghiệp vụ và gửi câu lệnh truy vấn xuống Server. Phía Server thực hiện phân tích cú pháp, tối ưu hóa câu lệnh, truy xuất đĩa cứng và trả về tập kết quả.
+    \item \textbf{Đánh giá:} Triển khai đơn giản, dễ bảo trì; tuy nhiên tính mở rộng bị giới hạn bởi năng lực xử lý của máy chủ trung tâm và dễ trở thành điểm nghẽn cổ chai.
+\end{itemize}
+
+\subsubsection{Mô hình Collaborating Server (Peer-to-Peer)}
+Tất cả các máy chủ trong mạng đều có vai trò ngang hàng và tích hợp giao thức truyền thông liên trạm:
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=1pt]
+    \item \textbf{Cơ chế hoạt động:} Khi nhận một truy vấn từ người dùng, bất kỳ nút mạng nào cũng có thể trở thành \textbf{Nút điều phối (\textit{Coordinator})} cho phiên làm việc đó. Nút này tự động phân tích câu lệnh, liên lạc với các nút ngang hàng để yêu cầu xử lý dữ liệu cục bộ, sau đó tổng hợp các tập kết quả bộ phận để trả về cho người dùng.
+    \item \textbf{Đánh giá:} Khả năng chịu lỗi rất cao (không phụ thuộc vào một máy chủ trung tâm duy nhất) và mở rộng ngang linh hoạt; đổi lại, cơ chế quản lý giao dịch và phát hiện bế tắc toàn cục đòi hỏi các giải thuật phân tán tương đối phức tạp.
+\end{itemize}
+
+\subsubsection{Mô hình Middleware}
+Sử dụng một lớp phần mềm trung gian (\textit{Middleware}) làm cầu nối giữa tầng ứng dụng và các hệ quản trị CSDL cục bộ bên dưới:
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=1pt]
+    \item \textbf{Cơ chế hoạt động:} Tầng Middleware đóng vai trò tiếp nhận truy vấn toàn cục, nắm giữ danh mục vị trí và sử dụng các bộ chuyển đổi giao thức để thông dịch câu lệnh xuống từng hệ quản trị CSDL thành phần (thậm chí khác biệt về hệ điều hành hoặc loại phần mềm DBMS). Bản thân Middleware chỉ làm nhiệm vụ điều phối và chuyển tiếp mà không trực tiếp sở hữu tệp lưu trữ dữ liệu gốc.
+    \item \textbf{Đánh giá:} Là giải pháp lý tưởng để xây dựng các hệ cơ sở dữ liệu đa hệ thống và tích hợp các hệ thống kế thừa; tuy nhiên cần thiết lập cơ chế dự phòng cho cụm Middleware để tránh biến nó thành đơn điểm lỗi của hệ thống.
+\end{itemize}
+
+\subsection{Hệ phân tán đồng nhất, không đồng nhất và Gateway Protocols}
+Dựa trên mức độ tương thích về phần mềm và mô hình dữ liệu giữa các nút mạng, DDBMS được phân loại thành hai hình thái chính:
+
+\subsubsection{Hệ phân tán đồng nhất (Homogeneous DDBMS)}
+Tất cả các trạm trong mạng đều vận hành cùng một loại phần mềm DBMS (ví dụ: toàn bộ các nút đều sử dụng PostgreSQL hoặc MySQL) và chia sẻ chung một mô hình dữ liệu.
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=1pt]
+    \item \textbf{Cơ chế hoạt động:} Các trạm sử dụng chung định dạng lưu trữ đĩa, cấu trúc System Catalog và giao thức truyền thông nội bộ. Nhờ đó, việc trao đổi dữ liệu trung gian và điều phối tối ưu hóa truy vấn toàn cục diễn ra trực tiếp mà không cần qua tầng chuyển ngữ.
+    \item \textbf{Ưu thế:} Dễ dàng triển khai các giải thuật cam kết phân tán (2PC), đồng bộ bản sao và tối ưu hóa truy vấn toàn diện với chi phí tài nguyên thấp.
+\end{itemize}
+
+\subsubsection{Hệ phân tán không đồng nhất (Heterogeneous DDBMS)}
+Các nút mạng vận hành các hệ quản trị DBMS khác nhau (như trạm dùng Oracle, trạm dùng MySQL) hoặc khác biệt về mô hình dữ liệu (quan hệ kết hợp NoSQL).
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=1pt]
+    \item \textbf{Thách thức kỹ thuật:} Hệ thống phải đối mặt với sự khác biệt về phương ngữ SQL, xung đột ngữ nghĩa dữ liệu và rào cản về tính tự trị cục bộ.
+    \item \textbf{Vai trò của Gateway Protocols:} Để liên kết các trạm không đồng nhất, hệ thống sử dụng các cổng nối (\textit{Gateways}). Gateway đóng vai trò biên dịch câu truy vấn từ ngôn ngữ toàn cục sang cú pháp của DBMS cục bộ, ánh xạ kiểu dữ liệu tương đương và bọc các tiến trình giao dịch cục bộ để đảm bảo an toàn ACID.
+\end{itemize}
+
+\vspace{0.2cm}
+\begin{table}[!ht]
+\centering
+\small
+\caption{So sánh đặc tính giữa Hệ phân tán đồng nhất và không đồng nhất}
+\label{tab:so_sanh_dong_nhat_khong_dong_nhat}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Tiêu chí} & \textbf{Hệ phân tán đồng nhất} & \textbf{Hệ phân tán không đồng nhất} \\ \hline
+\textbf{Phần mềm DBMS} & Cùng một loại DBMS trên toàn mạng. & Đa dạng các DBMS khác nhau tại mỗi trạm. \\ \hline
+\textbf{Tính tự trị cục bộ} & Thấp; phối hợp chặt chẽ theo chuẩn chung. & Rất cao; mỗi nút bảo toàn quyền quản trị riêng. \\ \hline
+\textbf{Tối ưu truy vấn} & Hiệu quả cao nhờ hiểu rõ thông số các nút. & Khó khăn do thiếu thông tin thống kê chi tiết. \\ \hline
+\textbf{Độ phức tạp tích hợp} & Thấp; thuận lợi mở rộng cụm (Scale-out). & Rất cao; đòi hỏi Gateway biên dịch phức tạp. \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Kỹ Thuật Phân Mảnh Dữ Liệu (Data Fragmentation)}
+Phân mảnh là quá trình phân rã một quan hệ toàn cục $R$ thành các phân mảnh $R_1, R_2, \dots, R_n$ để phân bố vật lý tại các trạm nhằm tối ưu tính cục bộ tham chiếu và giảm chi phí truyền mạng.
+
+\subsection[Phân mảnh ngang (Primary và Derived)]{Phân mảnh ngang (Horizontal Fragmentation)}
+Phân mảnh ngang chia nhỏ bảng theo từng bộ dữ liệu dựa trên phép chọn ($\sigma$).
+
+\paragraph{1. Phân mảnh ngang nguyên thủy (PHF -- Primary Horizontal Fragmentation):}
+Được định nghĩa thông qua việc sử dụng tập các vị từ đơn giản $Pr = \{p_1, p_2, \dots, p_k\}$. Để việc phân mảnh tối ưu, tập $Pr$ phải thỏa mãn hai tiêu chuẩn:
+\begin{itemize}
+    \item \textbf{Tính đầy đủ (Completeness):} Một tập vị từ $Pr$ được gọi là đầy đủ khi và chỉ khi xác suất truy cập vào hai bộ bất kỳ thuộc cùng một phân mảnh là hoàn toàn đồng đều đối với mọi ứng dụng.
+    \item \textbf{Tính tối thiểu (Minimality):} Không có bất kỳ vị từ nào trong $Pr$ bị dư thừa.
+\end{itemize}
+Từ tập $Pr$, ta sinh ra tập các \textbf{Vị từ hội sơ cấp} (\textit{Minterm Predicates}) $M = \{m_1, m_2, \dots, m_z\}$ theo công thức:
+\[
+    m_i = \bigwedge_{p_j \in Pr} p_j^* \quad \text{với } p_j^* \in \{p_j, \neg p_j\}
+\]
+Mỗi phân mảnh ngang nguyên thủy $R_i$ là kết quả của phép chọn theo một vị từ hội sơ cấp:
+\[
+    R_i = \sigma_{m_i}(R)
+\]
+
+\begin{viduBox}{Phân mảnh ngang nguyên thủy trên quan hệ NhanVien}
+Xét quan hệ $\text{NhanVien}(\text{MaNV}, \text{HoTen}, \text{ChiNhanh}, \text{Luong})$ với 2 ứng dụng truy vấn chính theo trạm làm việc và mức lương.
+
+\textbf{1. Xác định tập vị từ đơn giản ($Pr$):}
+\[
+Pr = \{p_1: \text{ChiNhanh} = \text{'HN'}, \quad p_2: \text{Luong} > 20000000\}
+\]
+
+\textbf{2. Sinh các vị từ hội sơ cấp ($m_i = \bigwedge p_j^*$):}
+\begin{itemize}[leftmargin=0.6cm, topsep=1pt, itemsep=1pt]
+    \item $m_1 = p_1 \wedge p_2$: $\text{ChiNhanh} = \text{'HN'} \wedge \text{Luong} > 20000000$
+    \item $m_2 = p_1 \wedge \neg p_2$: $\text{ChiNhanh} = \text{'HN'} \wedge \text{Luong} \le 20000000$
+    \item $m_3 = \neg p_1 \wedge p_2$: $\text{ChiNhanh} \neq \text{'HN'} \wedge \text{Luong} > 20000000$
+    \item $m_4 = \neg p_1 \wedge \neg p_2$: $\text{ChiNhanh} \neq \text{'HN'} \wedge \text{Luong} \le 20000000$
+\end{itemize}
+
+\textbf{3. Cắt dữ liệu thành các phân mảnh ($NV_i = \sigma_{m_i}(\text{NhanVien})$):}
+\begin{itemize}[leftmargin=0.6cm, topsep=1pt, itemsep=1pt]
+    \item $NV_1 = \sigma_{m_1}(\text{NhanVien})$, $NV_2 = \sigma_{m_2}(\text{NhanVien}) \implies$ Lưu trữ tại \textbf{Trạm Hà Nội}.
+    \item $NV_3 = \sigma_{m_3}(\text{NhanVien})$, $NV_4 = \sigma_{m_4}(\text{NhanVien}) \implies$ Lưu trữ tại \textbf{Trạm TP.HCM}.
+\end{itemize}
+\end{viduBox}
+
+\paragraph{2. Phân mảnh ngang dẫn xuất (DHF -- Derived Horizontal Fragmentation):}
+Phân mảnh quan hệ Thành viên (\textit{Member relation}) $R$ dựa trên các phân mảnh của quan hệ Chủ sở hữu (\textit{Owner relation}) $S$ thông qua phép Nửa nối (Semi-join $\ltimes$):
+\[
+    R_i = R \ltimes S_i = \pi_{\text{Attrs}(R)} (R \bowtie S_i)
+\]
+Kỹ thuật này đảm bảo các dòng của bảng con sẽ luôn được lưu trữ cùng trạm mạng với dòng cha chứa khóa ngoại liên kết, loại bỏ triệt để chi phí truyền thông liên trạm khi thực hiện phép nối giữa hai bảng.
+
+\subsection{Phân mảnh dọc (Vertical Fragmentation)}
+Chia nhỏ bảng theo từng cột dựa trên phép chiếu ($\pi$). Mục tiêu là nhóm các thuộc tính có tần suất truy cập đồng thời cao vào cùng một phân mảnh.
+\begin{itemize}
+    \item \textbf{Cơ sở toán học:} Quá trình phân mảnh dọc sử dụng \textbf{Ma trận sử dụng thuộc tính (Attribute Usage Matrix -- AUM)} để tính toán \textbf{Ma trận tương quan thuộc tính (Attribute Affinity Matrix -- AAM)}. Giá trị tương quan giữa hai thuộc tính $A_i, A_j$ được tính bởi:
+    \[
+        \text{aff}(A_i, A_j) = \sum_{k: q_k \text{ truy cập } A_i, A_j} \sum_{\forall \text{ Trạm } S_l} \text{freq}_l(q_k) \cdot \text{acc}_l(q_k)
+    \]
+    Thuật toán \textbf{Gom cụm năng lượng liên kết (Bond Energy Algorithm -- BEA)} được áp dụng để hoán vị các hàng và cột của ma trận AAM tạo thành ma trận gom cụm (CAAM), từ đó xác định điểm cắt phân đôi tối ưu.
+    \item \textbf{Yêu cầu bắt buộc:} Mỗi phân mảnh dọc bắt buộc phải giữ lại thuộc tính \textbf{Khóa chính (Primary Key)} hoặc mã định danh bộ (TID).
+    \item \textbf{Tái tạo:} Khôi phục bảng gốc bằng phép Nối tự nhiên không mất mát thông tin ($\bowtie$).
+\end{itemize}
+
+\begin{viduBox}{Phân mảnh dọc và phép nối tái tạo Lossless Join}
+Chia bảng $\text{NhanVien}(\underline{\text{MaNV}}, \text{HoTen}, \text{ChucVu}, \text{Luong}, \text{SoTaiKhoan})$ thành 2 phân mảnh dọc:
+\begin{align*}
+    \text{NV\_SoYeu} &= \pi_{\text{MaNV}, \text{HoTen}, \text{ChucVu}}(\text{NhanVien}) \\
+    \text{NV\_TaiChinh} &= \pi_{\text{MaNV}, \text{Luong}, \text{SoTaiKhoan}}(\text{NhanVien})
+\end{align*}
+
+Tái tạo lại quan hệ gốc thông qua phép Nối tự nhiên ($\bowtie$):
+\[
+    \text{NhanVien} = \text{NV\_SoYeu} \bowtie_{\text{MaNV}} \text{NV\_TaiChinh}
+\]
+
+Lệnh SQL ghép nối khôi phục dữ liệu ban đầu:
+\begin{lstlisting}
+SELECT A.MaNV, A.HoTen, A.ChucVu, B.Luong, B.SoTaiKhoan
+FROM NV_SoYeu A 
+INNER JOIN NV_TaiChinh B ON A.MaNV = B.MaNV;
+\end{lstlisting}
+\end{viduBox}
+
+\subsection{Phân mảnh hỗn hợp (Hybrid Fragmentation)}
+Kết hợp lồng nhau giữa phân mảnh ngang và phân mảnh dọc (Ngang trước -- Dọc sau hoặc Dọc trước -- Ngang sau). Tái tạo bằng cách đảo ngược tuần tự các phép nối ($\bowtie$) và phép hợp ($\bigcup$).
+
+\section{Các Quy Tắc Bắt Buộc Trong Phân Mảnh}
+Quá trình phân rã một quan hệ $R$ thành $F_R = \{R_1, R_2, \dots, R_n\}$ bắt buộc phải tuân thủ nghiêm ngặt 3 quy tắc:
+
+\subsection{Tính đầy đủ (Completeness)}
+Mọi mục dữ liệu (bộ dữ liệu hoặc thuộc tính) nằm trong quan hệ gốc $R$ phải xuất hiện trong ít nhất một phân mảnh $R_i$. Đảm bảo không thất lạc dữ liệu sau phân chia.
+
+\subsection{Tính tái tạo (Reconstruction)}
+Bắt buộc phải tồn tại một toán tử đại số quan hệ $\nabla$ có khả năng khôi phục lại quan hệ gốc:
+\[
+    R = \nabla R_i, \quad \forall R_i \in F_R
+\]
+Trong đó $\nabla$ là phép Hợp ($\bigcup$) với phân mảnh ngang và phép Nối ($\bowtie$) với phân mảnh dọc.
+
+\begin{viduBox}{Bài toán phản ví dụ về vi phạm tính tái tạo}
+Xét phép phân mảnh dọc bảng $\text{NhanVien}$ thành hai mảnh. Nếu mảnh tài chính bỏ quên thuộc tính khóa chính $\text{MaNV}$:
+\[
+    \text{NV\_TaiChinh} = \pi_{\text{Luong}, \text{SoTaiKhoan}}(\text{NhanVien})
+\]
+Khi đó, hệ thống không thể thực hiện phép nối $\text{NV\_SoYeu} \bowtie \text{NV\_TaiChinh}$ để khôi phục lại thông tin chính xác của từng nhân viên, dẫn đến vi phạm nghiêm trọng quy tắc \textbf{Reconstruction}. Phép nối không có khóa chung sẽ suy biến thành tích Đề-các, làm sai lệch toàn bộ bộ dữ liệu ban đầu.
+\end{viduBox}
+
+\subsection{Tính tách biệt (Disjointness)}
+Ngăn chặn hiện tượng dư thừa trùng lặp dữ liệu giữa các phân mảnh:
+\begin{itemize}
+    \item \textbf{Đối với phân mảnh ngang:} $R_j \cap R_k = \emptyset, \quad \forall j \neq k$.
+    \item \textbf{Đối với phân mảnh dọc:} Tính tách biệt áp dụng chặt chẽ trên \textbf{các thuộc tính không phải khóa chính}.
+\end{itemize}
+
+\section{Chiến Lược Phân Bổ và Cấp Phát Dữ Liệu}
+
+Sau khi hoàn tất quá trình phân mảnh, bước tiếp theo trong quy trình thiết kế CSDL phân tán là \textbf{Cấp phát dữ liệu (Data Allocation)}. Đây là quá trình xác định vị trí lưu trữ vật lý của từng phân mảnh tại các trạm mạng nhằm tối ưu hóa hiệu năng tổng thể của hệ thống.
+
+\subsection{Bài toán cấp phát dữ liệu}
+Về mặt toán học, bài toán cấp phát được mô hình hóa như sau:
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Đầu vào:} Tập các phân mảnh $F = \{F_1, F_2, \dots, F_n\}$; tập các trạm mạng $S = \{S_1, S_2, \dots, S_m\}$; ma trận tần suất đọc/ghi của các ứng dụng và chi phí truyền thông giữa các cặp trạm.
+    \item \textbf{Biến quyết định:} Ma trận nhị phân $X = [x_{ij}]_{n \times m}$, trong đó:
+    \[
+    x_{ij} = \begin{cases} 
+    1 & \text{nếu phân mảnh } F_i \text{ được cấp phát tại trạm } S_j \\ 
+    0 & \text{ngược lại} 
+    \end{cases}
+    \]
+    \item \textbf{Mục tiêu:} Cực tiểu hóa hàm tổng chi phí toàn cục:
+    \[
+    \min \ C = C_{\text{đọc}} + C_{\text{ghi}} + C_{\text{truyền thông}} + C_{\text{lưu trữ}}
+    \]
+    thỏa mãn các ràng buộc về dung lượng đĩa tại mỗi trạm ($\sum_{i} x_{ij} \cdot \text{size}(F_i) \le \text{Capacity}_j$) và giới hạn thời gian đáp ứng của truy vấn.
+\end{itemize}
+Bài toán cấp phát tổng quát đã được chứng minh là bài toán \textbf{NP-đầy đủ (NP-complete)}. Do đó, các bộ tối ưu DDBMS trong thực tế thường áp dụng các giải thuật xấp xỉ (\textit{Heuristics}) để tìm phương án cấp phát gần tối ưu.
+
+\subsection{Các mô hình cấp phát dữ liệu}
+Dựa trên giá trị của ma trận cấp phát $X$, hệ thống phân tán được phân loại thành ba mô hình chính:
+
+\subsubsection{Mô hình phân bổ không nhân bản (Non-replicated Allocation)}
+Mỗi phân mảnh $F_i$ chỉ tồn tại duy nhất tại đúng một trạm mạng trong toàn hệ thống, tức là:
+\[
+\forall i \in \{1, \dots, n\}: \quad \sum_{j=1}^{m} x_{ij} = 1
+\]
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Ưu điểm:} Cực tiểu hóa chi phí lưu trữ; thao tác ghi/cập nhật dữ liệu rất đơn giản và diễn ra tức thì vì không cần cơ chế đồng bộ bản sao liên trạm.
+    \item \textbf{Nhược điểm:} Độ sẵn sàng (Availability) và độ chịu lỗi thấp. Nếu trạm chứa phân mảnh gặp sự cố (sập nút), toàn bộ các truy vấn liên quan đến mảnh đó sẽ bị gián đoạn.
+\end{itemize}
+
+\subsubsection{Mô hình nhân bản toàn phần (Fully Replicated Allocation)}
+Mọi phân mảnh đều được sao chép nguyên vẹn tại tất cả các trạm mạng trong hệ thống:
+\[
+\forall i \in \{1, \dots, n\}, \ \forall j \in \{1, \dots, m\}: \quad x_{ij} = 1
+\]
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Ưu điểm:} Tối ưu hóa tối đa thời gian đáp ứng của các truy vấn đọc, do 100\% thao tác đọc được phục vụ cục bộ ngay tại trạm phát sinh; đồng thời tận dụng các bản sao để cân bằng tải đọc trên toàn hệ thống; độ chịu lỗi cao.
+    \item \textbf{Nhược điểm:} Tiêu tốn dung lượng đĩa gấp $m$ lần; chi phí cập nhật cực kỳ tốn kém do phải thực hiện các giao thức cam kết đồng bộ trên toàn mạng để bảo đảm tính nhất quán dữ liệu.
+\end{itemize}
+
+\subsubsection{Mô hình nhân bản từng phần (Partially Replicated Allocation)}
+Chỉ một số phân mảnh tần suất đọc vượt trội mới được nhân bản tại một số trạm nhất định:
+\[
+\exists i: \quad 1 < \sum_{j=1}^{m} x_{ij} < m
+\]
+Đây là mô hình dung hòa, mang lại hiệu năng thực tế cao nhất nhờ việc cân bằng giữa chi phí truyền thông mạng và chi phí đồng bộ dữ liệu.
+
+% =======================================================
+% CHƯƠNG 3: QUY TRÌNH XỬ LÝ VÀ TỐI ƯU HÓA TRUY VẤN (HIẾU)
+% =======================================================
+\chapter{Quy Trình Xử Lý Và Tối Ưu Hóa Truy Vấn Phân Tán}
+
+\section{Tổng Quan Về Kiến Trúc Xử Lý Truy Vấn Phân Tán}
+Trong hệ quản trị cơ sở dữ liệu phân tán (DDBMS), dữ liệu được lưu trữ phân tán trên nhiều trạm (sites hoặc nodes) kết nối qua mạng máy tính[cite: 2]. Sự thay đổi về mặt kiến trúc phần cứng này kéo theo sự thay đổi căn bản trong cơ chế biên dịch, tối ưu hóa và thực thi câu lệnh truy vấn[cite: 2].
+
+Khác với hệ thống tập trung nơi chi phí thực thi chủ yếu bị chi phối bởi thao tác I/O đọc/ghi đĩa từ hoặc ổ cứng thể rắn (SSD) và chu kỳ tính toán của CPU, trong môi trường phân tán, \textbf{chi phí truyền thông qua mạng (Network Communication Cost)} đóng vai trò là điểm nghẽn lớn nhất (bottleneck) do băng thông hữu hạn và độ trễ đường truyền cao[cite: 2].
+
+Để biến đổi một câu lệnh truy vấn khai báo cấp cao (như SQL) từ người dùng thành các thao tác vật lý tối ưu trên mạng lưới phân tán, kiến trúc xử lý truy vấn phân tán tiêu chuẩn được tổ chức thành quy trình phân tầng gồm 3 giai đoạn trọng tâm[cite: 2]:
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+    node distance=0.6cm,
+    box/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=10.5cm, align=left, inner sep=6pt, font=\small},
+    arrow/.style={-{Stealth[length=2.5mm]}, thick, draw=myblue}
+]
+    \node[align=center, font=\small\bfseries\color{myblue}] (sql) {[Câu truy vấn SQL toàn cục]};
+    \node[box, below=of sql] (step1) {
+        \textbf{1. Phân rã truy vấn (Query Decomposition)}\\
+        $\bullet$ Phân tích cú pháp, kiểm tra ngữ nghĩa catalog toàn cục.\\
+        $\bullet$ Chuẩn hóa biểu thức logic (CNF/DNF).\\
+        $\bullet$ Tối ưu hóa đại số logic toàn cục (đẩy sớm $\sigma$, $\pi$).
+    };
+    \node[box, below=of step1] (step2) {
+        \textbf{2. Bản địa hóa dữ liệu (Data Localization)}\\
+        $\bullet$ Ánh xạ quan hệ toàn cục vào các phân mảnh.\\
+        $\bullet$ Tái thiết bảng bằng phép Hợp ($\bigcup$) hoặc Nối ($\bowtie$).\\
+        $\bullet$ Rút gọn phân mảnh (Fragment Pruning / Elimination).
+    };
+    \node[box, below=of step2] (step3) {
+        \textbf{3. Tối ưu hóa toàn cục (Global Optimization)}\\
+        $\bullet$ Chọn thứ tự thực hiện phép nối (Join Ordering).\\
+        $\bullet$ Định vị trạm thực thi tối ưu (Site Selection).\\
+        $\bullet$ Lựa chọn chiến lược truyền mạng (Data Shipping, Semi-join, Bloom Join).
+    };
+    \node[align=center, font=\small\bfseries\color{codegreen}, below=of step3] (exec) {[Kế hoạch thực thi gửi tới các trạm để chạy cục bộ]};
+
+    \draw[arrow] (sql) -- (step1);
+    \draw[arrow] (step1) -- node[right, font=\scriptsize\itshape]{Cây đại số logic toàn cục} (step2);
+    \draw[arrow] (step2) -- node[right, font=\scriptsize\itshape]{Cây phân mảnh đã rút gọn} (step3);
+    \draw[arrow] (step3) -- (exec);
+\end{tikzpicture}
+\caption{Quy trình 3 giai đoạn xử lý và tối ưu hóa truy vấn phân tán}
+\label{fig:query_processing_flow}
+\end{figure}
+
+\section{Chi Tiết Các Bước Xử Lý Câu Lệnh Truy Vấn}
+
+\subsection{Phân rã truy vấn (Query Decomposition)}
+\subsubsection{Khái niệm và Mục tiêu}
+Phân rã truy vấn là bước tiếp nhận câu truy vấn SQL viết trên \textbf{lược đồ quan hệ toàn cục (Global Relational Schema)}[cite: 2]. Ở bước này, hệ thống \textbf{trừu tượng hóa hoàn toàn} môi trường phân tán: không quan tâm đến việc dữ liệu được phân mảnh thế nào, nhân bản ở đâu hay lưu trữ tại site vật lý nào[cite: 2].
+
+Mục tiêu chính là dịch câu truy vấn khai báo sang dạng biểu diễn hình thức nội bộ -- một \textbf{Cây đại số quan hệ toàn cục (Global Relational Algebra Tree)} -- đồng thời áp dụng các phép biến đổi đại số tương đương để đơn giản hóa cây truy vấn[cite: 2].
+
+\subsubsection{Các tiểu bước trong Phân rã truy vấn}
+Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ thuật[cite: 2]:
+\begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Phân tích cú pháp và kiểm tra ngữ nghĩa (Parsing and Semantic Analysis):}
+    \begin{itemize}
+        \item \textit{Kiểm tra cú pháp:} Đảm bảo câu lệnh tuân thủ ngữ pháp chuẩn của SQL[cite: 2].
+        \item \textit{Kiểm tra từ điển dữ liệu (Catalog Lookup):} Xác thực tên bảng, tên thuộc tính xem có tồn tại trong lược đồ toàn cục hay không; kiểm tra tương thích kiểu dữ liệu[cite: 2].
+        \item \textit{Kiểm tra quyền truy cập (Authorization):} Xác minh người dùng có đủ đặc quyền (\texttt{SELECT}, \texttt{UPDATE},...) trên các quan hệ được tham chiếu[cite: 2].
+    \end{itemize}
+    \item \textbf{Chuẩn hóa biểu thức điều kiện (Normalization):}
+    Mệnh đề \texttt{WHERE} được đưa về các dạng chuẩn đại số logic[cite: 2]:
+    \begin{itemize}
+        \item \textbf{Dạng chuẩn hội (Conjunctive Normal Form -- CNF):} Là chuỗi các mệnh đề tuyển nối với nhau bằng phép AND[cite: 2]:
+        \[P = (p_{11} \vee p_{12} \vee \dots) \wedge (p_{21} \vee p_{22} \vee \dots) \wedge \dots\]
+        Dạng này đặc biệt thuận tiện cho việc thực hiện quy tắc phân rã phép chọn (Cascade of Selections)[cite: 2].
+        \item \textbf{Dạng chuẩn tuyển (Disjunctive Normal Form -- DNF):} Là chuỗi các mệnh đề hội nối với nhau bằng phép OR[cite: 2]:
+        \[P = (p_{11} \wedge p_{12} \wedge \dots) \vee (p_{21} \wedge p_{22} \wedge \dots) \vee \dots\]
+    \end{itemize}
+    \item \textbf{Phân tích ngữ nghĩa và loại bỏ dư thừa (Semantic Analysis \& Contradiction Elimination):}
+    Hệ thống kiểm tra tính khả thi của các vị từ[cite: 2]. Nếu một nhánh vị từ tự mâu thuẫn (như $A > 100 \wedge A < 50$), nhánh đó được đánh giá là False và bị loại bỏ ngay từ cây logic[cite: 2]. Đồng thời áp dụng tính chất bắc cầu: nếu $A = B$ và $B = 10$, hệ thống suy diễn thêm vị từ $A = 10$[cite: 2].
+    \item \textbf{Tối ưu hóa đại số logic toàn cục (Algebraic Optimization):}
+    Áp dụng các quy tắc tương đương đại số quan hệ độc lập phân tán nhằm giảm kích thước dữ liệu trung gian[cite: 2]:
+    \begin{itemize}
+        \item \textbf{Đẩy sớm phép chọn (Push Down Selections):} $\sigma_\theta(R \bowtie S) \equiv (\sigma_\theta(R)) \bowtie S$ nếu điều kiện $\theta$ chỉ liên quan đến quan hệ $R$, giúp giảm nhanh số lượng bộ trước khi thực hiện phép nối đắt đỏ[cite: 2].
+        \item \textbf{Đẩy sớm phép chiếu (Push Down Projections):} $\Pi_L(R \bowtie S) \equiv \Pi_L(\Pi_{L_1}(R) \bowtie \Pi_{L_2}(S))$, loại bỏ sớm các cột không cần thiết để giảm độ rộng dòng dữ liệu[cite: 2].
+        \item \textbf{Nhóm các toán tử đơn nguyên:} Gom các chuỗi phép chọn và chiếu liên tiếp để thực thi trong cùng một lần duyệt dữ liệu[cite: 2].
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Bản địa hóa dữ liệu (Data Localization)}
+\subsubsection{Khái niệm và Bối cảnh}
+Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu[cite: 2]. Tại đây, tính trong suốt phân mảnh (Fragmentation Transparency) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu[cite: 2]. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}[cite: 2].
+
+\subsubsection{Các dạng phân mảnh và Quy tắc tái thiết}
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Phân mảnh ngang (Horizontal Fragmentation):} $R = \bigcup_{i=1}^n R_i = R_1 \cup R_2 \cup \dots \cup R_n$.
+    \item \textbf{Phân mảnh dọc (Vertical Fragmentation):} $R = \bowtie_{K} R_j = R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m$ (với $K$ là khóa chính).
+    \item \textbf{Phân mảnh hỗn hợp (Hybrid Fragmentation):} Kết hợp đan xen giữa phép Hợp ($\bigcup$) và phép Nối ($\bowtie$).
+\end{enumerate}
+
+\subsubsection{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}
+Kỹ thuật Rút gọn phân mảnh sử dụng đại số quan hệ và logic toán học để triệt tiêu các nhánh rỗng[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Phân phối phép chọn qua phép hợp:} $\sigma_C (R_1 \cup R_2) \equiv \sigma_C (R_1) \cup \sigma_C (R_2)$[cite: 2].
+    \item \textbf{Kiểm tra mâu thuẫn vị từ (Predicate Contradiction Check):} Mỗi phân mảnh $R_i$ gắn liền với vị từ phân mảnh $\phi_i$[cite: 2]. Biểu thức truy vấn trên mảnh trở thành $\sigma_C(R_i) \equiv \sigma_{C \wedge \phi_i}(R)$[cite: 2]. Nếu $(C \wedge \phi_i) \equiv \text{False}$, phân mảnh $R_i$ chắc chắn không chứa bộ nào thỏa mãn: $\sigma_{C \wedge \phi_i}(R) = \emptyset$[cite: 2]. Hệ thống cắt tỉa toàn bộ nhánh $R_i$ khỏi cây truy vấn[cite: 2].
+    \item \textbf{Phân phối phép chọn và chiếu qua phép nối:} Nếu điều kiện chọn $C$ và danh sách chiếu chỉ nằm hoàn toàn trong một phân mảnh dọc $R_1$, các phân mảnh dọc khác không cần tham gia vào phép nối tái thiết[cite: 2].
+\end{itemize}
+
+\subsection{Tối ưu hóa toàn cục (Global Optimization)}
+\subsubsection{Khái niệm và Mục tiêu}
+Tối ưu hóa toàn cục là bước quyết định kế hoạch vật lý để thực thi cây truy vấn phân mảnh đã rút gọn, trả lời bài toán: \textit{``Thao tác nào được thực hiện trước, thuật toán nào được áp dụng, và phép toán đó diễn ra tại trạm nào?''}[cite: 2] Mục tiêu là tìm kế hoạch thực thi phân tán sao cho tổng tài nguyên tiêu thụ hoặc thời gian đáp ứng (\textit{Response Time}) là nhỏ nhất[cite: 2].
+
+\subsubsection{Mô hình ước lượng chi phí phân tán}
+Hàm mục tiêu chi phí trong DDBMS bao gồm 3 thành phần chính[cite: 2]:
+\[
+\text{Total Cost} = \text{Cost}_{\text{CPU}} + \text{Cost}_{\text{I/O}} + \text{Cost}_{\text{COM}}
+\]
+Trong đó[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item $\text{Cost}_{\text{CPU}}$: Chi phí tính toán CPU cho so sánh bộ, băm, sắp xếp[cite: 2].
+    \item $\text{Cost}_{\text{I/O}}$: Đo bằng số khối đĩa truy xuất ($b \times t_T$) cộng số lần tìm kiếm ngẫu nhiên ($S \times t_S$)[cite: 2].
+    \item $\text{Cost}_{\text{COM}}$: Chi phí truyền thông mạng, đóng vai trò chi phối trên mạng WAN[cite: 2]:
+    \[\text{Cost}_{\text{COM}} = \text{Message Delay (Độ trễ khởi tạo)} + \frac{\text{Data Size (Kích thước dữ liệu)}}{\text{Bandwidth (Băng thông)}}\]
+\end{itemize}
+
+\subsubsection{Không gian tìm kiếm và các quyết định tối ưu}
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Xác định thứ tự thực hiện phép nối (Join Ordering):} Áp dụng quy hoạch động hoặc Heuristic để hạn chế sinh kích thước dữ liệu trung gian lớn[cite: 2].
+    \item \textbf{Định vị toán tử và trạm thực thi (Site Selection):} Đặt toán tử nối tại Site 1, Site 2 hoặc Site trung gian tùy thuộc vào tương quan kích thước sau khi đã lọc cục bộ[cite: 2].
+    \item \textbf{Các chiến lược nối phân tán:}
+    \begin{itemize}
+        \item \textit{Truyền toàn bộ (Data Shipping):} Gửi nguyên vẹn quan hệ nhỏ hơn sang trạm chứa quan hệ lớn hơn[cite: 2].
+        \item \textit{Kỹ thuật Nửa nối (Semi-join Optimization):} Định nghĩa $R \ltimes_A S = \Pi_R (R \bowtie_A S)$[cite: 2]. Sử dụng phép chiếu lấy tập khóa nối $Temp = \Pi_A(S)$, gửi sang trạm chứa $R$ để lọc lấy $R' = R \ltimes S$, rồi mới gửi $R'$ về trạm của $S$[cite: 2]. Điều kiện có lợi: $\text{Size}(\Pi_A(S)) + \text{Size}(R \ltimes S) < \text{Size}(R)$[cite: 2].
+        \item \textit{Bloom Join:} Sử dụng mảng bit băm (Bloom Filter) kích thước vài KB để lọc nhanh dữ liệu trước khi truyền qua mạng[cite: 2].
+    \end{itemize}
+\end{itemize}
+
+\section{Bài Toán Định Lượng Minh Họa Phép Toán Semi-Join}
+Để minh chứng tường minh cách phép toán Semi-join giảm thiểu dung lượng đường truyền mạng, xét một bài toán định lượng cụ thể[cite: 2]:
+
+\subsection{Bối cảnh và Thông số Kỹ thuật}
+Hệ thống CSDL phân tán gồm 2 trạm kết nối qua mạng WAN[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Site 1 (Hà Nội):} Lưu trữ bảng \textbf{Customer ($R$)} chứa thông tin khách hàng[cite: 2]:
+    \begin{itemize}
+        \item Số lượng bản ghi: $100.000$ dòng[cite: 2].
+        \item Kích thước một bản ghi: $l_R = 200\text{ bytes}$ (gồm \texttt{CustomerID} [4 bytes], \texttt{Name}, \texttt{Address},...)[cite: 2].
+        \item Tổng kích thước bảng $R$: $100.000 \times 200\text{ bytes} = 20.000.000\text{ bytes} = 20\text{ MB} = 20.000\text{ KB}$[cite: 2].
+        \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$)[cite: 2].
+    \end{itemize}
+    \item \textbf{Site 2 (TP.HCM):} Lưu trữ bảng \textbf{VIP\_Orders ($S$)} chứa đơn hàng giá trị cao[cite: 2]:
+    \begin{itemize}
+        \item Số lượng bản ghi: $1.000$ dòng[cite: 2].
+        \item Kích thước một bản ghi: $l_S = 50\text{ bytes}$[cite: 2].
+        \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$)[cite: 2].
+        \item \textit{Đặc điểm tập dữ liệu:} $1.000$ đơn hàng VIP này chỉ liên quan đến \textbf{500 khách hàng duy nhất} ($\Pi_{\text{CustomerID}}(S)$ chứa đúng $500$ giá trị ID)[cite: 2].
+    \end{itemize}
+    \item \textbf{Yêu cầu truy vấn:} Thực hiện phép nối $R \bowtie_{\text{CustomerID}} S$ và trả kết quả tại \textbf{Site 2}[cite: 2].
+\end{itemize}
+
+\subsection{Phân tích So sánh 2 Chiến lược Thực thi}
+
+\paragraph{Chiến lược 1: Truyền dữ liệu trực tiếp (Direct Relation Shipping):}
+Site 1 đóng gói và truyền toàn bộ bảng Customer ($R$) qua mạng sang Site 2 để nối cục bộ:
+\[
+\text{Dung lượng truyền} = 100.000 \text{ dòng} \times 200 \text{ bytes} = \mathbf{20.000 \text{ KB (20 MB)}}
+\]
+
+\paragraph{Chiến lược 2: Kỹ thuật giảm tải bằng Semi-join ($R \ltimes S$):}
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Bước 1 (Site 2 $\rightarrow$ Site 1):} Site 2 trích xuất danh sách các mã CustomerID duy nhất: $\text{Temp} = \Pi_{\text{CustomerID}}(S)$ và gửi sang Site 1[cite: 2]:
+    \[\text{Dung lượng B1} = 500 \text{ mã ID} \times 4 \text{ bytes} = 2.000 \text{ bytes} = \mathbf{2 \text{ KB}}\]
+    \item \textbf{Bước 2 (Tại Site 1):} Site 1 thực hiện Semi-join: $R' = R \ltimes S = R \bowtie \text{Temp}$, thu được đúng $500$ dòng khách hàng đầy đủ[cite: 2].
+    \item \textbf{Bước 3 (Site 1 $\rightarrow$ Site 2):} Site 1 gửi tập $R'$ đã thu gọn sang Site 2[cite: 2]:
+    \[\text{Dung lượng B3} = 500 \text{ dòng} \times 200 \text{ bytes} = 100.000 \text{ bytes} = \mathbf{100 \text{ KB}}\]
+    \item \textbf{Bước 4 (Tại Site 2):} Site 2 tiến hành nối $R' \bowtie S$ để hoàn tất kết quả[cite: 2].
+\end{enumerate}
+Tổng dung lượng dữ liệu truyền qua mạng của Semi-join[cite: 2]:
+\[
+\text{Tổng dung lượng truyền} = \text{Dung lượng B1} + \text{Dung lượng B3} = 2 \text{ KB} + 100 \text{ KB} = \mathbf{102 \text{ KB}}
+\]
+
+\subsection{Bảng Tổng hợp và Đánh giá Hiệu quả Định lượng}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{So sánh định lượng giữa Truyền trực tiếp và Kỹ thuật Semi-join}
+\label{tab:semijoin_comparison}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.8cm}|}
+\hline
+\textbf{Tiêu chí đánh giá} & \textbf{Chiến lược 1 (Truyền trực tiếp)} & \textbf{Chiến lược 2 (Sử dụng Semi-join)} & \textbf{Mức độ tối ưu / Đánh đổi} \\ \hline
+Số lượt truyền mạng & 1 lượt ($\text{Site 1} \rightarrow \text{Site 2}$) & 2 lượt ($\text{Site 2} \rightarrow \text{Site 1} \rightarrow \text{Site 2}$) & Tăng 1 lượt bắt tay thông điệp (Round-trip) \\ \hline
+Dung lượng mạng B1 & $0\text{ KB}$ & $2\text{ KB}$ & Không đáng kể \\ \hline
+Dung lượng truyền chính & $20.000\text{ KB}$ & $100\text{ KB}$ & Giảm 200 lần \\ \hline
+\textbf{Tổng dung lượng mạng} & \textbf{20.000 KB (20 MB)} & \textbf{102 KB} & \textbf{Tiết kiệm 19.898 KB ($\approx 99,5\%$)} \\ \hline
+Thời gian truyền (Băng thông 10 Mbps) & $\approx 16\text{ giây}$ & $\approx 0,08\text{ giây}$ & Nhanh hơn gần 200 lần \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Nguyên tắc Áp dụng và Trade-off Kỹ thuật}
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Hiệu quả cốt lõi:} Semi-join đạt mức tiết kiệm tới $99,5\%$ dung lượng đường truyền nhờ loại bỏ $99.500$ bản ghi không tham gia vào kết quả nối ngay tại nguồn[cite: 2].
+    \item \textbf{Điều kiện áp dụng tối ưu:} Phát huy tác dụng tối đa khi \textbf{độ chọn lọc (Selectivity)} của phép nối thấp (chỉ tỷ lệ nhỏ các bộ của bảng lớn thỏa mãn điều kiện nối)[cite: 2].
+    \item \textbf{Đánh đổi kỹ thuật (Trade-off):} Semi-join phát sinh thêm 1 lượt bắt tay mạng (Latency Round-trip) và chi phí xử lý phép chiếu/nối trung gian[cite: 2]. Bộ tối ưu hóa chỉ chọn Semi-join khi chi phí dung lượng tiết kiệm được vượt trội so với độ trễ phát sinh do thông điệp bổ sung[cite: 2].
+\end{itemize}
+
+\section{Phân Tích Tình Huống Xuyên Suốt (Case Study Truy Vấn Đa Trạm)}
+
+\subsection{Bối cảnh Hệ thống}
+Xét hệ thống quản lý bán hàng của một chuỗi bán lẻ gồm hai quan hệ toàn cục[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \texttt{Customer(CustomerID, Name, City, Balance)}[cite: 2]
+    \item \texttt{Orders(OrderID, CustomerID, OrderDate, TotalAmount)}[cite: 2]
+\end{itemize}
+Cấu hình phân tán[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Quan hệ \texttt{Customer} được \textbf{phân mảnh ngang} theo thành phố[cite: 2]:
+    \begin{itemize}
+        \item $C_1 = \sigma_{\text{City = 'Hanoi'}}(Customer)$ lưu tại \textbf{Site 1 (Hà Nội)} ($5.000$ bộ, $100\text{ B/bộ} \rightarrow 500\text{ KB}$)[cite: 2].
+        \item $C_2 = \sigma_{\text{City = 'Saigon'}}(Customer)$ lưu tại \textbf{Site 2 (Sài Gòn)} ($10.000$ bộ, $100\text{ B/bộ} \rightarrow 1\text{ MB}$)[cite: 2].
+        \item $C_3 = \sigma_{\text{City = 'Danang'}}(Customer)$ lưu tại \textbf{Site 3 (Đà Nẵng)} ($2.000$ bộ, $100\text{ B/bộ} \rightarrow 200\text{ KB}$)[cite: 2].
+    \end{itemize}
+    \item Quan hệ \texttt{Orders} không phân mảnh, đặt tập trung tại \textbf{Site 4 (Data Center -- Huế)} với $1.000.000$ đơn hàng ($50\text{ B/bộ} \rightarrow 50\text{ MB}$)[cite: 2].
+\end{itemize}
+
+Truy vấn của người dùng phát xuất từ \textbf{Site 1}[cite: 2]:
+\begin{lstlisting}
+SELECT C.Name, O.OrderID, O.TotalAmount
+FROM Customer C JOIN Orders O ON C.CustomerID = O.CustomerID
+WHERE C.City = 'Hanoi' AND O.TotalAmount > 10000000;
+\end{lstlisting}
+
+\subsection{Diễn tiến qua 3 Bước Xử lý}
+
+\paragraph{Giai đoạn 1: Phân rã truy vấn (Query Decomposition):}
+Áp dụng quy tắc tương đương đẩy phép chọn và chiếu xuống trước phép nối[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Lọc Customer với $\sigma_{\text{City = 'Hanoi'}}$; Lọc Orders với $\sigma_{\text{TotalAmount > 10000000}}$[cite: 2].
+    \item Chiếu các cột cần thiết: trên Customer lấy $\Pi_{\text{CustomerID, Name}}$, trên Orders lấy $\Pi_{\text{CustomerID, OrderID, TotalAmount}}$[cite: 2].
+\end{itemize}
+Biểu thức đại số quan hệ logic toàn cục:
+\begin{multline*}
+T_1 = \Pi_{\text{Name, OrderID, TotalAmount}} \Big( \Pi_{\text{CustomerID, Name}}(\sigma_{\text{City = 'Hanoi'}}(Customer)) \\
+\bowtie_{\text{CustomerID}} \Pi_{\text{CustomerID, OrderID, TotalAmount}}(\sigma_{\text{TotalAmount > 10M}}(Orders)) \Big)
+\end{multline*}
+
+\paragraph{Giai đoạn 2: Bản địa hóa dữ liệu (Data Localization):}
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Thay thế quan hệ toàn cục bằng biểu thức tái thiết[cite: 2]:} $Customer = C_1 \cup C_2 \cup C_3$. Biểu thức trở thành[cite: 2]:
+    \[\sigma_{\text{City = 'Hanoi'}}(C_1 \cup C_2 \cup C_3) \equiv \sigma_{\text{City = 'Hanoi'}}(C_1) \cup \sigma_{\text{City = 'Hanoi'}}(C_2) \cup \sigma_{\text{City = 'Hanoi'}}(C_3)\]
+    \item \textbf{Rút gọn phân mảnh (Fragment Pruning)[cite: 2]:}
+    \begin{itemize}
+        \item Với $C_1$: $(\text{City = 'Hanoi'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{True} \implies$ Giữ lại nhánh $C_1$[cite: 2].
+        \item Với $C_2$: $(\text{City = 'Saigon'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{False} \implies \emptyset$ (Cắt tỉa)[cite: 2].
+        \item Với $C_3$: $(\text{City = 'Danang'}) \wedge (\text{City = 'Hanoi'}) \equiv \text{False} \implies \emptyset$ (Cắt tỉa)[cite: 2].
+    \end{itemize}
+\end{enumerate}
+Cây truy vấn phân mảnh sau rút gọn:
+\begin{multline*}
+T_2 = \Pi_{\text{Name, OrderID, TotalAmount}} \Big( \Pi_{\text{CustomerID, Name}}(C_1) \\
+\bowtie_{\text{CustomerID}} \Pi_{\text{CustomerID, OrderID, TotalAmount}}(\sigma_{\text{TotalAmount > 10M}}(Orders)) \Big)
+\end{multline*}
+\textit{Hệ thống hoàn toàn loại trừ Site 2 và Site 3 ra khỏi kế hoạch thực thi[cite: 2].}
+
+\paragraph{Giai đoạn 3: Tối ưu hóa toàn cục (Global Optimization):}
+Dữ liệu cần xử lý[cite: 2]:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item $C_1$ tại \textbf{Site 1 (Hà Nội)}: $5.000$ bộ, chiếu lấy (CustomerID, Name) ($30\text{ B/bộ}$), kích thước $\text{Size}(C_1') = 150\text{ KB}$[cite: 2].
+    \item Orders tại \textbf{Site 4 (Huế)}: Sau khi lọc $\sigma_{\text{TotalAmount > 10M}}$, còn $20.000$ đơn hàng, chiếu lấy (CustomerID, OrderID, TotalAmount) ($20\text{ B/bộ}$), kích thước $\text{Size}(O') = 400\text{ KB}$[cite: 2].
+\end{itemize}
+Bộ tối ưu hóa áp dụng Semi-join ($C_1' \ltimes O'$)[cite: 2]:
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Site 1 gửi danh sách CustomerID từ $C_1'$: $5.000 \text{ ID} \times 4\text{ bytes} = 20\text{ KB}$ sang Site 4[cite: 2].
+    \item Site 4 dùng $20\text{ KB}$ này lọc $O'$, chỉ còn lại $3.000$ đơn hàng thuộc về khách hàng Hà Nội[cite: 2].
+    \item Site 4 gửi $3.000$ đơn hàng này về Site 1: $3.000 \times 20\text{ bytes} = 60\text{ KB}$[cite: 2].
+    \item Site 1 thực hiện nối cục bộ tạo kết quả cuối cùng[cite: 2].
+\end{enumerate}
+\textbf{Tổng dữ liệu truyền qua mạng:} $20\text{ KB} + 60\text{ KB} = \mathbf{80\text{ KB}}$ (tiết kiệm $80\%$ dung lượng so với $400\text{ KB}$ khi truyền trực tiếp)[cite: 2].
+
+\section{Tổng Kết Và So Sánh Các Giai Đoạn Xử Lý Truy Vấn}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Tổng hợp đặc tính kỹ thuật của 3 giai đoạn xử lý truy vấn phân tán}
+\label{tab:query_phases_comparison}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{2.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Tiêu chí} & \textbf{2.1 Phân rã truy vấn} & \textbf{2.2 Bản địa hóa dữ liệu} & \textbf{2.3 Tối ưu hóa toàn cục} \\ \hline
+Mức độ trừu tượng & Độc lập hoàn toàn với phân tán và phân mảnh. & Phụ thuộc phân mảnh, độc lập với vị trí trạm cụ thể. & Gắn liền với cấu trúc vật lý mạng và vị trí trạm. \\ \hline
+Đầu vào & Câu truy vấn SQL toàn cục. & Cây đại số quan hệ logic toàn cục + Lược đồ phân mảnh. & Cây truy vấn phân mảnh đã rút gọn + Thống kê mạng. \\ \hline
+Thao tác then chốt & Parsing, chuẩn hóa CNF/DNF, đẩy phép chọn/chiếu xuống sớm. & Tái thiết bảng qua Hợp/Nối, kiểm tra mâu thuẫn vị từ, cắt tỉa phân mảnh. & Ước lượng chi phí, chọn thứ tự join, chọn site, chọn Semi-join/Bloom-join. \\ \hline
+Đầu ra & Cây đại số quan hệ logic toàn cục. & Cây truy vấn phân mảnh đã rút gọn (Fragment Tree). & Kế hoạch thực thi phân tán tối ưu (Execution Plan). \\ \hline
+Trọng tâm tối ưu & Giảm số lượng bộ và thuộc tính trung gian logic. & Loại bỏ các phân mảnh rỗng không đóng góp kết quả. & Giảm thiểu băng thông truyền mạng và thời gian đáp ứng. \\ \hline
+\end{tabularx}
+\end{table}
+
+Ba giai đoạn \textbf{Phân rã truy vấn}, \textbf{Bản địa hóa dữ liệu} và \textbf{Tối ưu hóa toàn cục} tạo thành chu trình chuyển đổi hoàn chỉnh trong DDBMS: đảm bảo câu lệnh dịch chính xác, loại trừ các vùng dữ liệu không liên quan và đưa ra kế hoạch thực thi tối thiểu hóa chi phí truyền thông mạng[cite: 2].
+
+% =======================================================
+% CHƯƠNG 4: GIAO DỊCH, CAM KẾT VÀ KIỂM SOÁT ĐỒNG THỜI (TIẾN)
+% =======================================================
+\chapter{Quản Lý Giao Dịch Và Kiểm Soát Đồng Thời Phân Tán}
+
+\section{Tổng Quan Giao Dịch Và Kiến Trúc Xử Lý Phân Tán}
+
+\subsection{Giao dịch phân tán là gì?}
+Giao dịch (transaction) là một đơn vị công việc logic gồm nhiều thao tác đọc/ghi dữ liệu, cần được thực hiện theo một kết quả cuối cùng thống nhất: hoặc được công nhận hoàn toàn, hoặc bị hủy bỏ trọn vẹn. Trong hệ phân tán, những thao tác của cùng một giao dịch có thể được thực thi ở nhiều nút lưu trữ (site/node) khác nhau. Vì không có một bộ nhớ và một bộ quản lý lỗi dùng chung, việc quyết định giao dịch thành công bắt buộc phải thông qua cơ chế trao đổi thông điệp điều phối giữa các nút.
+
+\subsection{Các thành phần chức năng}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Các thành phần chức năng trong kiến trúc xử lý giao dịch phân tán}
+\label{tab:transaction_components}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Thành phần} & \textbf{Vai trò chính} \\ \hline
+Client / Ứng dụng & Khởi tạo giao dịch $T$ và phát yêu cầu \texttt{COMMIT} hoặc \texttt{ROLLBACK}. \\ \hline
+Transaction Coordinator & Điều phối các nút tham gia; tập hợp phiếu bầu, đưa ra quyết định cam kết toàn cục. \\ \hline
+Participant (các trạm) & Chạy phần giao dịch cục bộ, khóa dữ liệu, ghi log và thực thi quyết định cuối cùng. \\ \hline
+Concurrency Controller & Sắp lịch giao dịch bằng cơ chế khóa hoặc nhãn thời gian để ngăn ngừa xung đột. \\ \hline
+Log \& Recovery Manager & Ghi nhật ký lên bộ nhớ bền vững (WAL), thực hiện REDO/UNDO để phục hồi sau sự cố. \\ \hline
+Mạng truyền thông & Truyền thông điệp PREPARE, phiếu bầu, COMMIT/ABORT và ACK; chịu độ trễ hoặc lỗi mạng. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Phân biệt giao dịch, cam kết và sao chép dữ liệu}
+Giao dịch phân tán có thể truy cập các phân mảnh khác nhau; sao chép (replication) là việc duy trì nhiều bản sao của cùng một dữ liệu. Hai vấn đề có thể cùng xuất hiện nhưng không đồng nhất: Giao thức cam kết nguyên tử như 2PC quyết định một giao dịch đa nút commit hay abort; trong khi đó, một giao thức đồng thuận hoặc cơ chế sao chép mới xác định cách các bản sao thống nhất thứ tự cập nhật. Do đó, việc sử dụng 2PC không tự động bảo đảm mọi lần đọc trên mọi bản sao đều thấy dữ liệu mới nhất.
+
+\section{Thuộc Tính ACID Trên Môi Trường Nhiều Máy Chủ}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Bảo đảm 4 thuộc tính ACID trong môi trường phân tán}
+\label{tab:distributed_acid}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Thuộc tính} & \textbf{Ý nghĩa trong hệ phân tán} & \textbf{Cơ chế hỗ trợ} \\ \hline
+Atomicity -- Nguyên tử & Không xuất hiện tình trạng một phần trạm commit, phần trạm khác abort. & Giao thức 2PC/3PC và log khôi phục, điều phối quyết định toàn cục. \\ \hline
+Consistency -- Nhất quán & Nếu trạng thái trước hợp lệ và giao dịch thỏa mãn ràng buộc, trạng thái sau vẫn hợp lệ. & Ràng buộc dữ liệu, logic nghiệp vụ, kiểm soát thực thi và cam kết nguyên tử. \\ \hline
+Isolation -- Cô lập & Các giao dịch đồng thời không làm lộ kết quả trung gian; mức cao nhất là khả tuần tự. & Distributed 2PL, Timestamp Ordering, thuật toán điều khiển đồng thời. \\ \hline
+Durability -- Bền vững & Giao dịch đã commit phải phục hồi trọn vẹn sau sự cố trên các nút. & Write-Ahead Logging (WAL) trên lưu trữ bền vững và cơ chế sao chép. \\ \hline
+\end{tabularx}
+\end{table}
+
+\noindent\textbf{Nhận xét quan trọng:} 2PC giải quyết chủ yếu bài toán thống nhất quyết định COMMIT/ABORT (Atomicity), không tự nó giải quyết Isolation hay bảo đảm toàn vẹn ràng buộc nghiệp vụ. Một thiết kế ACID đầy đủ cần phối hợp lịch giao dịch hợp lệ và cơ chế lưu trữ/phục hồi tin cậy. Đặc biệt, không nên nhầm lẫn khái niệm Consistency trong ACID (bảo toàn bất biến toàn vẹn dữ liệu) với Consistency trong định lý CAP (tương đương với Linearizability).
+
+\section{Giao Thức Cam Kết Hai Pha (Two-Phase Commit -- 2PC)}
+
+\subsection{Mục đích và giả định}
+2PC là giao thức thống nhất quyết định cam kết nguyên tử giữa một Coordinator và $n$ Participant. Mô hình cơ bản giả định các nút có nhật ký bền vững, có khả năng phục hồi sau sự cố sập, thông điệp có thể gửi lại, giao dịch định danh duy nhất và không có lỗi kiểu Byzantine (nút không gian lận). Cơ chế thời gian chờ (\textit{timeout}) hỗ trợ nhận biết bất thường nhưng không thể phân biệt tuyệt đối giữa máy sập và mạng trễ/chia cắt.
+
+\subsection{Pha 1 -- PREPARE / VOTING (Chuẩn bị và Bỏ phiếu)}
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Ứng dụng hoàn tất công việc logic và yêu cầu Coordinator cam kết giao dịch $T$.
+    \item Coordinator gửi thông điệp \texttt{PREPARE(T)} đến từng Participant tham gia.
+    \item Mỗi Participant xác minh khả năng commit cục bộ (không vi phạm ràng buộc, đã ghi log cần thiết).
+    \item Nếu sẵn sàng, Participant ghi bền vững trạng thái \texttt{PREPARED(T)}, giữ các khóa tài nguyên và trả lời \texttt{VOTE-YES}.
+    \item Nếu không sẵn sàng, Participant gửi \texttt{VOTE-NO} và tự hủy phần giao dịch cục bộ.
+\end{enumerate}
+\textit{Điểm then chốt:} Sau khi đã gửi \texttt{VOTE-YES}, Participant không còn quyền tự ý \texttt{ABORT}. Nó bắt buộc phải chấp hành quyết định cuối cùng từ Coordinator. Đây là nguồn gốc của trạng thái bế tắc chờ (\textit{In-doubt}) khi mất liên lạc mạng.
+
+\subsection{Pha 2 -- DECISION (Quyết định Cuối cùng)}
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Nếu tất cả Participant đều \texttt{VOTE-YES}, Coordinator ghi quyết định \texttt{GLOBAL-COMMIT(T)} bền vững vào log trước khi gửi thông điệp \texttt{COMMIT}.
+    \item Nếu có bất kỳ \texttt{VOTE-NO} nào hoặc hết thời gian chờ mà chưa đủ phiếu, Coordinator chọn \texttt{GLOBAL-ABORT(T)} và ghi log.
+    \item Coordinator phát thông điệp \texttt{COMMIT/ABORT}. Các Participant thực hiện quyết định, ghi log cục bộ, giải phóng khóa và gửi phản hồi \texttt{ACK}.
+    \item Sau khi nhận đủ \texttt{ACK}, Coordinator ghi bản ghi \texttt{END(T)} và dọn dẹp trạng thái điều phối.
+\end{enumerate}
+Trong trường hợp lý tưởng có $n$ Participant, giao thức trao đổi khoảng $4n$ thông điệp giữa Coordinator và các Participant, làm tăng độ trễ đáng kể so với việc commit trên một máy cục bộ.
+
+\subsection{Lưu đồ thuật toán 2PC}
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+    node distance=0.55cm,
+    block/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=7.5cm, align=center, inner sep=4pt, font=\footnotesize},
+    decision/.style={diamond, draw=orange!80!black, fill=orange!10, text width=4.5cm, align=center, inner sep=2pt, font=\scriptsize},
+    action/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=5.5cm, align=center, inner sep=3.5pt, font=\scriptsize},
+    abortbox/.style={rectangle, draw=red!70!black, fill=red!10, rounded corners=3pt, text width=5.5cm, align=center, inner sep=3.5pt, font=\scriptsize},
+    arr/.style={-{Stealth[length=2.2mm]}, thick, draw=myblue}
+]
+    \node[block] (start) {Ứng dụng yêu cầu \texttt{COMMIT(T)}};
+    \node[block, below=of start] (prep) {Coordinator gửi \texttt{PREPARE(T)} tới tất cả Participant};
+    \node[block, below=of prep] (vote) {Participant kiểm tra, ghi log bền vững và trả lời \texttt{VOTE-YES / VOTE-NO}};
+    \node[decision, below=of vote] (check) {Tất cả đều\\ \texttt{VOTE-YES}?};
+
+    % Nhánh Commit
+    \node[action, below left=0.8cm and -0.8cm of check] (c_log) {Coordinator ghi \texttt{COMMIT(T)} vào log; gửi \texttt{GLOBAL-COMMIT}};
+    \node[action, below=0.45cm of c_log] (c_part) {Participant ghi \texttt{COMMIT}, giải phóng khóa, gửi \texttt{ACK}};
+    \node[action, below=0.45cm of c_part] (c_end) {Coordinator ghi \texttt{END(T)} hoàn tất};
+
+    % Nhánh Abort
+    \node[abortbox, below right=0.8cm and -0.8cm of check] (a_log) {Coordinator ghi \texttt{ABORT(T)}; gửi \texttt{GLOBAL-ABORT}};
+    \node[abortbox, below=0.45cm of a_log] (a_part) {Participant \texttt{ROLLBACK}, giải phóng khóa, gửi \texttt{ACK}};
+    \node[abortbox, below=0.45cm of a_part] (a_end) {Coordinator kết thúc nhánh Abort};
+
+    \draw[arr] (start) -- (prep);
+    \draw[arr] (prep) -- (vote);
+    \draw[arr] (vote) -- (check);
+    \draw[arr] (check) -| node[above, font=\scriptsize]{Có} (c_log);
+    \draw[arr] (check) -| node[above, font=\scriptsize]{Không / Timeout} (a_log);
+    \draw[arr] (c_log) -- (c_part);
+    \draw[arr] (c_part) -- (c_end);
+    \draw[arr] (a_log) -- (a_part);
+    \draw[arr] (a_part) -- (a_end);
+\end{tikzpicture}
+\caption{Lưu đồ hoạt động của Giao thức Cam kết Hai pha (2PC)}
+\label{fig:2pc_flowchart}
+\end{figure}
+
+\subsection{Bảng trạng thái và thông điệp trong 2PC}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Các trạng thái cốt lõi của nút trong giao thức 2PC}
+\label{tab:2pc_states}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Vai trò nút} & \textbf{Trạng thái} & \textbf{Ý nghĩa / Hành động tương ứng} \\ \hline
+Coordinator & \texttt{WAITING / COLLECTING} & Đã phát thông điệp PREPARE, đang chờ thu thập phiếu bầu. \\ \hline
+Coordinator & \texttt{COMMITTED / ABORTED} & Quyết định toàn cục đã ghi log bền vững; gửi lại khi cần. \\ \hline
+Participant & \texttt{INIT / ACTIVE} & Đang thực hiện các thao tác giao dịch cục bộ. \\ \hline
+Participant & \texttt{PREPARED} & Đã ghi bền vững phiếu YES; không được tự ý quyết định. \\ \hline
+Participant & \texttt{COMMITTED / ABORTED} & Đã áp dụng quyết định cuối cùng, giải phóng tài nguyên. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Ví dụ chi tiết: Giao dịch chuyển tiền giữa hai máy chủ}
+Xét tài khoản $A = 5.000.000$ đ tại trạm $S_1$ và $B = 3.000.000$ đ tại trạm $S_2$. Giao dịch $T$ chuyển $1.000.000$ đ từ $A$ sang $B$. Kết quả mong muốn sau commit: $A = 4.000.000$ đ, $B = 4.000.000$ đ; tổng số dư bảo toàn $8.000.000$ đ.
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Tiến trình thực thi giao dịch chuyển tiền qua 2PC}
+\label{tab:transfer_2pc_example}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Thời điểm} & \textbf{Coordinator} & \textbf{$S_1$ (Tài khoản $A$)} & \textbf{$S_2$ (Tài khoản $B$)} \\ \hline
+$t_1$ & Khởi tạo giao dịch $T$. & Trừ $1.000.000$ đ (chưa commit). & Cộng $1.000.000$ đ (chưa commit). \\ \hline
+$t_2$ & Gửi thông điệp \texttt{PREPARE}. & Ghi log \texttt{PREPARED}, trả lời \texttt{VOTE-YES}. & Ghi log \texttt{PREPARED}, trả lời \texttt{VOTE-YES}. \\ \hline
+$t_3$ & Nhận đủ YES; ghi log \texttt{GLOBAL-COMMIT}. & Chờ quyết định toàn cục. & Chờ quyết định toàn cục. \\ \hline
+$t_4$ & Phát thông điệp \texttt{COMMIT}. & Commit cục bộ, nhả khóa, gửi \texttt{ACK}. & Commit cục bộ, nhả khóa, gửi \texttt{ACK}. \\ \hline
+$t_5$ & Ghi bản ghi \texttt{END(T)}. & Hoàn tất ($A = 4.000.000$ đ). & Hoàn tất ($B = 4.000.000$ đ). \\ \hline
+\end{tabularx}
+\end{table}
+
+Nếu trạm $S_2$ gặp sự cố không thể chuẩn bị và bỏ phiếu \texttt{VOTE-NO}, Coordinator sẽ phát \texttt{GLOBAL-ABORT}. Trạm $S_1$ hoàn tác khoản trừ, trạm $S_2$ hoàn tác khoản cộng, dữ liệu khôi phục về trạng thái nguyên vẹn ban đầu.
+
+\section{Xử Lý Lỗi Và Phục Hồi (Recovery) Trong 2PC}
+
+\subsection{Vai trò của nhật ký bền vững (Write-Ahead Logging)}
+Write-Ahead Logging (WAL) yêu cầu toàn bộ thông tin trạng thái phải được lưu bền vững xuống đĩa trước khi gửi thông điệp ra mạng:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \texttt{Coordinator: START\_2PC(T) -> COMMIT(T) -> END(T)}
+    \item \texttt{Participant: UPDATE(T, before, after) -> PREPARED(T) -> COMMIT(T)}
+    \item \texttt{Nhánh hủy:   UPDATE(T, before, after) -> ABORT(T)}
+\end{itemize}
+Mỗi thông điệp gửi lại khi phục hồi phải có tính bất biến lặp (\textit{Idempotent}) theo mã giao dịch để tránh thực thi cập nhật trùng lặp.
+
+\subsection{Phân tích các kịch bản sự cố và khả năng phục hồi}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Phân tích các kịch bản sự cố trong 2PC}
+\label{tab:2pc_failure_scenarios}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.2cm}|}
+\hline
+\textbf{Kịch bản sự cố} & \textbf{Quy trình xử lý hợp lệ} & \textbf{Khả năng bị chặn (Blocking)} \\ \hline
+Participant sập trước \texttt{VOTE-YES} & Coordinator không nhận đủ phiếu sẽ timeout và phát ABORT; Participant khi phục hồi dùng log rollback. & Thường không kéo dài sau khi quyết định hủy được phát. \\ \hline
+Participant sập ngay sau \texttt{VOTE-YES} & Lúc khởi động lại thấy log PREPARED, bắt buộc phải tra cứu kết quả toàn cục để tuân theo COMMIT/ABORT. & Có thể bị chặn nếu không liên lạc được với nút nắm quyết định. \\ \hline
+Participant sập sau khi nhận COMMIT trước ACK & Đọc log COMMIT/REDO nếu cần; gửi lại ACK sau khi phục hồi. & Không làm đổi quyết định; chỉ chậm trễ xác nhận dọn dẹp. \\ \hline
+Coordinator sập trước khi ghi quyết định & Sau phục hồi, nếu chưa có COMMIT bền vững, hệ thống quyết định ABORT và thông báo cho các nút. & Participant ở trạng thái PREPARED phải chờ Coordinator bật lại. \\ \hline
+Coordinator sập sau khi đã ghi COMMIT bền vững & Sau phục hồi, đọc log thấy COMMIT sẽ gửi lại thông điệp COMMIT cho các nút chưa xác nhận. & Các nút chưa biết quyết định phải chờ trong thời gian mất liên lạc. \\ \hline
+Mạng bị phân hoạch (Network Partition) & Nút PREPARED không được tự ý đổi quyết định từ timeout; bắt buộc phải giữ tài nguyên chờ kết nối lại. & \textbf{Bị chặn (Blocking)}; thể hiện rõ hạn chế cố hữu của 2PC. \\ \hline
+Nhiều nút sập đồng thời mất log & Khôi phục từ các bản sao lưu chuyên biệt; có nguy cơ không thể tự động khôi phục. & Nguy cơ gián đoạn nghiêm trọng. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Tại sao 2PC là giao thức Blocking?}
+Xét trạm $S_1$ đã ghi \texttt{PREPARED(T)} và gửi \texttt{VOTE-YES}. Coordinator mất kết nối trước khi $S_1$ nhận được kết quả. $S_1$ không thể tự ý COMMIT (vì trạm khác có thể đã bỏ phiếu NO), cũng không thể tự ý ABORT (vì Coordinator có thể đã quyết định COMMIT và gửi cho trạm khác). Trạm $S_1$ bị rơi vào trạng thái bế tắc treo (\textit{In-doubt state}), buộc phải giữ chặt các khóa tài nguyên, khiến các giao dịch khác đến sau bị nghẽn dây chuyền.
+
+\subsection{Lưu đồ phục hồi tại Participant}
+
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}[
+    node distance=0.55cm,
+    block/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=6.5cm, align=center, inner sep=4pt, font=\scriptsize},
+    decision/.style={diamond, draw=orange!80!black, fill=orange!10, text width=3.8cm, align=center, inner sep=2pt, font=\scriptsize},
+    action/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=5cm, align=center, inner sep=3pt, font=\scriptsize},
+    arr/.style={-{Stealth[length=2.2mm]}, thick, draw=myblue}
+]
+    \node[block] (restart) {Participant khởi động lại sau sự cố};
+    \node[block, below=of restart] (readlog) {Đọc log WAL của giao dịch $T$};
+    \node[decision, below=of readlog] (chkstate) {Trạng thái bền vững\\gần nhất?};
+
+    \node[action, left=1.2cm of chkstate] (act_abort) {\texttt{ABORT(T)}: UNDO / Hoàn tất rollback cục bộ};
+    \node[action, right=1.2cm of chkstate] (act_commit) {\texttt{COMMIT(T)}: REDO / Hoàn tất commit và gửi lại ACK};
+    
+    \node[decision, below=1.0cm of chkstate] (indoubt) {Trạng thái \texttt{PREPARED}?\\(Rơi vào \textit{In-Doubt})};
+    \node[block, below=of indoubt] (query) {Hỏi Coordinator hoặc trạm lân cận về quyết định của $T$};
+    \node[decision, below=of query] (chkdec) {Đã biết quyết định?};
+
+    \node[action, below left=0.6cm and -0.5cm of chkdec] (apply) {Áp dụng COMMIT/ABORT, ghi log, giải phóng khóa};
+    \node[action, below right=0.6cm and -0.5cm of chkdec] (wait) {Tiếp tục chờ / Giữ nguyên các khóa dữ liệu};
+
+    \draw[arr] (restart) -- (readlog);
+    \draw[arr] (readlog) -- (chkstate);
+    \draw[arr] (chkstate) -- node[above, font=\tiny]{ABORT} (act_abort);
+    \draw[arr] (chkstate) -- node[above, font=\tiny]{COMMIT} (act_commit);
+    \draw[arr] (chkstate) -- node[right, font=\tiny]{PREPARED} (indoubt);
+    \draw[arr] (indoubt) -- node[right, font=\tiny]{Có} (query);
+    \draw[arr] (query) -- (chkdec);
+    \draw[arr] (chkdec) -| node[above, font=\tiny]{Có} (apply);
+    \draw[arr] (chkdec) -| node[above, font=\tiny]{Chưa} (wait);
+\end{tikzpicture}
+\caption{Lưu đồ phục hồi giao dịch 2PC tại Participant}
+\label{fig:2pc_participant_recovery}
+\end{figure}
+
+\section{Giao Thức Cam Kết Ba Pha (Three-Phase Commit -- 3PC)}
+
+\subsection{Động cơ và các giai đoạn}
+3PC được đề xuất nhằm loại bỏ hiện tượng bị chặn không giới hạn (\textit{Non-blocking}) của 2PC dưới giả định mạng không bị phân hoạch tùy ý và có giới hạn trễ xác định:
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{Giai đoạn 1 (CanCommit):} Coordinator gửi thông điệp \texttt{CAN-COMMIT} thăm dò. Participant kiểm tra tài nguyên và trả lời \texttt{VOTE-YES} (chuyển sang trạng thái \texttt{READY}) hoặc \texttt{VOTE-NO}. Nếu có phiếu NO, giao dịch hủy ngay.
+    \item \textbf{Giai đoạn 2 (PreCommit):} Khi nhận đủ YES, Coordinator gửi \texttt{PRE-COMMIT}. Participant nhận lệnh, ghi log bền vững trạng thái \texttt{PRECOMMIT} và gửi lại \texttt{ACK}. Giai đoạn này đảm bảo tất cả các nút đều đã biết trước rằng giao dịch đã đủ điều kiện cam kết.
+    \item \textbf{Giai đoạn 3 (DoCommit):} Coordinator thu thập đủ ACK, ghi log bền vững \texttt{COMMIT} và gửi thông điệp \texttt{DO-COMMIT}. Các nút tiến hành commit cục bộ và nhả tài nguyên.
+\end{enumerate}
+
+\subsection{Phục hồi và giới hạn kỹ thuật của 3PC}
+Nhờ có trạng thái trung gian \texttt{PRECOMMIT}, nếu Coordinator bị sập:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textit{Nếu chưa có nút nào tới PreCommit:} Các nút còn sống có thể bầu Coordinator mới và an toàn quyết định \texttt{ABORT}.
+    \item \textit{Nếu đã có ít nhất một nút nhận PreCommit:} Các nút còn sống biết rằng không có nút nào bỏ phiếu NO, do đó có thể điều phối tiếp tục tiến trình để hoàn tất \texttt{COMMIT}.
+\end{itemize}
+\textit{Giới hạn thực tế:} 3PC đòi hỏi giả định đồng bộ rất mạnh về mạng. Khi mạng xảy ra phân hoạch (\textit{Network Partition}), 3PC vẫn có thể đưa ra quyết định sai lệch ở hai nửa mạng, do đó trong thực tế các hệ thống dữ liệu hiện đại ưa chuộng các thuật toán đồng thuận như Paxos hoặc Raft hơn.
+
+\subsection{Bảng so sánh đối chiếu giữa 2PC và 3PC}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{So sánh đặc tính kỹ thuật giữa giao thức 2PC và 3PC}
+\label{tab:2pc_vs_3pc}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Tiêu chí} & \textbf{Giao thức 2PC} & \textbf{Giao thức 3PC} \\ \hline
+Số giai đoạn chính & 2 pha: Prepare, Decision. & 3 pha: CanCommit, PreCommit, DoCommit. \\ \hline
+Độ phức tạp thông điệp & Ít thông điệp hơn ($4n$), độ trễ thấp hơn. & Tăng thêm thông điệp ($6n$) và nhiều lần ghi đĩa log hơn. \\ \hline
+Coordinator sập khi đang chờ & Participant rơi vào trạng thái In-doubt và bị chặn (\textit{Blocking}). & Có thể giải phóng trạng thái nghẽn nhờ pha trung gian PreCommit. \\ \hline
+Phân hoạch mạng (Partition) & Bảo toàn an toàn quyết định nhưng đánh đổi tính sẵn sàng. & Không bảo đảm an toàn khi mạng bị chia cắt tùy ý. \\ \hline
+Ứng dụng thực tế & Được ứng dụng rộng rãi trong các chuẩn XA, SQL truyền thống. & Chủ yếu mang giá trị nghiên cứu học thuật. \\ \hline
+\end{tabularx}
+\end{table}
+
+\section{Kiểm Soát Đồng Thời Phân Tán}
+
+\subsection{Vì sao cần kiểm soát đồng thời?}
+Khi nhiều giao dịch thực thi xen kẽ trên nhiều trạm, các hiện tượng mất cập nhật (\textit{Lost Update}) hoặc đọc dữ liệu rác (\textit{Dirty Read}) sẽ phá vỡ tính đúng đắn của CSDL. Mục tiêu lý thuyết quan trọng là bảo đảm tính \textbf{Khả tuần tự toàn cục (Global Serializability)}: kết quả thực thi đồng thời phải tương đương với một trật tự tuần tự nào đó.
+
+\subsection{Khóa hai pha phân tán (Distributed Two-Phase Locking -- 2PL)}
+Quy tắc 2PL gồm hai pha: pha tăng trưởng (chỉ xin thêm khóa, không nhả khóa) và pha thu hẹp (chỉ nhả khóa, không xin thêm). 
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Trong hệ phân tán, giao dịch phải tuân thủ nghiêm ngặt quy tắc này trên toàn bộ các trạm mà nó thao tác.
+    \item \textbf{Strict 2PL:} Yêu cầu giữ toàn bộ khóa độc quyền (\textit{Exclusive Locks -- X}) cho đến khi giao dịch hoàn tất \texttt{COMMIT/ABORT}, ngăn chặn đọc dữ liệu chưa cam kết.
+\end{itemize}
+
+\subsection{Điều khiển theo nhãn thời gian (Timestamp Ordering -- TO)}
+Mỗi giao dịch $T$ được cấp một nhãn thời gian duy nhất $\text{TS}(T)$. Đối với mỗi mục dữ liệu $X$, hệ thống ghi nhận nhãn đọc lớn nhất $\text{read\_TS}(X)$ và nhãn ghi lớn nhất $\text{write\_TS}(X)$:
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Quy tắc kiểm tra xung đột trong giải thuật Timestamp Ordering}
+\label{tab:timestamp_ordering}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Thao tác yêu cầu} & \textbf{Điều kiện xảy ra xung đột} & \textbf{Biện pháp xử lý của hệ thống} \\ \hline
+$T$ yêu cầu \texttt{READ(X)} & $\text{TS}(T) < \text{write\_TS}(X)$ & $T$ đến muộn sau một thao tác ghi mới hơn; giao dịch $T$ bị hủy và cấp nhãn lại. \\ \hline
+$T$ yêu cầu \texttt{WRITE(X)} & $\text{TS}(T) < \text{read\_TS}(X)$ hoặc $\text{TS}(T) < \text{write\_TS}(X)$ & Thao tác ghi vi phạm thứ tự thời gian; giao dịch $T$ bị hủy và cấp nhãn lại. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Phát hiện và xử lý bế tắc toàn cục (Global Deadlock Detection)}
+Bế tắc xảy ra khi tồn tại một chu trình chờ tài nguyên giữa các giao dịch. Đồ thị chờ (\textit{Wait-For Graph -- WFG}) phân tán có đỉnh là giao dịch, cạnh có hướng $T_i \rightarrow T_j$ thể hiện $T_i$ đang chờ tài nguyên bị giữ bởi $T_j$.
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textit{Ví dụ:} Tại trạm $S_1$, $T_1$ giữ $X(A)$ và $T_2$ chờ $A \implies T_2 \rightarrow T_1$. Tại trạm $S_2$, $T_2$ giữ $X(B)$ và $T_1$ chờ $B \implies T_1 \rightarrow T_2$.
+    \item Mỗi trạm cục bộ chỉ thấy một nhánh không tạo thành chu trình. Chỉ khi điều phối viên thu thập và hợp nhất thành \textbf{Đồ thị WFG Toàn cục}, chu trình $T_1 \rightarrow T_2 \rightarrow T_1$ mới lộ diện. Hệ thống sẽ chọn một giao dịch làm nạn nhân (\textit{Victim}) để rollback và giải phóng khóa.
+\end{itemize}
+
+\section{Định Lý CAP Và Sự Đánh Đổi Trong Thực Tế}
+
+\subsection{Phát biểu và cách hiểu chính xác}
+Theo công trình hình thức hóa của Gilbert và Lynch \cite{gilbert2002}, định lý CAP xét 3 thuộc tính:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item \textbf{C (Consistency):} Nhất quán mạnh (tương đương \textit{Linearizability}), mọi thao tác đọc đều nhận được dữ liệu ghi mới nhất.
+    \item \textbf{A (Availability):} Mọi nút mạng không bị lỗi đều phải trả về phản hồi hợp lệ cho các yêu cầu.
+    \item \textbf{P (Partition Tolerance):} Hệ thống vẫn hoạt động ngay cả khi các gói tin truyền thông giữa các cụm nút bị thất lạc hoặc trễ vô hạn.
+\end{itemize}
+\textit{Bản chất kỹ thuật:} Không nên hiểu máy móc là ``được chọn 2 trong 3 ở mọi thời điểm''. Trong thực tế hạ tầng mạng, sự cố phân hoạch ($P$) là bất khả kháng; do đó khi có phân hoạch xảy ra, hệ thống bắt buộc phải đánh đổi giữa tính nhất quán ($C$) và tính sẵn sàng ($A$).
+
+\subsection{Ví dụ phân hoạch với hai bản sao dữ liệu}
+Giả sử bản sao $R_1$ và $R_2$ cùng có $x = 0$. Mạng bị đứt kết nối giữa hai trạm:
+\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+    \item Client tại $R_1$ ghi $x = 1$ thành công.
+    \item Sau đó, Client tại $R_2$ yêu cầu đọc $x$:
+    \begin{itemize}
+        \item Nếu $R_2$ trả về $x = 0 \implies$ Đạt Availability nhưng vi phạm Consistency (trả dữ liệu cũ).
+        \item Nếu $R_2$ từ chối hoặc chờ kết nối lại $\implies$ Bảo toàn Consistency nhưng mất Availability.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Bảng so sánh xu hướng thiết kế CP và AP}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{So sánh giữa hai khuynh hướng thiết kế hệ thống CP và AP}
+\label{tab:cp_vs_ap}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Tiêu chí} & \textbf{Hệ thống thiên về CP} & \textbf{Hệ thống thiên về AP} \\ \hline
+Ưu tiên khi phân hoạch & Bảo vệ nhất quán mạnh cho dữ liệu. & Duy trì phản hồi phục vụ liên tục. \\ \hline
+Ứng xử ở vùng mất kết nối & Chờ đợi hoặc từ chối thao tác. & Chấp nhận đọc/ghi trên bản sao cục bộ. \\ \hline
+Rủi ro chính & Tăng độ trễ, suy giảm tính sẵn sàng. & Bản sao phân kỳ, phải giải quyết xung đột sau. \\ \hline
+Nghiệp vụ phù hợp & Tài chính, chuyển tiền, quản lý tồn kho. & Mạng xã hội, bảng tin, giỏ hàng thương mại. \\ \hline
+Hệ quản trị tiêu biểu & Google Spanner, CockroachDB, HBase. & Apache Cassandra, Amazon DynamoDB, CouchDB. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Liên hệ giữa CAP, 2PC và mô hình BASE}
+Giao thức 2PC khi gặp phân hoạch mạng sẽ chọn dừng giao dịch (blocking) để giữ an toàn nguyên tử, do đó mang thiên hướng CP. Ngược lại, để đạt độ mở rộng quy mô cực lớn trên Internet, nhiều hệ thống chuyển dịch từ mô hình ACID sang mô hình \textbf{BASE} (\textit{Basically Available, Soft-state, Eventual consistency}), chấp nhận trạng thái nhất quán sau cùng (\textit{Eventual Consistency}) để tối đa hóa tính sẵn sàng.
+
+\section{Đánh Giá Tổng Hợp Và Đề Xuất Thiết Kế}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Phân loại các kỹ thuật quản lý giao dịch theo lớp chức năng}
+\label{tab:transaction_techniques_summary}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{4cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Bài toán kỹ thuật} & \textbf{Giải pháp tiêu biểu} & \textbf{Đánh đổi nổi bật} \\ \hline
+Thống nhất cam kết đa trạm & 2PC & Đảm bảo Atomic Commit nhưng chịu rủi ro Blocking và trễ $4n$. \\ \hline
+Giảm rủi ro treo hệ thống & 3PC & Thêm pha PreCommit ($6n$) nhưng đòi hỏi giả định mạng đồng bộ. \\ \hline
+Ngăn ngừa xen kẽ sai & Distributed Strict 2PL & Đạt chuẩn khả tuần tự nhưng phát sinh hàng đợi chờ khóa. \\ \hline
+Sắp lịch theo trật tự logic & Timestamp Ordering & Không gây bế tắc khóa nhưng có tỷ lệ Rollback khi xung đột cao. \\ \hline
+Nhận diện chu trình chờ & Global WFG & Phát hiện bế tắc chính xác nhưng chịu chi phí ghép đồ thị mạng. \\ \hline
+Đánh đổi khi phân hoạch & Phân tích CAP & Lựa chọn giữa nhất quán dữ liệu hay tính sẵn sàng nghiệp vụ. \\ \hline
+\end{tabularx}
+\end{table}
+
+% =======================================================
+% PHỤ LỤC A & B (BỔ SUNG CHO CHƯƠNG 4)
+% =======================================================
+\chapter*{Phụ Lục: Mã Giả Và Bộ Tình Huống Kiểm Thử}
+\addcontentsline{toc}{chapter}{Phụ Lục: Mã Giả Và Bộ Tình Huống Kiểm Thử}
+
+\section*{Phụ lục A: Mã giả Thuật toán Cam kết Hai pha (2PC)}
+
+\paragraph{A.1. Thuật toán phía Coordinator (Bản cơ bản):}
+\begin{lstlisting}
+COORDINATOR_COMMIT(T, participants):
+    send PREPARE(T) to every participant
+    wait for votes or timeout
+    if every participant replied YES:
+        force_log(COMMIT, T)  -- Ghi log ben vung truoc khi gui
+        decision = COMMIT
+    else:
+        force_log(ABORT, T)
+        decision = ABORT
+    repeat:
+        send decision(T) to participants not yet acknowledged
+        wait for ACKs or retry trigger
+    until required ACKs received
+    log END(T)
+\end{lstlisting}
+
+\paragraph{A.2. Thuật toán phía Participant (Bản cơ bản):}
+\begin{lstlisting}
+ON_PREPARE(T):
+    if local_checks_pass and recovery_state_can_be_persisted:
+        force_log(PREPARED, T)
+        send VOTE_YES(T)
+        state[T] = PREPARED
+    else:
+        rollback_local(T)
+        log ABORT(T)
+        send VOTE_NO(T)
+
+ON_DECISION(T, decision):
+    if decision == COMMIT:
+        commit_local_once(T)
+        log COMMIT(T)
+    else:
+        rollback_local_once(T)
+        log ABORT(T)
+    release_held_locks(T)
+    send ACK(T)
+\end{lstlisting}
+
+\paragraph{A.3. Thuật toán Phục hồi tại Participant sau sự cố:}
+\begin{lstlisting}
+ON_RESTART(T):
+    state = read_durable_log(T)
+    if state == COMMIT: 
+        redo_if_needed(T)
+        send ACK(T)
+    else if state == ABORT: 
+        undo_if_needed(T)
+    else if state == PREPARED:
+        repeat 
+            query_known_decision(T) 
+        until verified result found
+        apply_result_once(T)  -- TUYET DOI KHONG tu y abort
+    else:
+        rollback_uncommitted_local_changes(T)
+\end{lstlisting}
+
+\newpage
+\section*{Phụ lục B: Bộ Tình huống Kiểm thử Lý thuyết 2PC \& CAP}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Bộ tình huống kiểm thử lý thuyết cho giao dịch và phân hoạch mạng}
+\label{tab:test_cases}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Mã TC} & \textbf{Tình huống kiểm thử} & \textbf{Hành vi và Kết quả mong đợi} \\ \hline
+\textbf{TC01} & Tất cả các trạm đều \texttt{VOTE-YES} & Quyết định \texttt{GLOBAL-COMMIT} ghi bền vững; toàn bộ trạm commit thành công. \\ \hline
+\textbf{TC02} & Một trạm trả lời \texttt{VOTE-NO} & Coordinator phát \texttt{GLOBAL-ABORT}; mọi thay đổi cục bộ được hoàn tác sạch sẽ. \\ \hline
+\textbf{TC03} & Participant sập sau khi \texttt{PREPARED} & Khi bật lại, đọc log thấy PREPARED sẽ liên hệ hỏi quyết định; không tự ý abort. \\ \hline
+\textbf{TC04} & Coordinator sập sau khi ghi COMMIT & Khi phục hồi, đọc log và phát lại COMMIT; Participant xử lý theo tính chất lặp an toàn. \\ \hline
+\textbf{TC05} & Phân hoạch mạng khi các trạm đã PREPARED & Các trạm chưa rõ quyết định tiếp tục chờ và giữ khóa; bảo vệ tính nguyên tử của giao dịch. \\ \hline
+\textbf{TC06} & Hai giao dịch $T_1, T_2$ chờ khóa chéo & Đồ thị WFG toàn cục nhận diện chu trình bế tắc; chọn một giao dịch làm nạn nhân để rollback. \\ \hline
+\textbf{TC07} & Phân hoạch mạng trên hai bản sao & Hệ thống CP từ chối phục vụ để bảo vệ nhất quán; hệ thống AP chấp nhận dữ liệu có thể cũ. \\ \hline
+\end{tabularx}
+\end{table}
+
+% =======================================================
+% CHƯƠNG 5: TỔNG KẾT VÀ ĐÁNH GIÁ
+% =======================================================
+\chapter{Tổng Kết Và Hướng Phát Triển}
+
+\section{Tổng Kết Kết Quả Nghiên Cứu}
+Sau quá trình nghiên cứu chuyên sâu về đề tài B6 dựa trên các giáo trình quốc tế kinh điển (\textit{Özsu \& Valduriez, Ramakrishnan \& Gehrke}), nhóm đã hoàn thành toàn diện các mục tiêu lý thuyết cốt lõi trên cả ba phương diện:
+
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Kiến trúc hệ thống và Thiết kế phân mảnh (Chương 1 \& 2):} 
+    Làm chủ mô hình phân tầng ANSI/SPARC mở rộng (5 tầng) và 4 mức độ trong suốt phân tán. Chuẩn hóa cơ sở toán học của kỹ thuật phân mảnh ngang nguyên thủy thông qua tập vị từ cơ sở $Pr$ và vị từ hội sơ cấp minterm ($m_i = \bigwedge p_j^*$), phân mảnh ngang dẫn xuất bằng phép nửa nối ($R \ltimes S_i$), phân mảnh dọc với ma trận tương quan AAM và thuật toán BEA, đồng thời bảo đảm nghiêm ngặt 3 quy tắc bắt buộc: \textit{Đầy đủ, Tái tạo} và \textit{Tách biệt}.
+    
+    \item \textbf{Quy trình xử lý và Tối ưu hóa truy vấn phân tán (Chương 3):} 
+    Nắm vững tiến trình 3 giai đoạn: \textit{Phân rã truy vấn} (chuẩn hóa CNF/DNF, đẩy sớm phép chọn/chiếu) $\rightarrow$ \textit{Bản địa hóa dữ liệu} (cắt tỉa phân mảnh rỗng qua kiểm tra mâu thuẫn vị từ) $\rightarrow$ \textit{Tối ưu hóa toàn cục} (lựa chọn trạm thực thi và thuật toán nối). Xây dựng bài toán định lượng minh chứng kỹ thuật Semi-join có khả năng cắt giảm tới $99,5\%$ dung lượng truyền mạng khi độ chọn lọc của phép nối thấp.
+    
+    \item \textbf{Giao dịch và Kiểm soát nhất quán phân tán (Chương 4):} 
+    Làm rõ cơ chế cam kết nguyên tử thông qua giao thức 2PC/3PC kết hợp nhật ký ghi trước (WAL) và phân tích nguyên nhân gây bế tắc treo (Blocking) của 2PC. Hệ thống hóa các giải thuật kiểm soát tương tranh (Distributed Strict 2PL, Timestamp Ordering, nhận diện chu trình WFG toàn cục) và xác lập ranh giới đánh đổi giữa tính nhất quán mạnh và tính sẵn sàng theo Định lý CAP.
+\end{itemize}
+
+\section{Những Nhận Định Và Bài Học Cốt Lõi Rút Ra}
+Từ các kết quả phân tích lý thuyết, nhóm rút ra 3 nguyên lý thiết kế then chốt cho hệ cơ sở dữ liệu phân tán:
+\begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Mạng truyền thông là nút thắt cổ chai chi phối:} Khác với CSDL tập trung tối ưu hóa theo chi phí I/O đĩa, mọi quyết định thiết kế trong DDBMS (từ phân mảnh dữ liệu, cấp phát trạm, đến thuật toán Semi-join) đều xoay quanh mục tiêu tối thiểu hóa lượng dữ liệu trung gian và số lượt truyền thông điệp qua mạng.
+    \item \textbf{Sự đánh đổi không thể tránh khỏi giữa Đọc và Ghi:} Mô hình nhân bản toàn phần triệt tiêu độ trễ của luồng đọc ($C_{\text{mạng}} = 0$) và tối ưu hóa tính sẵn sàng, nhưng lại khiến chi phí cập nhật ghi bùng nổ do bắt buộc phải điều phối cam kết đồng bộ trên toàn mạng.
+    \item \textbf{Không tồn tại kiến trúc hoàn hảo tuyệt đối:} Định lý CAP khẳng định khi xảy ra phân hoạch mạng, hệ thống bắt buộc phải lựa chọn giữa tính nhất quán dữ liệu (CP - ưu tiên nguyên tử, chấp nhận dừng giao dịch) hoặc tính sẵn sàng dịch vụ (AP - ưu tiên phản hồi liên tục, chấp nhận mô hình nhất quán sau cùng BASE).
+\end{enumerate}
+
+\section{Định Hướng Triển Khai Thực Nghiệm}
+Nền tảng lý thuyết phân tán vững chắc ở đề tài B6 là tiền đề kỹ thuật trực tiếp để nhóm triển khai giai đoạn thực nghiệm tiếp theo ở \textbf{Đề tài A2: Thiết lập nhân bản 1 Master, 2 Slave; áp dụng thử nghiệm với CSDL quản lý bán hàng tại 1 siêu thị}. Các công việc cụ thể bao gồm:
+
+\begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=2pt]
+    \item \textbf{Xây dựng môi trường hạ tầng phân tán:} Thiết lập cụm 3 nút mạng độc lập (1 máy chủ Master và 2 máy chủ Slaves) trên nền tảng ảo hóa (Docker containers) kết nối mạng nội bộ.
+    \item \textbf{Cấu hình cơ chế sao chép dữ liệu (Replication):} Triển khai hệ quản trị MySQL, cấu hình đồng bộ dữ liệu dựa trên nhật ký nhị phân từ Master sang Relay Log của các Slaves.
+    \item \textbf{Thiết kế CSDL và Thử nghiệm phân tải:} Cài đặt lược đồ CSDL siêu thị; hiện thực cơ chế phân luồng nghiệp vụ: định tuyến toàn bộ thao tác ghi về Master và chia tải đọc cho 2 Slaves.
+    \item \textbf{Đo đạc và Đánh giá sự cố:} Thực nghiệm đo độ trễ sao chép (\textit{Replication Lag}) dưới tải cao, kiểm thử kịch bản chịu lỗi khi rớt mạng hoặc khi một nút Slave bị sập để đánh giá tính sẵn sàng thực tế của hệ thống.
+\end{enumerate}
+
+
+% =======================================================
+% TÀI LIỆU THAM KHẢO
+% =======================================================
+\begin{thebibliography}{99}
+
+\bibitem{ozsu}
+M. Tamer Özsu, Patrick Valduriez (2020),
+\textit{Principles of Distributed Database Systems}, 4th Edition, Springer.
+
+\bibitem{ramakrishnan}
+Raghu Ramakrishnan, Johannes Gehrke (2003),
+\textit{Database Management Systems}, 3rd Edition, McGraw-Hill.
+
+\bibitem{silberschatz}
+Abraham Silberschatz, Henry F. Korth, S. Sudarshan (2019),
+\textit{Database System Concepts}, 7th Edition, McGraw-Hill.
+
+\bibitem{elmasri}
+Ramez Elmasri, Shamkant B. Navathe (2015),
+\textit{Fundamentals of Database Systems}, 7th Edition, Pearson.
+
+\end{thebibliography}
+
+\end{document}
