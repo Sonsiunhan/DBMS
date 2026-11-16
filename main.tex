@@ -854,24 +854,39 @@ Tổng dung lượng dữ liệu truyền qua mạng của Semi-join:
 \text{Tổng dung lượng truyền} = \text{Dung lượng B1} + \text{Dung lượng B3} = 2 \text{ KB} + 100 \text{ KB} = \mathbf{102 \text{ KB}}
 \]
 
-\subsection{Bảng Tổng hợp và Đánh giá Hiệu quả Định lượng}
-
-\begin{table}[H]
-\centering
-\small
-\caption{So sánh định lượng giữa Truyền trực tiếp và Kỹ thuật Semi-join}
-\label{tab:semijoin_comparison}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{2.8cm}|}
-\hline
-\textbf{Tiêu chí đánh giá} & \textbf{Chiến lược 1 (Truyền trực tiếp)} & \textbf{Chiến lược 2 (Sử dụng Semi-join)} & \textbf{Mức độ tối ưu / Đánh đổi} \\ \hline
-Số lượt truyền mạng & 1 lượt ($\text{Site 1} \rightarrow \text{Site 2}$) & 2 lượt ($\text{Site 2} \rightarrow \text{Site 1} \rightarrow \text{Site 2}$) & Tăng 1 lượt bắt tay thông điệp (Round-trip) \\ \hline
-Dung lượng mạng B1 & $0\text{ KB}$ & $2\text{ KB}$ & Không đáng kể \\ \hline
-Dung lượng truyền chính & $20.000\text{ KB}$ & $100\text{ KB}$ & Giảm 200 lần \\ \hline
-\textbf{Tổng dung lượng mạng} & \textbf{20.000 KB (20 MB)} & \textbf{102 KB} & \textbf{Tiết kiệm 19.898 KB ($\approx 99,5\%$)} \\ \hline
-Thời gian truyền (Băng thông 10 Mbps) & $\approx 16\text{ giây}$ & $\approx 0,08\text{ giây}$ & Nhanh hơn gần 200 lần \\ \hline
-\end{tabularx}
-\end{table}
+\subsection{Tổng hợp và Đánh giá Hiệu quả Định lượng}
+\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=2pt]
+    \item \textbf{Số lượt trao đổi qua mạng}
+    \begin{itemize}[label=$\circ$, leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+        \item \textbf{Chiến lược 1 (Truyền trực tiếp):} 1 lượt ($\text{Site 1} \rightarrow \text{Site 2}$).
+        \item \textbf{Chiến lược 2 (Sử dụng Semi-join):} 2 lượt ($\text{Site 2} \rightarrow \text{Site 1} \rightarrow \text{Site 2}$).
+        \item \textbf{Mức độ tối ưu / Đánh đổi:} Tăng 1 lượt bắt tay thông điệp (Round-trip).
+    \end{itemize}
+    \item \textbf{Dung lượng mạng B1}
+    \begin{itemize}[label=$\circ$, leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+        \item \textbf{Chiến lược 1 (Truyền trực tiếp):} $0\text{ KB}$.
+        \item \textbf{Chiến lược 2 (Sử dụng Semi-join):} $2\text{ KB}$.
+        \item \textbf{Mức độ tối ưu / Đánh đổi:} Chi phí truyền B1 không đáng kể.
+    \end{itemize}
+    \item \textbf{Dung lượng mạng B3 / Truyền chính}
+    \begin{itemize}[label=$\circ$, leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+        \item \textbf{Chiến lược 1 (Truyền trực tiếp):} $20.000\text{ KB}$.
+        \item \textbf{Chiến lược 2 (Sử dụng Semi-join):} $100\text{ KB}$.
+        \item \textbf{Mức độ tối ưu / Đánh đổi:} Giảm 200 lần dung lượng truyền chính.
+    \end{itemize}
+    \item \textbf{TỔNG DUNG LƯỢNG MẠNG}
+    \begin{itemize}[label=$\circ$, leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+        \item \textbf{Chiến lược 1 (Truyền trực tiếp):} \textbf{20.000 KB (20 MB)}.
+        \item \textbf{Chiến lược 2 (Sử dụng Semi-join):} \textbf{102 KB}.
+        \item \textbf{Mức độ tối ưu / Đánh đổi:} Tiết kiệm \textbf{19.898 KB ($\approx 99,5\%$)}.
+    \end{itemize}
+    \item \textbf{Thời gian truyền (băng thông 10 Mbps)}
+    \begin{itemize}[label=$\circ$, leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
+        \item \textbf{Chiến lược 1 (Truyền trực tiếp):} $\approx 16\text{ giây}$.
+        \item \textbf{Chiến lược 2 (Sử dụng Semi-join):} $\approx 0,08\text{ giây}$.
+        \item \textbf{Mức độ tối ưu / Đánh đổi:} Nhanh hơn gần 200 lần.
+    \end{itemize}
+\end{enumerate}
 
 \subsection{Nguyên tắc Áp dụng và Trade-off Kỹ thuật}
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
