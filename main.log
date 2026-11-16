@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.19)  16 NOV 2026 17:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.19)  16 NOV 2026 18:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1111,56 +1111,66 @@ Overfull \hbox (8.75024pt too wide) in paragraph at lines 750--751
  []
 
 [16] [17] [18]
-Overfull \hbox (1.82365pt too wide) in paragraph at lines 812--812
+Overfull \hbox (1.82365pt too wide) in paragraph at lines 822--822
 |[]\T5/cmr/bx/n/17.28 B i To¡n ^^^ành L÷ñng Minh Håa Ph²p To¡n Semi-
  []
 
 [19] [20] [21]
-Overfull \hbox (3.20465pt too wide) in paragraph at lines 896--897
+Overfull \hbox (3.20465pt too wide) in paragraph at lines 906--907
 []$\OML/cmm/m/it/12 C[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 ^^[[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 Customer\OT1/cmr/m/n/12 )$ \T5/cmr/m/n/12 l÷u t¤i \T5/cmr/bx/n/12 Site 2 (S i Gán) \T5/cmr/m/n/12 ($\OT1/cmr/m/n/12 10\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 000$ \T5/cmr/m/n/12 bë, $\OT1/cmr/m/n/12 100[] \OMS/cmsy/m/n/12 !
  []
 
 
-Overfull \hbox (7.05925pt too wide) in paragraph at lines 897--898
+Overfull \hbox (7.05925pt too wide) in paragraph at lines 907--908
 []$\OML/cmm/m/it/12 C[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 ^^[[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 Customer\OT1/cmr/m/n/12 )$ \T5/cmr/m/n/12 l÷u t¤i \T5/cmr/bx/n/12 Site 3 (^^^  N®ng) \T5/cmr/m/n/12 ($\OT1/cmr/m/n/12 2\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 000$ \T5/cmr/m/n/12 bë, $\OT1/cmr/m/n/12 100[] \OMS/cmsy/m/n/12 !
  []
 
 
-Overfull \hbox (96.2209pt too wide) in paragraph at lines 915--916
+Overfull \hbox (96.2209pt too wide) in paragraph at lines 925--926
 []\T5/cmr/m/n/12 Chi¸u c¡c cët c¦n thi¸t: tr¶n Customer l§y $\OT1/cmr/m/n/12 ^^E[]$\T5/cmr/m/n/12 , tr¶n Orders l§y $\OT1/cmr/m/n/12 ^^E[]$\T5/cmr/m/n/12 . 
  []
 
 [22] [23] [24]
 Ch\uhorn \ohorn ng 4.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1000--1001
+
+ []
+
 [25
 
-]
-Overfull \hbox (46.91501pt too wide) in paragraph at lines 1029--1030
-\T5/cmr/bx/n/12 Nhªn x²t quan trång: \T5/cmr/m/n/12 2PC gi£i quy¸t chõ y¸u b i to¡n thèng nh§t quy¸t ^^_ành COMMIT/ABORT
+] [26]
+Overfull \hbox (39.36136pt too wide) in paragraph at lines 1048--1049
+\T5/cmr/bx/n/12 Nhªn x²t quan trång: \T5/cmr/m/n/12 2PC gi£i quy¸t chõ y¸u b i to¡n thèng nh§t quy¸t ^^_ành \T5/cmtt/m/n/12 COMMIT/ROLLBACK
  []
 
 
-Overfull \hbox (6.0407pt too wide) in paragraph at lines 1031--1031
+Overfull \hbox (6.0407pt too wide) in paragraph at lines 1050--1050
 |[]\T5/cmr/bx/n/17.28 Giao Thùc Cam K¸t Hai Pha (Two-Phase Commit
  []
 
-[26] [27] [28] [29] [30] [31]
-Overfull \hbox (47.85495pt too wide) in paragraph at lines 1208--1209
- [][] 
- []
-
-
-Overfull \hbox (14.13869pt too wide) in paragraph at lines 1213--1213
+[27] [28] [29] [30] [31]
+Overfull \hbox (14.13869pt too wide) in paragraph at lines 1251--1251
 |[]\T5/cmr/bx/n/17.28 Giao Thùc Cam K¸t Ba Pha (Three-Phase Commit
  []
 
-[32] [33] [34] [35] [36] [37] [38
+[32]
+Overfull \hbox (20.03789pt too wide) in paragraph at lines 1257--1258
+[]\T5/cmr/bx/n/12 Giai ^^_o¤n 2 (PreCommit): \T5/cmr/m/n/12 Khi nhªn ^^_õ \T5/cmtt/m/n/12 YES\T5/cmr/m/n/12 , Coordinator gûi \T5/cmtt/m/n/12 PRE-COMMIT\T5/cmr/m/n/12 . Participant
+ []
 
-] [39] [40]
+
+Overfull \hbox (5.52765pt too wide) in paragraph at lines 1264--1265
+[]\T5/cmr/m/it/12 N¸u ch÷a câ nót cán sèng n o tîi PreCommit: \T5/cmr/m/n/12 C¡c nót cán sèng câ thº b¦u Coordinator
+ []
+
+[33] [34] [35] [36] [37] [38] [39
+
+] [40] [41]
 Ch\uhorn \ohorn ng 5.
-[41
+[42
 
-] [42] [43
+] [43] [44
 
 ] (./main.aux)
  ***********
@@ -1168,21 +1178,21 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 46C4BC7B84EB58BE6AC885099AE9D300;23893.
+(rerunfilecheck)             Checksum: B2BDE6F40448595E939273E9DF8DB974;23857.
  ) 
 Here is how much of TeX's memory you used:
- 28544 strings out of 468994
- 517747 string characters out of 5459060
+ 28546 strings out of 468994
+ 518013 string characters out of 5459060
  1205854 words of memory out of 5000000
- 56607 multiletter control sequences out of 15000+600000
- 666770 words of font info for 114 fonts, out of 8000000 for 9000
+ 56611 multiletter control sequences out of 15000+600000
+ 665098 words of font info for 107 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 84i,14n,104p,732b,2001s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,14n,104p,852b,2001s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/sonsiunhan/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk> </home/sonsiunhan/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnitt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt8.pfb>
-Output written on main.pdf (48 pages, 930006 bytes).
+Output written on main.pdf (49 pages, 944052 bytes).
 PDF statistics:
- 993 PDF objects out of 1000 (max. 8388607)
- 858 compressed objects within 9 object streams
- 264 named destinations out of 1000 (max. 500000)
+ 1008 PDF objects out of 1200 (max. 8388607)
+ 872 compressed objects within 9 object streams
+ 263 named destinations out of 1000 (max. 500000)
  754 words of extra memory for PDF output out of 10000 (max. 10000000)
 

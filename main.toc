@@ -44,12 +44,12 @@
 \contentsline {subsubsection}{Các tiểu bước trong Phân rã truy vấn}{16}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}Bản địa hóa dữ liệu (Data Localization)}{17}{subsection.3.2.2}%
 \contentsline {subsubsection}{Khái niệm và Bối cảnh}{17}{subsection.3.2.2}%
-\contentsline {subsubsection}{Các dạng phân mảnh và Quy tắc tái thiết}{17}{subsection.3.2.2}%
-\contentsline {subsubsection}{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}{17}{Item.15}%
+\contentsline {subsubsection}{Ánh xạ chương trình tái thiết theo chiến lược phân mảnh}{17}{subsection.3.2.2}%
+\contentsline {subsubsection}{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}{17}{table.3.1}%
 \contentsline {subsection}{\numberline {3.2.3}Tối ưu hóa toàn cục (Global Optimization)}{18}{subsection.3.2.3}%
 \contentsline {subsubsection}{Khái niệm và Mục tiêu}{18}{subsection.3.2.3}%
 \contentsline {subsubsection}{Mô hình ước lượng chi phí phân tán}{18}{subsection.3.2.3}%
-\contentsline {subsubsection}{Không gian tìm kiếm và các quyết định tối ưu}{18}{subsection.3.2.3}%
+\contentsline {subsubsection}{Không gian tìm kiếm và các quyết định tối ưu}{19}{subsection.3.2.3}%
 \contentsline {section}{\numberline {3.3}Bài Toán Định Lượng Minh Họa Phép Toán Semi-Join}{19}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Bối cảnh và Thông số Kỹ thuật}{19}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Phân tích So sánh 2 Chiến lược Thực thi}{20}{subsection.3.3.2}%
@@ -62,7 +62,7 @@
 \contentsline {subsection}{\numberline {3.4.2}Diễn tiến qua 3 Bước Xử lý}{22}{subsection.3.4.2}%
 \contentsline {paragraph}{Giai đoạn 1: Phân rã truy vấn (Query Decomposition):}{22}{subsection.3.4.2}%
 \contentsline {paragraph}{Giai đoạn 2: Bản địa hóa dữ liệu (Data Localization):}{22}{subsection.3.4.2}%
-\contentsline {paragraph}{Giai đoạn 3: Tối ưu hóa toàn cục (Global Optimization):}{23}{Item.21}%
+\contentsline {paragraph}{Giai đoạn 3: Tối ưu hóa toàn cục (Global Optimization):}{23}{Item.18}%
 \contentsline {section}{\numberline {3.5}Tổng Kết Và So Sánh Các Giai Đoạn Xử Lý Truy Vấn}{23}{section.3.5}%
 \contentsline {chapter}{\numberline {4}Quản Lý Giao Dịch Và Kiểm Soát Đồng Thời Phân Tán}{25}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Tổng Quan Giao Dịch Và Kiến Trúc Xử Lý Phân Tán}{25}{section.4.1}%
@@ -70,38 +70,38 @@
 \contentsline {subsection}{\numberline {4.1.2}Các thành phần chức năng}{25}{subsection.4.1.2}%
 \contentsline {subsection}{\numberline {4.1.3}Phân biệt giao dịch, cam kết và sao chép dữ liệu}{26}{subsection.4.1.3}%
 \contentsline {section}{\numberline {4.2}Thuộc Tính ACID Trên Môi Trường Nhiều Máy Chủ}{26}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Giao Thức Cam Kết Hai Pha (Two-Phase Commit -- 2PC)}{26}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Mục đích và giả định}{26}{subsection.4.3.1}%
+\contentsline {section}{\numberline {4.3}Giao Thức Cam Kết Hai Pha (2PC)}{27}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Mục đích và giả định}{27}{subsection.4.3.1}%
 \contentsline {subsection}{\numberline {4.3.2}Pha 1 -- PREPARE / VOTING (Chuẩn bị và Bỏ phiếu)}{27}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Pha 2 -- DECISION (Quyết định Cuối cùng)}{27}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.3}Pha 2 -- DECISION (Quyết định Cuối cùng)}{28}{subsection.4.3.3}%
 \contentsline {subsection}{\numberline {4.3.4}Lưu đồ thuật toán 2PC}{28}{subsection.4.3.4}%
 \contentsline {subsection}{\numberline {4.3.5}Bảng trạng thái và thông điệp trong 2PC}{29}{subsection.4.3.5}%
-\contentsline {subsection}{\numberline {4.3.6}Ví dụ chi tiết: Giao dịch chuyển tiền giữa hai máy chủ}{29}{subsection.4.3.6}%
+\contentsline {subsection}{\numberline {4.3.6}Ví dụ chi tiết: Giao dịch chuyển tiền giữa hai máy chủ}{30}{subsection.4.3.6}%
 \contentsline {section}{\numberline {4.4}Xử Lý Lỗi Và Phục Hồi (Recovery) Trong 2PC}{30}{section.4.4}%
 \contentsline {subsection}{\numberline {4.4.1}Vai trò của nhật ký bền vững (Write-Ahead Logging)}{30}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Phân tích các kịch bản sự cố và khả năng phục hồi}{30}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.2}Phân tích các kịch bản sự cố và khả năng phục hồi}{31}{subsection.4.4.2}%
 \contentsline {subsection}{\numberline {4.4.3}Tại sao 2PC là giao thức Blocking?}{31}{subsection.4.4.3}%
 \contentsline {subsection}{\numberline {4.4.4}Lưu đồ phục hồi tại Participant}{32}{subsection.4.4.4}%
-\contentsline {section}{\numberline {4.5}Giao Thức Cam Kết Ba Pha (Three-Phase Commit -- 3PC)}{33}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Động cơ và các giai đoạn}{33}{subsection.4.5.1}%
+\contentsline {section}{\numberline {4.5}Giao Thức Cam Kết Ba Pha (3PC)}{32}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Động cơ và các giai đoạn}{32}{subsection.4.5.1}%
 \contentsline {subsection}{\numberline {4.5.2}Phục hồi và giới hạn kỹ thuật của 3PC}{33}{subsection.4.5.2}%
 \contentsline {subsection}{\numberline {4.5.3}Bảng so sánh đối chiếu giữa 2PC và 3PC}{33}{subsection.4.5.3}%
-\contentsline {section}{\numberline {4.6}Kiểm Soát Đồng Thời Phân Tán}{33}{section.4.6}%
-\contentsline {subsection}{\numberline {4.6.1}Vì sao cần kiểm soát đồng thời?}{33}{subsection.4.6.1}%
+\contentsline {section}{\numberline {4.6}Kiểm Soát Đồng Thời Phân Tán}{34}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Vì sao cần kiểm soát đồng thời?}{34}{subsection.4.6.1}%
 \contentsline {subsection}{\numberline {4.6.2}Khóa hai pha phân tán (Distributed Two-Phase Locking -- 2PL)}{34}{subsection.4.6.2}%
-\contentsline {subsection}{\numberline {4.6.3}Điều khiển theo nhãn thời gian (Timestamp Ordering -- TO)}{34}{subsection.4.6.3}%
+\contentsline {subsection}{\numberline {4.6.3}Điều khiển theo nhãn thời gian (Timestamp Ordering -- TO)}{35}{subsection.4.6.3}%
 \contentsline {subsection}{\numberline {4.6.4}Phát hiện và xử lý bế tắc toàn cục (Global Deadlock Detection)}{35}{subsection.4.6.4}%
-\contentsline {section}{\numberline {4.7}Định Lý CAP Và Sự Đánh Đổi Trong Thực Tế}{35}{section.4.7}%
-\contentsline {subsection}{\numberline {4.7.1}Phát biểu và cách hiểu chính xác}{35}{subsection.4.7.1}%
+\contentsline {section}{\numberline {4.7}Định Lý CAP Và Sự Đánh Đổi Trong Thực Tế}{36}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Phát biểu và cách hiểu chính xác}{36}{subsection.4.7.1}%
 \contentsline {subsection}{\numberline {4.7.2}Ví dụ phân hoạch với hai bản sao dữ liệu}{36}{subsection.4.7.2}%
-\contentsline {subsection}{\numberline {4.7.3}Bảng so sánh xu hướng thiết kế CP và AP}{36}{subsection.4.7.3}%
-\contentsline {subsection}{\numberline {4.7.4}Liên hệ giữa CAP, 2PC và mô hình BASE}{36}{subsection.4.7.4}%
+\contentsline {subsection}{\numberline {4.7.3}So sánh đánh đổi giữa tính nhất quán và tính sẵn sàng theo CAP}{36}{subsection.4.7.3}%
+\contentsline {subsection}{\numberline {4.7.4}Liên hệ giữa CAP, 2PC, Quorum và mô hình BASE}{37}{subsection.4.7.4}%
 \contentsline {section}{\numberline {4.8}Đánh Giá Tổng Hợp Và Đề Xuất Thiết Kế}{37}{section.4.8}%
-\contentsline {chapter}{Phụ Lục: Mã Giả Và Bộ Tình Huống Kiểm Thử}{38}{chapter*.3}%
-\contentsline {paragraph}{A.1. Thuật toán phía Coordinator (Bản cơ bản):}{38}{chapter*.3}%
-\contentsline {paragraph}{A.2. Thuật toán phía Participant (Bản cơ bản):}{38}{lstnumber.-5.14}%
-\contentsline {paragraph}{A.3. Thuật toán Phục hồi tại Participant sau sự cố:}{39}{lstnumber.-6.19}%
-\contentsline {chapter}{\numberline {5}Tổng Kết Và Hướng Phát Triển}{41}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Tổng Kết Kết Quả Nghiên Cứu}{41}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Những Nhận Định Và Bài Học Cốt Lõi Rút Ra}{42}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Định Hướng Triển Khai Thực Nghiệm}{42}{section.5.3}%
+\contentsline {chapter}{Phụ Lục: Mã Giả Và Bộ Tình Huống Kiểm Thử}{39}{chapter*.3}%
+\contentsline {paragraph}{A.1. Thuật toán phía Coordinator (Bản cơ bản):}{39}{chapter*.3}%
+\contentsline {paragraph}{A.2. Thuật toán phía Participant (Bản cơ bản):}{39}{lstnumber.-5.14}%
+\contentsline {paragraph}{A.3. Thuật toán Phục hồi tại Participant sau sự cố:}{40}{lstnumber.-6.19}%
+\contentsline {chapter}{\numberline {5}Tổng Kết Và Hướng Phát Triển}{42}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Tổng Kết Kết Quả Nghiên Cứu}{42}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Những Nhận Định Và Bài Học Cốt Lõi Rút Ra}{43}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Định Hướng Triển Khai Thực Nghiệm}{43}{section.5.3}%

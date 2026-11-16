@@ -754,30 +754,40 @@ Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ t
 
 \subsection{Bản địa hóa dữ liệu (Data Localization)}
 \subsubsection{Khái niệm và Bối cảnh}
-Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu. Tại đây, tính trong suốt phân mảnh (Fragmentation Transparency) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}.
+Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu. Tại đây, tính trong suốt phân mảnh (\textit{Fragmentation Transparency}) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}.
 
-\subsubsection{Các dạng phân mảnh và Quy tắc tái thiết}
-Kế thừa các chiến lược phân mảnh đã trình bày ở Mục~2.2, khi thực hiện bản địa hóa dữ liệu, bộ tối ưu hóa truy vấn sẽ thay thế mỗi quan hệ toàn cục $R$ bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng:
-\begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=3pt]
-    \item \textbf{Đối với phân mảnh ngang:} Thay thế $R$ bằng phép Hợp ($\bigcup$) của tất cả các phân mảnh ngang thành phần:
-    \[
-    R = \bigcup_{i=1}^n R_i = R_1 \cup R_2 \cup \dots \cup R_n
-    \]
-    
-    \item \textbf{Đối với phân mảnh dọc:} Thay thế $R$ bằng phép Nối tự nhiên ($\bowtie_K$) trên thuộc tính khóa chính $K$ của các phân mảnh dọc:
-    \[
-    R = \bowtie_{K} R_j = R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m
-    \]
-    
-    \item \textbf{Đối với phân mảnh hỗn hợp:} Thay thế $R$ bằng biểu thức kết hợp đan xen giữa phép Hợp ($\bigcup$) và phép Nối ($\bowtie$) theo trình tự đảo ngược lại quá trình phân rã ban đầu[cite: 13].
-\end{enumerate}
+\subsubsection{Ánh xạ chương trình tái thiết theo chiến lược phân mảnh}
+Kế thừa các chiến lược phân mảnh và quy tắc \textit{Tính tái tạo (Reconstruction)} đã trình bày ở Mục~2.2 và Mục~2.3.2, bộ tối ưu hóa truy vấn thực hiện ánh xạ trực tiếp mỗi quan hệ toàn cục $R$ thành biểu thức tái thiết tương ứng như Bảng~\ref{tab:reconstruction_rules}:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Chương trình tái thiết quan hệ toàn cục trong giai đoạn Bản địa hóa dữ liệu}
+\label{tab:reconstruction_rules}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.4cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{5.5cm}|}
+\hline
+\textbf{Loại phân mảnh} & \textbf{Cơ chế tái thiết} & \textbf{Biểu thức thay thế nút lá $R$} \\ \hline
+Phân mảnh ngang & Sử dụng phép Hợp ($\cup$) để gộp toàn bộ các phân mảnh ngang thành phần. & $R = \bigcup\limits_{i=1}^{n} R_i = R_1 \cup R_2 \cup \dots \cup R_n$ \\ \hline
+Phân mảnh dọc & Sử dụng phép Nối tự nhiên ($\bowtie_K$) trên thuộc tính khóa chính $K$. & $R = R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m$ \\ \hline
+Phân mảnh hỗn hợp & Kết hợp đan xen phép Hợp ($\cup$) và phép Nối ($\bowtie$) theo thứ tự ngược lại quá trình phân rã. & Ví dụ (ngang trước, dọc sau): \newline $R = (R_{11} \bowtie_K R_{12}) \cup R_2$ \\ \hline
+\end{tabularx}
+\end{table}
 
 \subsubsection{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}
-Kỹ thuật Rút gọn phân mảnh sử dụng đại số quan hệ và logic toán học để triệt tiêu các nhánh rỗng:
-\begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Phân phối phép chọn qua phép hợp:} $\sigma_C (R_1 \cup R_2) \equiv \sigma_C (R_1) \cup \sigma_C (R_2)$.
-    \item \textbf{Kiểm tra mâu thuẫn vị từ (Predicate Contradiction Check):} Mỗi phân mảnh $R_i$ gắn liền với vị từ phân mảnh $\phi_i$. Biểu thức truy vấn trên mảnh trở thành $\sigma_C(R_i) \equiv \sigma_{C \wedge \phi_i}(R)$. Nếu $(C \wedge \phi_i) \equiv \text{False}$, phân mảnh $R_i$ chắc chắn không chứa bộ nào thỏa mãn: $\sigma_{C \wedge \phi_i}(R) = \emptyset$. Hệ thống cắt tỉa toàn bộ nhánh $R_i$ khỏi cây truy vấn.
-    \item \textbf{Phân phối phép chọn và chiếu qua phép nối:} Nếu điều kiện chọn $C$ và danh sách chiếu chỉ nằm hoàn toàn trong một phân mảnh dọc $R_1$, các phân mảnh dọc khác không cần tham gia vào phép nối tái thiết.
+Sau khi thế chương trình tái thiết vào cây truy vấn, bộ tối ưu hóa áp dụng các quy tắc đại số quan hệ và logic vị từ để triệt tiêu các nhánh rỗng:
+\begin{itemize}[leftmargin=0.8cm, topsep=2pt, itemsep=3pt]
+    \item \textbf{Phân phối phép chọn qua phép hợp (đối với phân mảnh ngang):}
+    \[
+    \sigma_C (R_1 \cup R_2 \cup \dots \cup R_n) \equiv \sigma_C(R_1) \cup \sigma_C(R_2) \cup \dots \cup \sigma_C(R_n)
+    \]
+    
+    \item \textbf{Kiểm tra mâu thuẫn vị từ (Predicate Contradiction Check):} Mỗi phân mảnh ngang $R_i$ được định nghĩa bởi vị từ phân mảnh $\phi_i$ (tức $R_i = \sigma_{\phi_i}(R)$). Biểu thức truy vấn trên mảnh trở thành $\sigma_C(R_i) \equiv \sigma_{C \wedge \phi_i}(R)$. Nếu $(C \wedge \phi_i) \equiv \text{False}$, phân mảnh $R_i$ chắc chắn rỗng ($\sigma_{C \wedge \phi_i}(R) = \emptyset$) và bị cắt tỉa hoàn toàn khỏi cây truy vấn.
+    
+    \item \textbf{Loại bỏ phân mảnh dư thừa qua phép chiếu/chọn (đối với phân mảnh dọc):} Nếu tập thuộc tính trong điều kiện chọn $C$ và danh sách chiếu $L$ đều nằm trọn trong một phân mảnh dọc $R_1$ ($\text{Attr}(C) \cup L \subseteq \text{Attr}(R_1)$), các phân mảnh dọc còn lại sẽ bị loại bỏ khỏi phép nối tái thiết:
+    \[
+    \Pi_L\big(\sigma_C(R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m)\big) \equiv \Pi_L\big(\sigma_C(R_1)\big)
+    \]
 \end{itemize}
 
 \subsection{Tối ưu hóa toàn cục (Global Optimization)}
@@ -982,305 +992,337 @@ Ba giai đoạn \textbf{Phân rã truy vấn}, \textbf{Bản địa hóa dữ li
 \section{Tổng Quan Giao Dịch Và Kiến Trúc Xử Lý Phân Tán}
 
 \subsection{Giao dịch phân tán là gì?}
-Giao dịch là một đơn vị công việc logic gồm nhiều thao tác đọc/ghi dữ liệu, cần được thực hiện theo một kết quả cuối cùng thống nhất: hoặc được công nhận hoàn toàn, hoặc bị hủy hoàn toàn. Trong hệ phân tán, những thao tác của cùng một giao dịch có thể được thực thi ở nhiều nút lưu trữ khác nhau. Vì không có một bộ nhớ và một bộ quản lý lỗi dùng chung, việc quyết định giao dịch thành công bắt buộc phải thông qua cơ chế trao đổi thông điệp điều phối giữa các nút.
+Giao dịch (\textit{Transaction}) là một đơn vị công việc logic gồm chuỗi các thao tác đọc/ghi dữ liệu, đòi hỏi phải được thực thi theo nguyên tắc thống nhất: hoặc được công nhận hoàn toàn (\texttt{COMMIT}), hoặc bị hủy bỏ hoàn toàn (\texttt{ROLLBACK}). Trong hệ phân tán, các thao tác của cùng một giao dịch có thể diễn ra tại nhiều nút lưu trữ khác nhau. Vì không có bộ nhớ và bộ quản lý lỗi dùng chung, việc quyết định giao dịch thành công bắt buộc phải thông qua cơ chế trao đổi thông điệp điều phối giữa các nút.
 
 \subsection{Các thành phần chức năng}
-Kiến trúc xử lý một giao dịch phân tán đòi hỏi sự phối hợp chặt chẽ giữa các thành phần chức năng.
+Xét một giao dịch chuyển tiền từ tài khoản $A$ tại trạm $S_1$ sang tài khoản $B$ tại trạm $S_2$. Ứng dụng gửi yêu cầu chuyển tiền, sau đó nút điều phối (\textit{Coordinator}) xác định hai trạm tham gia. Trạm $S_1$ kiểm tra số dư và thực hiện thao tác trừ tiền, còn trạm $S_2$ thực hiện thao tác cộng tiền. Hai thay đổi này vẫn thuộc cùng một giao dịch cho đến khi có quyết định cuối cùng.
+
+Trong lúc giao dịch đang chạy, bộ điều khiển đồng thời tại mỗi trạm quản lý các yêu cầu truy cập vào tài khoản. Chẳng hạn, nếu một giao dịch khác muốn cập nhật tài khoản $A$ trong khi tài khoản này đang bị khóa độc quyền, yêu cầu đó phải chờ. Nhật ký cục bộ lưu thông tin cần thiết để trạm có thể phục hồi sau sự cố.\\
+
+Sau khi hai trạm xử lý xong phần việc cục bộ, Coordinator thu thập phản hồi để quyết định cam kết hoặc hủy giao dịch. Ví dụ, nếu $S_2$ không thể cộng tiền do vi phạm ràng buộc, toàn bộ giao dịch phải được hủy và $S_1$ phải hoàn tác phần trừ tiền.
+Bảng~\ref{tab:cac_thanh_phan_chuc_nang} tóm tắt vai trò của từng
+thành phần trong quá trình này.
+
 \begin{table}[H]
 \centering
-\footnotesize
-\renewcommand{\baselinestretch}{1.0}\selectfont % <--- Triệt tiêu giãn dòng 1.3 của toàn cục bên trong bảng
+\small
 \label{tab:cac_thanh_phan_chuc_nang}
+\renewcommand{\baselinestretch}{1.05}\selectfont
 \renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.9cm}|>{\raggedright\arraybackslash}X|}
-\hline
-\textbf{Thành phần} & \textbf{Vai trò chính} \\ \hline
-Client / Ứng dụng & Khởi tạo giao dịch $T$ và phát yêu cầu \texttt{COMMIT} hoặc \texttt{ROLLBACK}. \\ \hline
-Transaction Coordinator & Điều phối các nút tham gia; tập hợp phiếu bầu, đưa ra quyết định cam kết toàn cục. \\ \hline
-Participant (các trạm) & Chạy phần giao dịch cục bộ, khóa dữ liệu, ghi log và thực thi quyết định cuối cùng. \\ \hline
-Concurrency Controller & Sắp lịch giao dịch bằng cơ chế khóa hoặc nhãn thời gian để ngăn ngừa xung đột. \\ \hline
-Log \& Recovery Manager & Ghi nhật ký lên bộ nhớ bền vững (WAL), thực hiện \texttt{REDO/UNDO} để phục hồi sau sự cố. \\ \hline
-Mạng truyền thông & Truyền thông điệp \texttt{PREPARE}, phiếu bầu, \texttt{COMMIT/ABORT} và \texttt{ACK}; chịu độ trễ hoặc lỗi mạng. \\ \hline
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \textbf{Thành phần} & \textbf{Vai trò chính} \\ \hline
+    Client / Ứng dụng & Khởi tạo giao dịch $T$ và phát yêu cầu \texttt{COMMIT} hoặc \texttt{ROLLBACK}. \\ \hline
+    Transaction Coordinator & Điều phối các nút tham gia; thu thập phiếu bầu và ra quyết định toàn cục. \\ \hline
+    Participant (Các trạm) & Thực thi nhánh giao dịch cục bộ, giữ khóa, ghi log và chấp hành quyết định cuối. \\ \hline
+    Concurrency Controller & Sắp lịch giao dịch bằng khóa (2PL) hoặc nhãn thời gian (TO) để tránh xung đột. \\ \hline
+    Log \& Recovery Manager & Ghi nhật ký bền vững (WAL), thực hiện \texttt{REDO/UNDO} để khôi phục sau sự cố. \\ \hline
+    Mạng truyền thông & Truyền thông điệp \texttt{PREPARE}, phiếu bầu, \texttt{COMMIT/ROLLBACK} và \texttt{ACK} giữa các trạm. \\ \hline
 \end{tabularx}
 \caption{Các thành phần chức năng trong kiến trúc xử lý giao dịch phân tán}
 \end{table}
 
 \subsection{Phân biệt giao dịch, cam kết và sao chép dữ liệu}
-Giao dịch phân tán có thể truy cập các phân mảnh khác nhau; sao chép (replication) là việc duy trì nhiều bản sao của cùng một dữ liệu. Hai vấn đề có thể cùng xuất hiện nhưng không đồng nhất: Giao thức cam kết nguyên tử như 2PC quyết định một giao dịch đa nút commit hay abort; trong khi đó, một giao thức đồng thuận hoặc cơ chế sao chép mới xác định cách các bản sao thống nhất thứ tự cập nhật. Do đó, việc sử dụng 2PC không tự động bảo đảm mọi lần đọc trên mọi bản sao đều thấy dữ liệu mới nhất.
+Giao dịch phân tán có thể truy cập các phân mảnh khác nhau; sao chép (\textit{Replication}) là việc duy trì nhiều bản sao của cùng một mục dữ liệu. Hai bài toán có thể cùng xuất hiện nhưng không đồng nhất: giao thức cam kết nguyên tử như 2PC quyết định một giao dịch đa nút commit hay ROLLBACK; trong khi đó, giao thức đồng thuận hoặc cơ chế quản lý bản sao mới xác định cách các bản sao thống nhất thứ tự cập nhật. Do đó, việc sử dụng 2PC không tự động bảo đảm mọi lần đọc trên mọi bản sao đều thấy dữ liệu mới nhất.
 
 \section{Thuộc Tính ACID Trên Môi Trường Nhiều Máy Chủ}
+Việc bảo đảm 4 thuộc tính ACID trong môi trường nhiều máy chủ đòi hỏi sự kết hợp đồng bộ giữa các cơ chế tại Bảng~\ref{tab:distributed_acid}:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
 \label{tab:distributed_acid}
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.18}
 \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
     \hline
     \textbf{Thuộc tính} & \textbf{Ý nghĩa trong hệ phân tán} & \textbf{Cơ chế hỗ trợ} \\ \hline
-    Atomicity -- Nguyên tử & Không xuất hiện tình trạng một phần trạm commit, phần trạm khác abort. & Giao thức 2PC/3PC và log khôi phục, điều phối quyết định toàn cục. \\ \hline
+    Atomicity -- Nguyên tử & Không xuất hiện tình trạng một phần trạm commit, phần trạm khác ROLLBACK. & Giao thức 2PC/3PC kết hợp nhật ký khôi phục và điều phối toàn cục. \\ \hline
     Consistency -- Nhất quán & Nếu trạng thái trước hợp lệ và giao dịch thỏa mãn ràng buộc, trạng thái sau vẫn hợp lệ. & Ràng buộc dữ liệu, logic nghiệp vụ, kiểm soát thực thi và cam kết nguyên tử. \\ \hline
-    Isolation -- Cô lập & Các giao dịch đồng thời không làm lộ kết quả trung gian; mức cao nhất là khả tuần tự. & Distributed 2PL, Timestamp Ordering, thuật toán điều khiển đồng thời. \\ \hline
+    Isolation -- Cô lập & Các giao dịch đồng thời không làm lộ kết quả trung gian; mức cao nhất là khả tuần tự. & Distributed 2PL, Timestamp Ordering và kiểm soát đồng thời phân tán. \\ \hline
     Durability -- Bền vững & Giao dịch đã commit phải phục hồi trọn vẹn sau sự cố trên các nút. & Write-Ahead Logging (WAL) trên lưu trữ bền vững và cơ chế sao chép. \\ \hline
 \end{tabularx}
 \caption{Bảo đảm 4 thuộc tính ACID trong môi trường phân tán}
 \end{table}
 
-\noindent\textbf{Nhận xét quan trọng:} 2PC giải quyết chủ yếu bài toán thống nhất quyết định COMMIT/ABORT (Atomicity), không tự nó giải quyết Isolation hay bảo đảm toàn vẹn ràng buộc nghiệp vụ. Một thiết kế ACID đầy đủ cần phối hợp lịch giao dịch hợp lệ và cơ chế lưu trữ/phục hồi tin cậy. Đặc biệt, không nên nhầm lẫn khái niệm Consistency trong ACID (bảo toàn bất biến toàn vẹn dữ liệu) với Consistency trong định lý CAP (tương đương với Linearizability).
+\noindent\textbf{Nhận xét quan trọng:} 2PC giải quyết chủ yếu bài toán thống nhất quyết định \texttt{COMMIT/ROLLBACK} (\textit{Atomicity}), không tự nó giải quyết \textit{Isolation} hay bảo đảm ràng buộc nghiệp vụ. Một thiết kế ACID đầy đủ cần phối hợp lịch giao dịch hợp lệ và cơ chế lưu trữ/phục hồi tin cậy. Đặc biệt, không nên nhầm lẫn \textit{Consistency} trong ACID (bảo toàn bất biến toàn vẹn dữ liệu) với \textit{Consistency} trong định lý CAP (thường được hình thức hóa bằng tính nhất quán tuyến tính -- \textit{Linearizability}).
 
-\section{Giao Thức Cam Kết Hai Pha (Two-Phase Commit -- 2PC)}
+\section[Giao Thức Cam Kết Hai Pha (2PC)]{Giao Thức Cam Kết Hai Pha (Two-Phase Commit -- 2PC)}
 
 \subsection{Mục đích và giả định}
-2PC là giao thức thống nhất quyết định cam kết nguyên tử giữa một Coordinator và $n$ Participant. Mô hình cơ bản giả định các nút có nhật ký bền vững, có khả năng phục hồi sau sự cố sập, thông điệp có thể gửi lại, giao dịch định danh duy nhất và không có lỗi kiểu Byzantine (nút không gian lận). Cơ chế thời gian chờ (\textit{timeout}) hỗ trợ nhận biết bất thường nhưng không thể phân biệt tuyệt đối giữa máy sập và mạng trễ/chia cắt.
+2PC là giao thức thống nhất quyết định cam kết nguyên tử giữa một Coordinator và $n$ Participant. Mô hình cơ bản giả định các nút có nhật ký bền vững (WAL), có khả năng phục hồi sau sự cố sập, thông điệp có thể gửi lại, giao dịch định danh duy nhất và không có lỗi kiểu Byzantine. Cơ chế thời gian chờ (\textit{timeout}) hỗ trợ nhận biết bất thường nhưng không thể phân biệt tuyệt đối giữa máy sập và mạng trễ hoặc bị chia cắt.
 
 \subsection{Pha 1 -- PREPARE / VOTING (Chuẩn bị và Bỏ phiếu)}
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Ứng dụng hoàn tất công việc logic và yêu cầu Coordinator cam kết giao dịch $T$.
-    \item Coordinator gửi thông điệp \texttt{PREPARE(T)} đến từng Participant tham gia.
-    \item Mỗi Participant xác minh khả năng commit cục bộ (không vi phạm ràng buộc, đã ghi log cần thiết).
-    \item Nếu sẵn sàng, Participant ghi bền vững trạng thái \texttt{PREPARED(T)}, giữ các khóa tài nguyên và trả lời \texttt{VOTE-YES}.
-    \item Nếu không sẵn sàng, Participant gửi \texttt{VOTE-NO} và tự hủy phần giao dịch cục bộ.
+ \item Ứng dụng hoàn tất công việc logic và yêu cầu Coordinator cam kết giao dịch $T$.
+ \item Coordinator gửi thông điệp \texttt{PREPARE(T)} đến từng Participant tham gia.
+ \item Mỗi Participant xác minh khả năng commit cục bộ (không vi phạm ràng buộc, đã ghi dữ liệu log cần thiết).
+ \item Nếu sẵn sàng, Participant ghi bền vững trạng thái \texttt{PREPARED(T)}, giữ các khóa tài nguyên và trả lời \texttt{VOTE-YES}.
+ \item Nếu không sẵn sàng, Participant ghi log \texttt{ROLLBACK(T)}, gửi \texttt{VOTE-NO} và tự hủy phần giao dịch cục bộ.
 \end{enumerate}
-\textit{Điểm then chốt:} Sau khi đã gửi \texttt{VOTE-YES}, Participant không còn quyền tự ý \texttt{ABORT}. Nó bắt buộc phải chấp hành quyết định cuối cùng từ Coordinator. Đây là nguồn gốc của trạng thái bế tắc chờ (\textit{In-doubt}) khi mất liên lạc mạng.
+\textit{Điểm then chốt:} Sau khi đã gửi \texttt{VOTE-YES}, Participant không còn quyền tự ý \texttt{ROLLBACK} chỉ vì quá hạn chờ. Nó bắt buộc phải chấp hành quyết định cuối cùng từ Coordinator. Đây là nguồn gốc của trạng thái bế tắc chờ (\textit{In-doubt}) khi mất liên lạc mạng.
 
 \subsection{Pha 2 -- DECISION (Quyết định Cuối cùng)}
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Nếu tất cả Participant đều \texttt{VOTE-YES}, Coordinator ghi quyết định \texttt{GLOBAL-COMMIT(T)} bền vững vào log trước khi gửi thông điệp \texttt{COMMIT}.
-    \item Nếu có bất kỳ \texttt{VOTE-NO} nào hoặc hết thời gian chờ mà chưa đủ phiếu, Coordinator chọn \texttt{GLOBAL-ABORT(T)} và ghi log.
-    \item Coordinator phát thông điệp \texttt{COMMIT/ABORT}. Các Participant thực hiện quyết định, ghi log cục bộ, giải phóng khóa và gửi phản hồi \texttt{ACK}.
-    \item Sau khi nhận đủ \texttt{ACK}, Coordinator ghi bản ghi \texttt{END(T)} và dọn dẹp trạng thái điều phối.
+ \item Nếu tất cả Participant đều \texttt{VOTE-YES}, Coordinator ghi quyết định \texttt{GLOBAL-COMMIT(T)} bền vững vào log trước khi gửi thông điệp \texttt{COMMIT}.
+ \item Nếu có bất kỳ \texttt{VOTE-NO} nào hoặc hết thời gian chờ mà chưa đủ phiếu, Coordinator ghi log \texttt{GLOBAL-ROLLBACK(T)} và phát thông điệp \texttt{ROLLBACK}.
+ \item Các Participant thực hiện quyết định nhận được, ghi log cục bộ (\texttt{COMMIT} hoặc \texttt{ROLLBACK}), giải phóng khóa và gửi phản hồi \texttt{ACK}.
+ \item Sau khi nhận đủ \texttt{ACK}, Coordinator ghi bản ghi \texttt{END(T)} và dọn dẹp trạng thái điều phối.
 \end{enumerate}
-Trong trường hợp lý tưởng có $n$ Participant, giao thức trao đổi khoảng $4n$ thông điệp giữa Coordinator và các Participant, làm tăng độ trễ đáng kể so với việc commit trên một máy cục bộ.
+Trong trường hợp lý tưởng có $n$ Participant, giao thức trao đổi khoảng $4n$ thông điệp giữa Coordinator và các Participant, làm tăng độ trễ đáng kể so với việc commit cục bộ.
 
 \subsection{Lưu đồ thuật toán 2PC}
+Hình~\ref{fig:2pc_flowchart} mô tả quá trình cam kết hai pha từ lúc ứng dụng yêu cầu cam kết đến khi Coordinator kết thúc giao dịch. Quy trình bắt đầu khi ứng dụng gửi yêu cầu \texttt{COMMIT(T)}. Coordinator gửi \texttt{PREPARE(T)} đến tất cả các Participant. Mỗi trạm kiểm tra xem phần giao dịch cục bộ có thể cam kết hay không. Nếu sẵn sàng, trạm ghi bền vững trạng thái \texttt{PREPARED(T)} rồi trả lời \texttt{VOTE-YES}. Nếu không sẵn sàng, trạm trả lời \texttt{VOTE-NO}.
 
-\begin{figure}[!ht]
+Hình thoi ở giữa lưu đồ biểu diễn bước kiểm tra phiếu bầu.
+Nếu tất cả Participant đều trả lời \texttt{VOTE-YES},
+Coordinator ghi bền vững quyết định \texttt{COMMIT} rồi gửi lệnh cam kết đến các trạm. Nếu có phiếu \texttt{VOTE-NO} hoặc hết thời gian chờ mà vẫn thiếu phiếu, Coordinator ghi và gửi quyết định \texttt{ROLLBACK} để các trạm hoàn tác phần giao dịch cục bộ.
+
+Sau khi thực hiện quyết định, mỗi Participant giải phóng khóa và gửi \texttt{ACK} để xác nhận đã xử lý xong. Hai nhánh hội tụ ở ô cuối của lưu đồ. Tại đây, Coordinator chỉ ghi
+\texttt{END(T)} sau khi nhận đủ \texttt{ACK} từ các trạm tham gia.
+
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    node distance=0.55cm,
-    block/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=7.5cm, align=center, inner sep=4pt, font=\footnotesize},
-    decision/.style={diamond, draw=orange!80!black, fill=orange!10, text width=4.5cm, align=center, inner sep=2pt, font=\scriptsize},
-    action/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=5.5cm, align=center, inner sep=3.5pt, font=\scriptsize},
-    abortbox/.style={rectangle, draw=red!70!black, fill=red!10, rounded corners=3pt, text width=5.5cm, align=center, inner sep=3.5pt, font=\scriptsize},
-    arr/.style={-{Stealth[length=2.2mm]}, thick, draw=myblue}
+ node distance=0.48cm,
+ block/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=7.4cm, align=center, inner sep=3.5pt, font=\footnotesize},
+ decision/.style={diamond, draw=orange!80!black, fill=orange!10, aspect=2.2, text width=3.8cm, align=center, inner sep=1.5pt, font=\scriptsize},
+ action/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=5.4cm, align=center, inner sep=3.5pt, font=\scriptsize},
+ ROLLBACKbox/.style={rectangle, draw=red!70!black, fill=red!10, rounded corners=3pt, text width=5.4cm, align=center, inner sep=3.5pt, font=\scriptsize},
+ arr/.style={-{Stealth[length=2.2mm]}, thick, draw=myblue}
 ]
-    \node[block] (start) {Ứng dụng yêu cầu \texttt{COMMIT(T)}};
-    \node[block, below=of start] (prep) {Coordinator gửi \texttt{PREPARE(T)} tới tất cả Participant};
-    \node[block, below=of prep] (vote) {Participant kiểm tra, ghi log bền vững và trả lời \texttt{VOTE-YES / VOTE-NO}};
-    \node[decision, below=of vote] (check) {Tất cả đều\\ \texttt{VOTE-YES}?};
+ \node[block] (start) {Ứng dụng yêu cầu \texttt{COMMIT(T)}};
+ \node[block, below=of start] (prep) {Coordinator gửi \texttt{PREPARE(T)} tới tất cả Participant};
+ \node[block, below=of prep] (vote) {Participant kiểm tra, ghi log bền vững và trả lời \texttt{VOTE-YES / VOTE-NO}};
+ \node[decision, below=of vote] (check) {Tất cả đều\\ \texttt{VOTE-YES}?};
 
-    % Nhánh Commit
-    \node[action, below left=0.8cm and -0.8cm of check] (c_log) {Coordinator ghi \texttt{COMMIT(T)} vào log; gửi \texttt{GLOBAL-COMMIT}};
-    \node[action, below=0.45cm of c_log] (c_part) {Participant ghi \texttt{COMMIT}, giải phóng khóa, gửi \texttt{ACK}};
-    \node[action, below=0.45cm of c_part] (c_end) {Coordinator ghi \texttt{END(T)} hoàn tất};
+ % Nhánh Commit
+ \node[action, below left=0.65cm and -0.6cm of check] (c_log) {Coordinator ghi \texttt{COMMIT(T)} vào log; gửi \texttt{GLOBAL-COMMIT}};
+ \node[action, below=0.4cm of c_log] (c_part) {Participant ghi \texttt{COMMIT}, giải phóng khóa, gửi \texttt{ACK}};
 
-    % Nhánh Abort
-    \node[abortbox, below right=0.8cm and -0.8cm of check] (a_log) {Coordinator ghi \texttt{ABORT(T)}; gửi \texttt{GLOBAL-ABORT}};
-    \node[abortbox, below=0.45cm of a_log] (a_part) {Participant \texttt{ROLLBACK}, giải phóng khóa, gửi \texttt{ACK}};
-    \node[abortbox, below=0.45cm of a_part] (a_end) {Coordinator kết thúc nhánh Abort};
+ % Nhánh ROLLBACK
+ \node[ROLLBACKbox, below right=0.65cm and -0.6cm of check] (a_log) {Coordinator ghi \texttt{ROLLBACK(T)}; gửi \texttt{GLOBAL-ROLLBACK}};
+ \node[ROLLBACKbox, below=0.4cm of a_log] (a_part) {Participant \texttt{ROLLBACK}, giải phóng khóa, gửi \texttt{ACK}};
 
-    \draw[arr] (start) -- (prep);
-    \draw[arr] (prep) -- (vote);
-    \draw[arr] (vote) -- (check);
-    \draw[arr] (check) -| node[above, font=\scriptsize]{Có} (c_log);
-    \draw[arr] (check) -| node[above, font=\scriptsize]{Không / Timeout} (a_log);
-    \draw[arr] (c_log) -- (c_part);
-    \draw[arr] (c_part) -- (c_end);
-    \draw[arr] (a_log) -- (a_part);
-    \draw[arr] (a_part) -- (a_end);
+ % Nút kết thúc chung cho cả 2 nhánh
+ \coordinate (ack_base) at (check.center |- current bounding box.south);
+\node[block, below=0.65cm of ack_base] (ack_end)
+    {Coordinator nhận đủ \texttt{ACK}, ghi \texttt{END(T)}};
+
+ \draw[arr] (start) -- (prep);
+ \draw[arr] (prep) -- (vote);
+ \draw[arr] (vote) -- (check);
+ \draw[arr] (check) -| node[above, font=\scriptsize]{Có} (c_log);
+ \draw[arr] (check) -| node[above, font=\scriptsize]{Không / Timeout} (a_log);
+ \draw[arr] (c_log) -- (c_part);
+ \draw[arr] (a_log) -- (a_part);
+ \draw[arr] (c_part.south) -- ++(0,-0.25cm)
+    -| ([xshift=-1.5cm]ack_end.north);
+ \draw[arr] (a_part.south) -- ++(0,-0.25cm)
+    -| ([xshift=1.5cm]ack_end.north);
 \end{tikzpicture}
 \caption{Lưu đồ hoạt động của Giao thức Cam kết Hai pha (2PC)}
 \label{fig:2pc_flowchart}
 \end{figure}
 
 \subsection{Bảng trạng thái và thông điệp trong 2PC}
-Trong suốt quá trình thực thi 2PC, trạng thái chuyển tiếp của Coordinator và các Participant được quy định.
+Trong suốt quá trình thực thi 2PC, các trạng thái chuyển tiếp của Coordinator và Participant được quy định tại Bảng~\ref{tab:2pc_states}:
 
 \begin{table}[H]
 \centering
 \small
 \label{tab:2pc_states}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|}
-    \hline
-    \textbf{Vai trò nút} & \textbf{Trạng thái} & \textbf{Ý nghĩa / Hành động tương ứng} \\ \hline
-    Coordinator & \texttt{WAITING / COLLECTING} & Đã phát thông điệp PREPARE, đang chờ thu thập phiếu bầu. \\ \hline
-    Coordinator & \texttt{COMMITTED / ABORTED} & Quyết định toàn cục đã ghi log bền vững; gửi lại khi cần. \\ \hline
-    Participant & \texttt{INIT / ACTIVE} & Đang thực hiện các thao tác giao dịch cục bộ. \\ \hline
-    Participant & \texttt{PREPARED} & Đã ghi bền vững phiếu YES; không được tự ý quyết định. \\ \hline
-    Participant & \texttt{COMMITTED / ABORTED} & Đã áp dụng quyết định cuối cùng, giải phóng tài nguyên. \\ \hline
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{2.6cm}|>{\raggedright\arraybackslash}p{4.1cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Vai trò nút} & \textbf{Trạng thái} & \textbf{Ý nghĩa / Hành động tương ứng} \\ \hline
+Coordinator & \texttt{WAITING / COLLECTING} & Đã phát thông điệp \texttt{PREPARE}, đang chờ thu thập phiếu bầu. \\ \hline
+Coordinator & \texttt{COMMITTED / ROLLBACKED} & Quyết định toàn cục đã ghi log bền vững; gửi lại khi cần. \\ \hline
+Participant & \texttt{INIT / ACTIVE} & Đang thực hiện các thao tác đọc/ghi của giao dịch cục bộ. \\ \hline
+Participant & \texttt{PREPARED} & Đã ghi bền vững phiếu \texttt{YES}; không được tự ý quyết định. \\ \hline
+Participant & \texttt{COMMITTED / ROLLBACKED} & Đã áp dụng quyết định cuối cùng, giải phóng tài nguyên. \\ \hline
 \end{tabularx}
 \caption{Các trạng thái cốt lõi của nút trong giao thức 2PC}
 \end{table}
 
 \subsection{Ví dụ chi tiết: Giao dịch chuyển tiền giữa hai máy chủ}
-Xét tài khoản $A = 5.000.000$ đ tại trạm $S_1$ và $B = 3.000.000$ đ tại trạm $S_2$. Giao dịch $T$ chuyển $1.000.000$ đ từ $A$ sang $B$. Kết quả mong muốn sau commit: $A = 4.000.000$ đ, $B = 4.000.000$ đ; tổng số dư bảo toàn $8.000.000$ đ.
+Xét tài khoản $A = 5.000.000$ đ tại trạm $S_1$ và $B = 3.000.000$ đ tại trạm $S_2$. Giao dịch $T$ chuyển $1.000.000$ đ từ $A$ sang $B$. Kết quả mong muốn sau commit: $A = 4.000.000$ đ, $B = 4.000.000$ đ (bảo toàn tổng số dư $8.000.000$ đ) theo trình tự tại Bảng~\ref{tab:transfer_2pc_example}:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{Tiến trình thực thi giao dịch chuyển tiền qua 2PC}
 \label{tab:transfer_2pc_example}
-\renewcommand{\arraystretch}{1.2}
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.15}
 \begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
 \hline
-\textbf{Thời điểm} & \textbf{Coordinator} & \textbf{$S_1$ (Tài khoản $A$)} & \textbf{$S_2$ (Tài khoản $B$)} \\ \hline
+\textbf{Mốc} & \textbf{Coordinator} & \textbf{$S_1$ (Tài khoản $A$)} & \textbf{$S_2$ (Tài khoản $B$)} \\ \hline
 $t_1$ & Khởi tạo giao dịch $T$. & Trừ $1.000.000$ đ (chưa commit). & Cộng $1.000.000$ đ (chưa commit). \\ \hline
 $t_2$ & Gửi thông điệp \texttt{PREPARE}. & Ghi log \texttt{PREPARED}, trả lời \texttt{VOTE-YES}. & Ghi log \texttt{PREPARED}, trả lời \texttt{VOTE-YES}. \\ \hline
-$t_3$ & Nhận đủ YES; ghi log \texttt{GLOBAL-COMMIT}. & Chờ quyết định toàn cục. & Chờ quyết định toàn cục. \\ \hline
-$t_4$ & Phát thông điệp \texttt{COMMIT}. & Commit cục bộ, nhả khóa, gửi \texttt{ACK}. & Commit cục bộ, nhả khóa, gửi \texttt{ACK}. \\ \hline
+$t_3$ & Nhận đủ \texttt{YES}; ghi log \texttt{GLOBAL-COMMIT}. & Chờ quyết định toàn cục (giữ khóa $A$). & Chờ quyết định toàn cục (giữ khóa $B$). \\ \hline
+$t_4$ & Phát thông điệp \texttt{COMMIT}. & Ghi log \texttt{COMMIT}, nhả khóa, gửi \texttt{ACK}. & Ghi log \texttt{COMMIT}, nhả khóa, gửi \texttt{ACK}. \\ \hline
 $t_5$ & Ghi bản ghi \texttt{END(T)}. & Hoàn tất ($A = 4.000.000$ đ). & Hoàn tất ($B = 4.000.000$ đ). \\ \hline
 \end{tabularx}
+\caption{Tiến trình thực thi giao dịch chuyển tiền qua 2PC}
 \end{table}
 
-Nếu trạm $S_2$ gặp sự cố không thể chuẩn bị và bỏ phiếu \texttt{VOTE-NO}, Coordinator sẽ phát \texttt{GLOBAL-ABORT}. Trạm $S_1$ hoàn tác khoản trừ, trạm $S_2$ hoàn tác khoản cộng, dữ liệu khôi phục về trạng thái nguyên vẹn ban đầu.
+Nếu trạm $S_2$ gặp sự cố không thể chuẩn bị và bỏ phiếu \texttt{VOTE-NO}, Coordinator sẽ phát \texttt{GLOBAL-ROLLBACK}. Khi đó $S_1$ hoàn tác khoản trừ, $S_2$ hoàn tác khoản cộng, dữ liệu khôi phục về trạng thái nguyên vẹn ban đầu.
 
 \section{Xử Lý Lỗi Và Phục Hồi (Recovery) Trong 2PC}
 
 \subsection{Vai trò của nhật ký bền vững (Write-Ahead Logging)}
-Write-Ahead Logging (WAL) yêu cầu toàn bộ thông tin trạng thái phải được lưu bền vững xuống đĩa trước khi gửi thông điệp ra mạng:
+Theo nguyên lý Write-Ahead Logging (WAL), mọi bản ghi nhật ký mô tả thay đổi dữ liệu bắt buộc phải được ghi bền vững xuống đĩa trước khi các trang dữ liệu tương ứng trong bộ nhớ đệm được phép ghi đè xuống đĩa cứng.
+
+Khi kết hợp với giao thức 2PC, để bảo đảm khả năng khôi phục quyết định toàn cục sau sự cố, quy tắc giao thức yêu cầu thêm việc ép ghi nhật ký trạng thái (\textit{force-write}) trước khi phát thông điệp mạng quan trọng: Participant phải ghi bền vững bản ghi \texttt{PREPARED(T)} trước khi gửi phiếu \texttt{VOTE-YES}, và Coordinator phải ghi bền vững quyết định \texttt{COMMIT(T)} (hoặc \texttt{ROLLBACK(T)} trong bản cơ bản) trước khi phát thông điệp quyết định cho các trạm:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \texttt{Coordinator: START\_2PC(T) -> COMMIT(T) -> END(T)}
-    \item \texttt{Participant: UPDATE(T, before, after) -> PREPARED(T) -> COMMIT(T)}
-    \item \texttt{Nhánh hủy:   UPDATE(T, before, after) -> ABORT(T)}
+ \item \texttt{Coordinator: START\_2PC(T) -> COMMIT(T) -> END(T)}
+ \item \texttt{Participant: UPDATE(T, before, after) -> PREPARED(T) -> COMMIT(T)}
+ \item \texttt{Nhánh hủy: UPDATE(T, before, after) -> ROLLBACK(T)}
 \end{itemize}
-Mỗi thông điệp gửi lại khi phục hồi phải có tính bất biến lặp (\textit{Idempotent}) theo mã giao dịch để tránh thực thi cập nhật trùng lặp.
+Mỗi thông điệp gửi lại khi phục hồi phải có tính bất biến lặp (\textit{Idempotent}) theo mã giao dịch $T$ để tránh thực thi cập nhật trùng lặp.
 
 \subsection{Phân tích các kịch bản sự cố và khả năng phục hồi}
-Bảng 4.5 dưới đây tổng hợp các kịch bản sự cố điển hình của Coordinator, Participant và đường truyền mạng cùng hướng xử lý tương ứng:
+Bảng~\ref{tab:2pc_failure_scenarios} tổng hợp các kịch bản sự cố điển hình của Coordinator, Participant và đường truyền mạng cùng hướng xử lý tương ứng:
 
 \begin{table}[H]
 \centering
 \small
 \label{tab:2pc_failure_scenarios}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.2cm}|}
-\hline
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.3cm}|}
+    \hline
 \textbf{Kịch bản sự cố} & \textbf{Quy trình xử lý hợp lệ} & \textbf{Khả năng bị chặn (Blocking)} \\ \hline
-Participant sập trước \texttt{VOTE-YES} & Coordinator không nhận đủ phiếu sẽ timeout và phát ABORT; Participant khi phục hồi dùng log rollback. & Thường không kéo dài sau khi quyết định hủy được phát. \\ \hline
-Participant sập ngay sau \texttt{VOTE-YES} & Lúc khởi động lại thấy log PREPARED, bắt buộc phải tra cứu kết quả toàn cục để tuân theo COMMIT/ABORT. & Có thể bị chặn nếu không liên lạc được với nút nắm quyết định. \\ \hline
-Participant sập sau khi nhận COMMIT trước ACK & Đọc log COMMIT/REDO nếu cần; gửi lại ACK sau khi phục hồi. & Không làm đổi quyết định; chỉ chậm trễ xác nhận dọn dẹp. \\ \hline
-Coordinator sập trước khi ghi quyết định & Sau phục hồi, nếu chưa có COMMIT bền vững, hệ thống quyết định ABORT và thông báo cho các nút. & Participant ở trạng thái PREPARED phải chờ Coordinator bật lại. \\ \hline
-Coordinator sập sau khi đã ghi COMMIT bền vững & Sau phục hồi, đọc log thấy COMMIT sẽ gửi lại thông điệp COMMIT cho các nút chưa xác nhận. & Các nút chưa biết quyết định phải chờ trong thời gian mất liên lạc. \\ \hline
-Mạng bị phân hoạch (Network Partition) & Nút PREPARED không được tự ý đổi quyết định từ timeout; bắt buộc phải giữ tài nguyên chờ kết nối lại. & \textbf{Bị chặn (Blocking)}; thể hiện rõ hạn chế cố hữu của 2PC. \\ \hline
-Nhiều nút sập đồng thời mất log & Khôi phục từ các bản sao lưu chuyên biệt; có nguy cơ không thể tự động khôi phục. & Nguy cơ gián đoạn nghiêm trọng. \\ \hline
+Participant sập trước \texttt{VOTE-YES} & Coordinator không nhận đủ phiếu sẽ timeout và phát \texttt{ROLLBACK}; Participant khi phục hồi dùng log tự rollback. & Thường không kéo dài sau khi quyết định hủy được phát. \\ \hline
+Participant sập ngay sau \texttt{VOTE-YES} (log mới chỉ có \texttt{PREPARED}) & Khi khởi động lại thấy log \texttt{PREPARED} (kể cả khi sập lúc vừa nhận thông điệp mạng nhưng chưa kịp ghi log quyết định), trạm bắt buộc phải tra cứu kết quả toàn cục để tuân theo \texttt{COMMIT/ROLLBACK}. & Có thể bị chặn nếu không liên lạc được với nút nắm quyết định. \\ \hline
+Participant sập sau khi đã ghi \texttt{COMMIT} bền vững & Đọc log thấy bản ghi \texttt{COMMIT} bền vững, thực hiện \texttt{REDO} nếu cần và gửi lại \texttt{ACK} sau khi phục hồi. & Không làm đổi quyết định; chỉ chậm trễ xác nhận dọn dẹp. \\ \hline
+Coordinator sập trước khi ghi quyết định & Sau phục hồi, nếu chưa có bản ghi \texttt{COMMIT} bền vững, hệ thống quyết định \texttt{ROLLBACK} và thông báo cho các nút. & Participant ở trạng thái \texttt{PREPARED} phải chờ Coordinator bật lại. \\ \hline
+Coordinator sập sau khi đã ghi \texttt{COMMIT} bền vững & Sau phục hồi, đọc log thấy \texttt{COMMIT} sẽ gửi lại thông điệp \texttt{COMMIT} cho các nút chưa xác nhận \texttt{ACK}. & Các nút chưa biết quyết định phải chờ trong thời gian mất liên lạc. \\ \hline
+Mạng bị phân hoạch (Network Partition) & Nút đã \texttt{PREPARED} không được tự ý đổi quyết định từ timeout; bắt buộc phải giữ tài nguyên chờ kết nối lại. & \textbf{Bị chặn (Blocking)}; thể hiện rõ hạn chế cố hữu của 2PC. \\ \hline
+Nhiều nút sập đồng thời mất đĩa log & Khôi phục từ các bản sao lưu chuyên biệt; có nguy cơ không thể tự động khôi phục. & Nguy cơ gián đoạn nghiêm trọng. \\ \hline
 \end{tabularx}
-\caption{Phân tích các kịch bản sự cố trong 2PC}
+\caption{Phân tích các kịch bản sự cố và cơ chế phục hồi trong 2PC}
 \end{table}
 
 \subsection{Tại sao 2PC là giao thức Blocking?}
-Xét trạm $S_1$ đã ghi \texttt{PREPARED(T)} và gửi \texttt{VOTE-YES}. Coordinator mất kết nối trước khi $S_1$ nhận được kết quả. $S_1$ không thể tự ý COMMIT (vì trạm khác có thể đã bỏ phiếu NO), cũng không thể tự ý ABORT (vì Coordinator có thể đã quyết định COMMIT và gửi cho trạm khác). Trạm $S_1$ bị rơi vào trạng thái bế tắc treo (\textit{In-doubt state}), buộc phải giữ chặt các khóa tài nguyên, khiến các giao dịch khác đến sau bị nghẽn dây chuyền.
+Xét trạm $S_1$ đã ghi \texttt{PREPARED(T)} và gửi \texttt{VOTE-YES}. Coordinator mất kết nối trước khi $S_1$ nhận được kết quả. $S_1$ không thể tự ý \texttt{COMMIT} (vì trạm khác có thể đã bỏ phiếu \texttt{NO}), cũng không thể tự ý \texttt{ROLLBACK} (vì Coordinator có thể đã ghi \texttt{GLOBAL-COMMIT}). Trạm $S_1$ rơi vào trạng thái bế tắc treo (\textit{In-doubt state}), buộc phải giữ chặt các khóa tài nguyên, khiến các giao dịch khác đến sau bị nghẽn dây chuyền.
 
 \subsection{Lưu đồ phục hồi tại Participant}
+Quy trình tự kiểm tra nhật ký WAL và khôi phục trạng thái của một Participant ngay sau khi khởi động lại được biểu diễn trên Hình~\ref{fig:2pc_participant_recovery}:
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    node distance=0.55cm,
-    block/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=6.5cm, align=center, inner sep=4pt, font=\scriptsize},
-    decision/.style={diamond, draw=orange!80!black, fill=orange!10, text width=3.8cm, align=center, inner sep=2pt, font=\scriptsize},
-    action/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=5cm, align=center, inner sep=3pt, font=\scriptsize},
-    arr/.style={-{Stealth[length=2.2mm]}, thick, draw=myblue}
+ node distance=0.45cm,
+ block/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=6.0cm, align=center, inner sep=3.5pt, font=\scriptsize},
+ decision/.style={diamond, draw=orange!80!black, fill=orange!10, aspect=2.1, text width=3.4cm, align=center, inner sep=1.5pt, font=\scriptsize},
+ action/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=4.0cm, align=center, inner sep=3pt, font=\scriptsize},
+ arr/.style={-{Stealth[length=2.0mm]}, thick, draw=myblue}
 ]
-    \node[block] (restart) {Participant khởi động lại sau sự cố};
-    \node[block, below=of restart] (readlog) {Đọc log WAL của giao dịch $T$};
-    \node[decision, below=of readlog] (chkstate) {Trạng thái bền vững\\gần nhất?};
+ \node[block] (restart) {Participant khởi động lại sau sự cố};
+ \node[block, below=of restart] (readlog) {Đọc log WAL của giao dịch $T$};
+ \node[decision, below=of readlog] (chkstate) {Trạng thái bền vững\\gần nhất?};
 
-    \node[action, left=1.2cm of chkstate] (act_abort) {\texttt{ABORT(T)}: UNDO / Hoàn tất rollback cục bộ};
-    \node[action, right=1.2cm of chkstate] (act_commit) {\texttt{COMMIT(T)}: REDO / Hoàn tất commit và gửi lại ACK};
-    
-    \node[decision, below=1.0cm of chkstate] (indoubt) {Trạng thái \texttt{PREPARED}?\\(Rơi vào \textit{In-Doubt})};
-    \node[block, below=of indoubt] (query) {Hỏi Coordinator hoặc trạm lân cận về quyết định của $T$};
-    \node[decision, below=of query] (chkdec) {Đã biết quyết định?};
+ \node[action, left=0.7cm of chkstate] (act_ROLLBACK) {\texttt{ROLLBACK(T)}: UNDO / Hoàn tất rollback cục bộ};
+ \node[action, right=0.7cm of chkstate] (act_commit) {\texttt{COMMIT(T)}: REDO / Hoàn tất commit và gửi lại ACK};
+ 
+ \node[decision, below=0.7cm of chkstate] (indoubt) {Trạng thái \texttt{PREPARED}?\\(Rơi vào \textit{In-Doubt})};
+ \node[block, below=of indoubt] (query) {Hỏi Coordinator hoặc trạm lân cận về quyết định của $T$};
+ \node[decision, below=of query] (chkdec) {Đã biết quyết định?};
 
-    \node[action, below left=0.6cm and -0.5cm of chkdec] (apply) {Áp dụng COMMIT/ABORT, ghi log, giải phóng khóa};
-    \node[action, below right=0.6cm and -0.5cm of chkdec] (wait) {Tiếp tục chờ / Giữ nguyên các khóa dữ liệu};
+ \node[action, below left=0.5cm and -0.2cm of chkdec, text width=4.5cm] (apply) {Áp dụng COMMIT/ROLLBACK, ghi log, giải phóng khóa};
+ \node[action, below right=0.5cm and -0.2cm of chkdec, text width=4.5cm] (wait) {Tiếp tục chờ / Giữ nguyên các khóa dữ liệu};
 
-    \draw[arr] (restart) -- (readlog);
-    \draw[arr] (readlog) -- (chkstate);
-    \draw[arr] (chkstate) -- node[above, font=\tiny]{ABORT} (act_abort);
-    \draw[arr] (chkstate) -- node[above, font=\tiny]{COMMIT} (act_commit);
-    \draw[arr] (chkstate) -- node[right, font=\tiny]{PREPARED} (indoubt);
-    \draw[arr] (indoubt) -- node[right, font=\tiny]{Có} (query);
-    \draw[arr] (query) -- (chkdec);
-    \draw[arr] (chkdec) -| node[above, font=\tiny]{Có} (apply);
-    \draw[arr] (chkdec) -| node[above, font=\tiny]{Chưa} (wait);
+ \draw[arr] (restart) -- (readlog);
+ \draw[arr] (readlog) -- (chkstate);
+ \draw[arr] (chkstate) -- node[above, font=\tiny]{ROLLBACK} (act_ROLLBACK);
+ \draw[arr] (chkstate) -- node[above, font=\tiny]{COMMIT} (act_commit);
+ \draw[arr] (chkstate) -- node[right, font=\tiny]{PREPARED} (indoubt);
+ \draw[arr] (indoubt) -- node[right, font=\tiny]{Có} (query);
+ \draw[arr] (query) -- (chkdec);
+ \draw[arr] (chkdec) -| node[above, font=\tiny]{Có} (apply);
+ \draw[arr] (chkdec) -| node[above, font=\tiny]{Chưa} (wait);
 \end{tikzpicture}
 \caption{Lưu đồ phục hồi giao dịch 2PC tại Participant}
 \label{fig:2pc_participant_recovery}
 \end{figure}
 
-\section{Giao Thức Cam Kết Ba Pha (Three-Phase Commit -- 3PC)}
+\section[Giao Thức Cam Kết Ba Pha (3PC)]{Giao Thức Cam Kết Ba Pha (Three-Phase Commit -- 3PC)}
 
 \subsection{Động cơ và các giai đoạn}
-3PC được đề xuất nhằm loại bỏ hiện tượng bị chặn không giới hạn (\textit{Non-blocking}) của 2PC dưới giả định mạng không bị phân hoạch tùy ý và có giới hạn trễ xác định:
+3PC được đề xuất nhằm loại bỏ hiện tượng bị chặn không giới hạn (\textit{Non-blocking}) của 2PC dưới giả định mạng đồng bộ có giới hạn trễ xác định và không bị phân hoạch tùy ý:
 \begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Giai đoạn 1 (CanCommit):} Coordinator gửi thông điệp \texttt{CAN-COMMIT} thăm dò. Participant kiểm tra tài nguyên và trả lời \texttt{VOTE-YES} (chuyển sang trạng thái \texttt{READY}) hoặc \texttt{VOTE-NO}. Nếu có phiếu NO, giao dịch hủy ngay.
-    \item \textbf{Giai đoạn 2 (PreCommit):} Khi nhận đủ YES, Coordinator gửi \texttt{PRE-COMMIT}. Participant nhận lệnh, ghi log bền vững trạng thái \texttt{PRECOMMIT} và gửi lại \texttt{ACK}. Giai đoạn này đảm bảo tất cả các nút đều đã biết trước rằng giao dịch đã đủ điều kiện cam kết.
-    \item \textbf{Giai đoạn 3 (DoCommit):} Coordinator thu thập đủ ACK, ghi log bền vững \texttt{COMMIT} và gửi thông điệp \texttt{DO-COMMIT}. Các nút tiến hành commit cục bộ và nhả tài nguyên.
+ \item \textbf{Giai đoạn 1 (CanCommit):} Coordinator gửi thông điệp \texttt{CAN-COMMIT} thăm dò. Participant kiểm tra tài nguyên và trả lời \texttt{VOTE-YES} (chuyển sang \texttt{READY}) hoặc \texttt{VOTE-NO}. Nếu có phiếu \texttt{NO}, giao dịch hủy ngay.
+ \item \textbf{Giai đoạn 2 (PreCommit):} Khi nhận đủ \texttt{YES}, Coordinator gửi \texttt{PRE-COMMIT}. Participant ghi log bền vững trạng thái \texttt{PRECOMMIT} và gửi lại \texttt{ACK}. Pha đệm này bảo đảm mọi nút còn sống đều biết trước giao dịch đã đủ điều kiện cam kết.
+ \item \textbf{Giai đoạn 3 (DoCommit):} Coordinator thu thập đủ \texttt{ACK}, ghi log bền vững \texttt{COMMIT} và gửi thông điệp \texttt{DO-COMMIT}. Các nút tiến hành commit cục bộ và nhả tài nguyên.
 \end{enumerate}
 
 \subsection{Phục hồi và giới hạn kỹ thuật của 3PC}
-Nhờ có trạng thái trung gian \texttt{PRECOMMIT}, nếu Coordinator bị sập:
+Nhờ có trạng thái trung gian \texttt{PRECOMMIT}, nếu Coordinator bị sập trong mô hình đồng bộ:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textit{Nếu chưa có nút nào tới PreCommit:} Các nút còn sống có thể bầu Coordinator mới và an toàn quyết định \texttt{ABORT}.
-    \item \textit{Nếu đã có ít nhất một nút nhận PreCommit:} Các nút còn sống biết rằng không có nút nào bỏ phiếu NO, do đó có thể điều phối tiếp tục tiến trình để hoàn tất \texttt{COMMIT}.
+ \item \textit{Nếu chưa có nút còn sống nào tới PreCommit:} Các nút còn sống có thể bầu Coordinator mới và an toàn quyết định \texttt{ROLLBACK}.
+ \item \textit{Nếu đã có ít nhất một nút nhận PreCommit:} Các nút còn sống biết rằng không có nút nào bỏ phiếu \texttt{NO}, do đó có thể điều phối tiếp tục tiến trình để hoàn tất \texttt{COMMIT}.
 \end{itemize}
-\textit{Giới hạn thực tế:} 3PC đòi hỏi giả định đồng bộ rất mạnh về mạng. Khi mạng xảy ra phân hoạch (\textit{Network Partition}), 3PC vẫn có thể đưa ra quyết định sai lệch ở hai nửa mạng, do đó trong thực tế các hệ thống dữ liệu hiện đại ưa chuộng các thuật toán đồng thuận như Paxos hoặc Raft hơn.
+\textit{Giới hạn thực tế:} 3PC đòi hỏi giả định đồng bộ rất mạnh về mạng. Khi mạng xảy ra phân hoạch (\textit{Network Partition}) hoặc trễ tùy ý, hai nhóm nút mất liên lạc cùng dựa vào timeout có nguy cơ đưa ra quyết định xung đột (một phía ROLLBACK, một phía commit). Vì vậy, các hệ thống thực tế thường ưu tiên 2PC hoặc các thuật toán đồng thuận như Paxos/Raft.
 
 \subsection{Bảng so sánh đối chiếu giữa 2PC và 3PC}
+Sự khác biệt cốt lõi giữa hai giao thức cam kết 2PC và 3PC được đối chiếu tại Bảng~\ref{tab:2pc_vs_3pc}:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{So sánh đặc tính kỹ thuật giữa giao thức 2PC và 3PC}
 \label{tab:2pc_vs_3pc}
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.18}
 \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Tiêu chí} & \textbf{Giao thức 2PC} & \textbf{Giao thức 3PC} \\ \hline
 Số giai đoạn chính & 2 pha: Prepare, Decision. & 3 pha: CanCommit, PreCommit, DoCommit. \\ \hline
 Độ phức tạp thông điệp & Ít thông điệp hơn ($4n$), độ trễ thấp hơn. & Tăng thêm thông điệp ($6n$) và nhiều lần ghi đĩa log hơn. \\ \hline
-Coordinator sập khi đang chờ & Participant rơi vào trạng thái In-doubt và bị chặn (\textit{Blocking}). & Có thể giải phóng trạng thái nghẽn nhờ pha trung gian PreCommit. \\ \hline
-Phân hoạch mạng (Partition) & Bảo toàn an toàn quyết định nhưng đánh đổi tính sẵn sàng. & Không bảo đảm an toàn khi mạng bị chia cắt tùy ý. \\ \hline
-Ứng dụng thực tế & Được ứng dụng rộng rãi trong các chuẩn XA, SQL truyền thống. & Chủ yếu mang giá trị nghiên cứu học thuật. \\ \hline
+Coordinator sập khi đang chờ & Participant rơi vào trạng thái \textit{In-doubt} và bị chặn (\textit{Blocking}). & Có thể giải phóng trạng thái nghẽn nhờ pha trung gian \texttt{PreCommit}. \\ \hline
+Phân hoạch mạng (Partition) & Bảo toàn an toàn quyết định nhưng đánh đổi tính sẵn sàng. & Không bảo đảm an toàn nguyên tử khi mạng bị chia cắt tùy ý. \\ \hline
+Ứng dụng thực tế & Được ứng dụng rộng rãi trong chuẩn XA và các RDBMS truyền thống. & Chủ yếu mang giá trị nghiên cứu học thuật. \\ \hline
 \end{tabularx}
+\caption{So sánh đặc tính kỹ thuật giữa giao thức 2PC và 3PC}
 \end{table}
 
 \section{Kiểm Soát Đồng Thời Phân Tán}
 
 \subsection{Vì sao cần kiểm soát đồng thời?}
-Khi nhiều giao dịch thực thi xen kẽ trên nhiều trạm, các hiện tượng mất cập nhật (\textit{Lost Update}) hoặc đọc dữ liệu rác (\textit{Dirty Read}) sẽ phá vỡ tính đúng đắn của CSDL. Mục tiêu lý thuyết quan trọng là bảo đảm tính \textbf{Khả tuần tự toàn cục (Global Serializability)}: kết quả thực thi đồng thời phải tương đương với một trật tự tuần tự nào đó.
+Khi nhiều giao dịch thực thi xen kẽ trên nhiều trạm, các hiện tượng mất cập nhật (\textit{Lost Update}) hoặc đọc dữ liệu chưa cam kết (\textit{Dirty Read}) sẽ phá vỡ tính đúng đắn của CSDL. Mục tiêu lý thuyết quan trọng là bảo đảm tính \textbf{Khả tuần tự toàn cục (Global Serializability)}: kết quả thực thi đồng thời phải tương đương với một lịch tuần tự nào đó trên toàn hệ thống.
 
 \subsection{Khóa hai pha phân tán (Distributed Two-Phase Locking -- 2PL)}
-Quy tắc 2PL gồm hai pha: pha tăng trưởng (chỉ xin thêm khóa, không nhả khóa) và pha thu hẹp (chỉ nhả khóa, không xin thêm). 
+Quy tắc 2PL gồm hai pha: pha tăng trưởng (chỉ xin thêm khóa, không nhả khóa) và pha thu hẹp (chỉ nhả khóa, không xin thêm).
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Trong hệ phân tán, giao dịch phải tuân thủ nghiêm ngặt quy tắc này trên toàn bộ các trạm mà nó thao tác.
-    \item \textbf{Strict 2PL:} Yêu cầu giữ toàn bộ khóa độc quyền (\textit{Exclusive Locks -- X}) cho đến khi giao dịch hoàn tất \texttt{COMMIT/ABORT}, ngăn chặn đọc dữ liệu chưa cam kết.
+ \item Trong hệ phân tán, giao dịch phải tuân thủ nghiêm ngặt quy tắc này trên toàn bộ các trạm mà nó thao tác, không được coi mỗi trạm là một giao dịch độc lập.
+ \item \textbf{Strict 2PL:} Yêu cầu giữ toàn bộ khóa độc quyền (\textit{Exclusive Locks -- X}) cho đến khi giao dịch hoàn tất \texttt{COMMIT/ROLLBACK}, ngăn chặn đọc/ghi dữ liệu chưa hoàn tất.
 \end{itemize}
 
 \subsection{Điều khiển theo nhãn thời gian (Timestamp Ordering -- TO)}
-Mỗi giao dịch $T$ được cấp một nhãn thời gian duy nhất $\text{TS}(T)$. Đối với mỗi mục dữ liệu $X$, hệ thống ghi nhận nhãn đọc lớn nhất $\text{read\_TS}(X)$ và nhãn ghi lớn nhất $\text{write\_TS}(X)$:
+Mỗi giao dịch $T$ được cấp một nhãn thời gian duy nhất $\text{TS}(T)$. Đối với mỗi mục dữ liệu $X$, bộ điều khiển giữ nhãn đọc lớn nhất $\text{read\_TS}(X)$ và nhãn ghi lớn nhất $\text{write\_TS}(X)$ để kiểm tra xung đột theo Bảng~\ref{tab:timestamp_ordering}:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{Quy tắc kiểm tra xung đột trong giải thuật Timestamp Ordering}
 \label{tab:timestamp_ordering}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
-\hline
-\textbf{Thao tác yêu cầu} & \textbf{Điều kiện xảy ra xung đột} & \textbf{Biện pháp xử lý của hệ thống} \\ \hline
-$T$ yêu cầu \texttt{READ(X)} & $\text{TS}(T) < \text{write\_TS}(X)$ & $T$ đến muộn sau một thao tác ghi mới hơn; giao dịch $T$ bị hủy và cấp nhãn lại. \\ \hline
-$T$ yêu cầu \texttt{WRITE(X)} & $\text{TS}(T) < \text{read\_TS}(X)$ hoặc $\text{TS}(T) < \text{write\_TS}(X)$ & Thao tác ghi vi phạm thứ tự thời gian; giao dịch $T$ bị hủy và cấp nhãn lại. \\ \hline
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.4cm}|>{\raggedright\arraybackslash}p{4.3cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \textbf{Thao tác yêu cầu} & \textbf{Điều kiện xảy ra xung đột} & \textbf{Biện pháp xử lý của hệ thống} \\ \hline
+    $T$ yêu cầu \texttt{READ(X)} & $\text{TS}(T) < \text{write\_TS}(X)$ & $T$ đến muộn sau một thao tác ghi mới hơn; giao dịch $T$ bị hủy và cấp nhãn lại. \\ \hline
+    $T$ yêu cầu \texttt{WRITE(X)} & $\text{TS}(T) < \text{read\_TS}(X)$ hoặc $\text{TS}(T) < \text{write\_TS}(X)$ & Thao tác ghi vi phạm thứ tự thời gian; giao dịch $T$ bị hủy và cấp nhãn lại. \\ \hline
 \end{tabularx}
+\caption{Quy tắc kiểm tra xung đột trong giải thuật Timestamp Ordering}
 \end{table}
 
 \subsection{Phát hiện và xử lý bế tắc toàn cục (Global Deadlock Detection)}
-Bế tắc xảy ra khi tồn tại một chu trình chờ tài nguyên giữa các giao dịch. Đồ thị chờ (\textit{Wait-For Graph -- WFG}) phân tán có đỉnh là giao dịch, cạnh có hướng $T_i \rightarrow T_j$ thể hiện $T_i$ đang chờ tài nguyên bị giữ bởi $T_j$.
+Bế tắc xảy ra khi tồn tại một chu trình chờ tài nguyên giữa các giao dịch. Đồ thị chờ (\textit{Wait-For Graph -- WFG}) phân tán có đỉnh là giao dịch, cạnh có hướng $T_i \rightarrow T_j$ thể hiện $T_i$ đang chờ tài nguyên do $T_j$ nắm giữ:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textit{Ví dụ:} Tại trạm $S_1$, $T_1$ giữ $X(A)$ và $T_2$ chờ $A \implies T_2 \rightarrow T_1$. Tại trạm $S_2$, $T_2$ giữ $X(B)$ và $T_1$ chờ $B \implies T_1 \rightarrow T_2$.
-    \item Mỗi trạm cục bộ chỉ thấy một nhánh không tạo thành chu trình. Chỉ khi điều phối viên thu thập và hợp nhất thành \textbf{Đồ thị WFG Toàn cục}, chu trình $T_1 \rightarrow T_2 \rightarrow T_1$ mới lộ diện. Hệ thống sẽ chọn một giao dịch làm nạn nhân (\textit{Victim}) để rollback và giải phóng khóa.
+ \item \textbf{Chu trình chờ liên trạm:} Tại trạm $S_1$, $T_1$ giữ khóa $X(A)$ và $T_2$ chờ $A \implies T_2 \rightarrow T_1$. Tại trạm $S_2$, $T_2$ giữ khóa $X(B)$ và $T_1$ chờ $B \implies T_1 \rightarrow T_2$.
+ \item \textbf{Hợp nhất đồ thị toàn cục:} Mỗi trạm cục bộ chỉ thấy một cạnh đơn lẻ không tạo thành chu trình. Chỉ khi điều phối viên thu thập và hợp nhất thành \textbf{Đồ thị WFG Toàn cục}, chu trình $T_1 \rightarrow T_2 \rightarrow T_1$ mới lộ diện để chọn một giao dịch làm nạn nhân (\textit{Victim}) và rollback.
+ \item \textbf{Hiện tượng bế tắc giả (\textit{Phantom Deadlock}):} Khi các cạnh chờ từ nhiều trạm được thu thập không đồng bộ ở các thời điểm khác nhau, một giao dịch có thể đã kết thúc (\texttt{COMMIT/ROLLBACK}) và nhả khóa tại một trạm trong lúc thông tin đồ thị đang truyền trên mạng. Nếu bộ dò tìm toàn cục ghép cạnh chờ cũ với cạnh chờ mới phát sinh ở trạm khác, nó vẫn có thể báo nhầm một chu trình không còn tồn tại trong thực tế. Để giảm quyết định hủy nhầm, hệ thống cần kết hợp chụp trạng thái nhất quán, đánh dấu phiên bản hoặc xác thực lại chu trình trước khi chọn nạn nhân.
 \end{itemize}
 
 \section{Định Lý CAP Và Sự Đánh Đổi Trong Thực Tế}
@@ -1288,63 +1330,70 @@ Bế tắc xảy ra khi tồn tại một chu trình chờ tài nguyên giữa c
 \subsection{Phát biểu và cách hiểu chính xác}
 Theo công trình hình thức hóa của Gilbert và Lynch \cite{gilbert2002}, định lý CAP xét 3 thuộc tính:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{C (Consistency):} Nhất quán mạnh (tương đương \textit{Linearizability}), mọi thao tác đọc đều nhận được dữ liệu ghi mới nhất.
-    \item \textbf{A (Availability):} Mọi nút mạng không bị lỗi đều phải trả về phản hồi hợp lệ cho các yêu cầu.
-    \item \textbf{P (Partition Tolerance):} Hệ thống vẫn hoạt động ngay cả khi các gói tin truyền thông giữa các cụm nút bị thất lạc hoặc trễ vô hạn.
+ \item \textbf{C (Consistency):} Nhất quán mạnh (được hình thức hóa là \textit{Linearizability}): mọi thao tác trông như thực thi nguyên tử theo một thứ tự phù hợp với thời gian thực; phép đọc sau khi một phép ghi đã hoàn tất phải thấy giá trị vừa ghi hoặc giá trị mới hơn.
+ \item \textbf{A (Availability):} Mọi yêu cầu hợp lệ gửi đến một nút mạng không bị hỏng cuối cùng đều phải nhận được phản hồi hợp lệ.
+ \item \textbf{P (Partition Tolerance):} Hệ thống vẫn đối diện được với tình huống thông điệp giữa các nhóm nút bị mất hoặc trễ tùy ý do mạng chia cắt.
 \end{itemize}
-\textit{Bản chất kỹ thuật:} Không nên hiểu máy móc là ``được chọn 2 trong 3 ở mọi thời điểm''. Trong thực tế hạ tầng mạng, sự cố phân hoạch ($P$) là bất khả kháng; do đó khi có phân hoạch xảy ra, hệ thống bắt buộc phải đánh đổi giữa tính nhất quán ($C$) và tính sẵn sàng ($A$).
+\textit{Bản chất kỹ thuật:} Không nên diễn đạt máy móc là ``chỉ được chọn 2 trong 3 ở mọi thời điểm''. Trong hạ tầng mạng thực tế, phân hoạch mạng ($P$) là sự cố khách quan không thể loại bỏ hoàn toàn; do đó \textbf{khi xảy ra phân hoạch mạng}, hệ thống không thể đồng thời bảo đảm cả \textit{Linearizability} ($C$) và \textit{Availability} ($A$) ở mọi phía mạng.
 
 \subsection{Ví dụ phân hoạch với hai bản sao dữ liệu}
-Giả sử bản sao $R_1$ và $R_2$ cùng có $x = 0$. Mạng bị đứt kết nối giữa hai trạm:
+Giả sử hai bản sao $R_1$ và $R_2$ ban đầu cùng lưu $x = 0$. Mạng bị chia cắt nên $R_1$ không thể gửi thông điệp đồng bộ sang $R_2$:
 \begin{itemize}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item Client tại $R_1$ ghi $x = 1$ thành công.
-    \item Sau đó, Client tại $R_2$ yêu cầu đọc $x$:
-    \begin{itemize}
-        \item Nếu $R_2$ trả về $x = 0 \implies$ Đạt Availability nhưng vi phạm Consistency (trả dữ liệu cũ).
-        \item Nếu $R_2$ từ chối hoặc chờ kết nối lại $\implies$ Bảo toàn Consistency nhưng mất Availability.
-    \end{itemize}
+ \item Người dùng tại $R_1$ gửi lệnh ghi $x = 1$ và \textbf{$R_1$ đã xác nhận ghi thành công}.
+ \item Sau thời điểm xác nhận đó, người dùng tại $R_2$ thực hiện đọc $x$:
+ \begin{itemize}
+ \item Nếu $R_2$ vẫn trả về $x = 0$ để luôn duy trì phản hồi (\textit{Availability}) $\implies$ Kết quả vi phạm tính nhất quán tuyến tính (\textit{Linearizability} -- $C$) vì trả về giá trị cũ sau khi phép ghi $x = 1$ đã hoàn tất.
+ \item Nếu $R_2$ từ chối phục vụ hoặc bắt chờ tới khi liên lạc mạng khôi phục để không trả về giá trị cũ $\implies$ Bảo toàn tính nhất quán ($C$) nhưng mất tính sẵn sàng ($A$).
+ \end{itemize}
 \end{itemize}
 
-\subsection{Bảng so sánh xu hướng thiết kế CP và AP}
+\subsection{So sánh đánh đổi giữa tính nhất quán và tính sẵn sàng theo CAP}
+Sự đánh đổi giữa tính nhất quán mạnh ($C$) và tính sẵn sàng ($A$) khi xảy ra phân hoạch mạng ($P$) dẫn đến hai khuynh hướng thiết kế hệ thống CP và AP được đối sánh tại Bảng~\ref{tab:cp_vs_ap}:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{So sánh giữa hai khuynh hướng thiết kế hệ thống CP và AP}
 \label{tab:cp_vs_ap}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Tiêu chí} & \textbf{Hệ thống thiên về CP} & \textbf{Hệ thống thiên về AP} \\ \hline
-Ưu tiên khi phân hoạch & Bảo vệ nhất quán mạnh cho dữ liệu. & Duy trì phản hồi phục vụ liên tục. \\ \hline
-Ứng xử ở vùng mất kết nối & Chờ đợi hoặc từ chối thao tác. & Chấp nhận đọc/ghi trên bản sao cục bộ. \\ \hline
-Rủi ro chính & Tăng độ trễ, suy giảm tính sẵn sàng. & Bản sao phân kỳ, phải giải quyết xung đột sau. \\ \hline
-Nghiệp vụ phù hợp & Tài chính, chuyển tiền, quản lý tồn kho. & Mạng xã hội, bảng tin, giỏ hàng thương mại. \\ \hline
-Hệ quản trị tiêu biểu & Google Spanner, CockroachDB, HBase. & Apache Cassandra, Amazon DynamoDB, CouchDB. \\ \hline
+Ưu tiên khi phân hoạch & Bảo vệ nhất quán mạnh cho các thao tác cần phối hợp. & Tiếp tục duy trì phản hồi phục vụ ở các phía mạng. \\ \hline
+Ứng xử ở vùng thiếu thông tin & Chờ đợi hoặc từ chối thao tác (chấp nhận lỗi/timeout). & Cho phép đọc/ghi trên bản sao cục bộ theo chính sách định sẵn. \\ \hline
+Phục hồi khi nối mạng lại & Tiếp tục đồng bộ hóa/quyết định từ trạng thái nhất quán. & Đồng bộ nền và hòa giải các cập nhật xung đột. \\ \hline
+Rủi ro chính & Tăng độ trễ, suy giảm tính sẵn sàng khi đứt mạng. & Bản sao phân kỳ tạm thời; có thể đọc phải dữ liệu cũ. \\ \hline
+Nghiệp vụ phù hợp & Thanh toán, chốt số dư, quản lý tồn kho cốt lõi. & Mạng xã hội, bảng tin, giỏ hàng thương mại điện tử. \\ \hline
+Hệ quản trị tiêu biểu & Google Spanner, CockroachDB, HBase, MongoDB (majority). & Apache Cassandra, Amazon DynamoDB, Riak, CouchDB. \\ \hline
 \end{tabularx}
+\caption{So sánh giữa hai khuynh hướng thiết kế hệ thống CP và AP}
 \end{table}
 
-\subsection{Liên hệ giữa CAP, 2PC và mô hình BASE}
-Giao thức 2PC khi gặp phân hoạch mạng sẽ chọn dừng giao dịch (blocking) để giữ an toàn nguyên tử, do đó mang thiên hướng CP. Ngược lại, để đạt độ mở rộng quy mô cực lớn trên Internet, nhiều hệ thống chuyển dịch từ mô hình ACID sang mô hình \textbf{BASE} (\textit{Basically Available, Soft-state, Eventual consistency}), chấp nhận trạng thái nhất quán sau cùng (\textit{Eventual Consistency}) để tối đa hóa tính sẵn sàng.
+\subsection{Liên hệ giữa CAP, 2PC, Quorum và mô hình BASE}
+Khi xảy ra phân hoạch mạng lúc Participant đã ở trạng thái \texttt{PREPARED}, 2PC kết hợp Strict 2PL sẽ chặn giao dịch (\textit{blocking}) thay vì cho phép các trạm tự ý quyết định lệch nhau; hành vi này bảo vệ tính nguyên tử và cô lập giao dịch nhưng làm giảm tính sẵn sàng. Tuy nhiên, không thể kết luận một hệ thống đạt chuẩn CP (theo nghĩa \textit{Linearizability} của CAP) chỉ vì dùng 2PC và Strict 2PL: cam kết nguyên tử và khả tuần tự giao dịch chưa tự động bảo đảm mọi thao tác đọc trên các bản sao đều tuân theo thứ tự thời gian thực của định lý CAP.
+
+Để đánh đổi linh hoạt hơn, nhiều hệ thống phân tán chuyển sang mô hình \textbf{BASE} (\textit{Basically Available, Soft-state, Eventual consistency}) hoặc sử dụng cấu hình \textbf{Quorum ($N, W, R$)} trên $N$ bản sao. Điều kiện $W + R > N$ bảo đảm tập nút đọc ($R$) và tập nút ghi ($W$) luôn giao nhau ít nhất một bản sao; tuy nhiên, việc phép đọc thực sự chọn ra đúng phiên bản mới nhất hay có đạt được nhất quán mạnh hay không còn phụ thuộc vào giao thức điều phối cụ thể (như cách gắn nhãn phiên bản/timestamp, cơ chế \textit{read-repair} hoặc đồng thuận qua Leader).
 
 \section{Đánh Giá Tổng Hợp Và Đề Xuất Thiết Kế}
+Để đặt các kỹ thuật đã nghiên cứu vào đúng lớp chức năng khi thiết kế hệ thống phân tán, Bảng~\ref{tab:transaction_techniques_summary} tổng hợp vai trò và sự đánh đổi nổi bật của từng giải pháp:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{Phân loại các kỹ thuật quản lý giao dịch theo lớp chức năng}
 \label{tab:transaction_techniques_summary}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{4cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|}
+\renewcommand{\baselinestretch}{1.05}\selectfont
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Bài toán kỹ thuật} & \textbf{Giải pháp tiêu biểu} & \textbf{Đánh đổi nổi bật} \\ \hline
-Thống nhất cam kết đa trạm & 2PC & Đảm bảo Atomic Commit nhưng chịu rủi ro Blocking và trễ $4n$. \\ \hline
-Giảm rủi ro treo hệ thống & 3PC & Thêm pha PreCommit ($6n$) nhưng đòi hỏi giả định mạng đồng bộ. \\ \hline
-Ngăn ngừa xen kẽ sai & Distributed Strict 2PL & Đạt chuẩn khả tuần tự nhưng phát sinh hàng đợi chờ khóa. \\ \hline
-Sắp lịch theo trật tự logic & Timestamp Ordering & Không gây bế tắc khóa nhưng có tỷ lệ Rollback khi xung đột cao. \\ \hline
-Nhận diện chu trình chờ & Global WFG & Phát hiện bế tắc chính xác nhưng chịu chi phí ghép đồ thị mạng. \\ \hline
-Đánh đổi khi phân hoạch & Phân tích CAP & Lựa chọn giữa nhất quán dữ liệu hay tính sẵn sàng nghiệp vụ. \\ \hline
+Thống nhất cam kết đa trạm & Giao thức 2PC & Đảm bảo Atomic Commit nhưng chịu rủi ro Blocking và độ trễ $4n$ thông điệp. \\ \hline
+Giảm rủi ro treo khi sập nút & Giao thức 3PC & Thêm pha đệm PreCommit ($6n$ thông điệp) nhưng đòi hỏi giả định mạng đồng bộ. \\ \hline
+Ngăn ngừa truy cập xen kẽ sai & Distributed Strict 2PL & Đạt chuẩn khả tuần tự nhưng phát sinh hàng đợi giữ khóa và nguy cơ Deadlock. \\ \hline
+Sắp lịch theo thứ tự thời gian & Timestamp Ordering & Không gây bế tắc chờ khóa nhưng tỷ lệ Rollback cao khi xung đột lớn. \\ \hline
+Phát hiện chu trình chờ liên trạm & Đồ thị Global WFG & Nhận diện bế tắc toàn cục nhưng chịu chi phí truyền mạng và nguy cơ bế tắc giả. \\ \hline
+Đánh đổi khi phân hoạch mạng & Phân tích CAP \& Quorum & Cân nhắc giữa bảo vệ nhất quán mạnh hay duy trì phản hồi sẵn sàng theo nghiệp vụ. \\ \hline
 \end{tabularx}
+\caption{Phân loại các kỹ thuật quản lý giao dịch theo lớp chức năng}
 \end{table}
 
 % =======================================================
@@ -1364,8 +1413,8 @@ COORDINATOR_COMMIT(T, participants):
         force_log(COMMIT, T)  -- Ghi log ben vung truoc khi gui
         decision = COMMIT
     else:
-        force_log(ABORT, T)
-        decision = ABORT
+        force_log(ROLLBACK, T)
+        decision = ROLLBACK
     repeat:
         send decision(T) to participants not yet acknowledged
         wait for ACKs or retry trigger
@@ -1382,7 +1431,7 @@ ON_PREPARE(T):
         state[T] = PREPARED
     else:
         rollback_local(T)
-        log ABORT(T)
+        log ROLLBACK(T)
         send VOTE_NO(T)
 
 ON_DECISION(T, decision):
@@ -1391,7 +1440,7 @@ ON_DECISION(T, decision):
         log COMMIT(T)
     else:
         rollback_local_once(T)
-        log ABORT(T)
+        log ROLLBACK(T)
     release_held_locks(T)
     send ACK(T)
 \end{lstlisting}
@@ -1403,13 +1452,13 @@ ON_RESTART(T):
     if state == COMMIT: 
         redo_if_needed(T)
         send ACK(T)
-    else if state == ABORT: 
+    else if state == ROLLBACK: 
         undo_if_needed(T)
     else if state == PREPARED:
         repeat 
             query_known_decision(T) 
         until verified result found
-        apply_result_once(T)  -- TUYET DOI KHONG tu y abort
+        apply_result_once(T)  -- TUYET DOI KHONG tu y ROLLBACK
     else:
         rollback_uncommitted_local_changes(T)
 \end{lstlisting}
@@ -1427,8 +1476,8 @@ ON_RESTART(T):
 \hline
 \textbf{Mã TC} & \textbf{Tình huống kiểm thử} & \textbf{Hành vi và Kết quả mong đợi} \\ \hline
 \textbf{TC01} & Tất cả các trạm đều \texttt{VOTE-YES} & Quyết định \texttt{GLOBAL-COMMIT} ghi bền vững; toàn bộ trạm commit thành công. \\ \hline
-\textbf{TC02} & Một trạm trả lời \texttt{VOTE-NO} & Coordinator phát \texttt{GLOBAL-ABORT}; mọi thay đổi cục bộ được hoàn tác sạch sẽ. \\ \hline
-\textbf{TC03} & Participant sập sau khi \texttt{PREPARED} & Khi bật lại, đọc log thấy PREPARED sẽ liên hệ hỏi quyết định; không tự ý abort. \\ \hline
+\textbf{TC02} & Một trạm trả lời \texttt{VOTE-NO} & Coordinator phát \texttt{GLOBAL-ROLLBACK}; mọi thay đổi cục bộ được hoàn tác sạch sẽ. \\ \hline
+\textbf{TC03} & Participant sập sau khi \texttt{PREPARED} & Khi bật lại, đọc log thấy PREPARED sẽ liên hệ hỏi quyết định; không tự ý ROLLBACK. \\ \hline
 \textbf{TC04} & Coordinator sập sau khi ghi COMMIT & Khi phục hồi, đọc log và phát lại COMMIT; Participant xử lý theo tính chất lặp an toàn. \\ \hline
 \textbf{TC05} & Phân hoạch mạng khi các trạm đã PREPARED & Các trạm chưa rõ quyết định tiếp tục chờ và giữ khóa; bảo vệ tính nguyên tử của giao dịch. \\ \hline
 \textbf{TC06} & Hai giao dịch $T_1, T_2$ chờ khóa chéo & Đồ thị WFG toàn cục nhận diện chu trình bế tắc; chọn một giao dịch làm nạn nhân để rollback. \\ \hline
