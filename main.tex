@@ -757,26 +757,19 @@ Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ t
 Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu. Tại đây, tính trong suốt phân mảnh (Fragmentation Transparency) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}.
 
 \subsubsection{Các dạng phân mảnh và Quy tắc tái thiết}
-Tùy thuộc vào chiến lược phân mảnh đã áp dụng ở tầng thiết kế, bộ bản địa hóa sẽ thay thế quan hệ toàn cục $R$ bằng chương trình tái thiết tương ứng:
+Kế thừa các chiến lược phân mảnh đã trình bày ở Mục~2.2, khi thực hiện bản địa hóa dữ liệu, bộ tối ưu hóa truy vấn sẽ thay thế mỗi quan hệ toàn cục $R$ bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng:
 \begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=3pt]
-    \item \textbf{Phân mảnh ngang (Horizontal Fragmentation):} 
-    Quan hệ $R$ được phân chia theo các bộ dữ liệu (hàng) dựa trên vị từ chọn ($\sigma$). Chương trình tái thiết sử dụng \textbf{phép Hợp ($\bigcup$)} để gộp toàn bộ các phân mảnh ngang $R_1, R_2, \dots, R_n$ lại thành quan hệ gốc:
+    \item \textbf{Đối với phân mảnh ngang:} Thay thế $R$ bằng phép Hợp ($\bigcup$) của tất cả các phân mảnh ngang thành phần:
     \[
     R = \bigcup_{i=1}^n R_i = R_1 \cup R_2 \cup \dots \cup R_n
     \]
     
-    \item \textbf{Phân mảnh dọc (Vertical Fragmentation):} 
-    Quan hệ $R$ được phân chia theo các thuộc tính (cột) dựa trên phép chiếu ($\pi$), trong đó mỗi phân mảnh đều lưu kèm khóa chính $K$. Chương trình tái thiết sử dụng \textbf{phép Nối tự nhiên ($\bowtie_K$)} trên thuộc tính khóa chính để ghép nối các cột tương ứng (đảm bảo không mất mát thông tin):
+    \item \textbf{Đối với phân mảnh dọc:} Thay thế $R$ bằng phép Nối tự nhiên ($\bowtie_K$) trên thuộc tính khóa chính $K$ của các phân mảnh dọc:
     \[
     R = \bowtie_{K} R_j = R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m
     \]
     
-    \item \textbf{Phân mảnh hỗn hợp (Hybrid Fragmentation):} 
-    Được hình thành khi áp dụng lồng ghép nhiều phép phân mảnh ngang và dọc liên tiếp. Chương trình tái thiết sẽ thực hiện theo \textbf{trình tự đảo ngược lại quá trình phân mảnh}, kết hợp đan xen giữa phép Hợp ($\bigcup$) và phép Nối ($\bowtie$). 
-    \textit{Ví dụ:} Nếu $R$ được cắt ngang thành $R_1, R_2$, sau đó $R_1$ tiếp tục bị cắt dọc thành $R_{11}$ và $R_{12}$, thì biểu thức tái thiết là:
-    \[
-    R = (R_{11} \bowtie_K R_{12}) \cup R_2
-    \]
+    \item \textbf{Đối với phân mảnh hỗn hợp:} Thay thế $R$ bằng biểu thức kết hợp đan xen giữa phép Hợp ($\bigcup$) và phép Nối ($\bowtie$) theo trình tự đảo ngược lại quá trình phân rã ban đầu[cite: 13].
 \end{enumerate}
 
 \subsubsection{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}
@@ -863,7 +856,7 @@ Tổng dung lượng dữ liệu truyền qua mạng của Semi-join:
 
 \subsection{Bảng Tổng hợp và Đánh giá Hiệu quả Định lượng}
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
 \caption{So sánh định lượng giữa Truyền trực tiếp và Kỹ thuật Semi-join}
