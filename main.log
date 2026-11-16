@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.19)  16 NOV 2026 18:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.9.19)  16 NOV 2026 19:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1132,16 +1132,11 @@ Overfull \hbox (96.2209pt too wide) in paragraph at lines 925--926
 
 [22] [23] [24]
 Ch\uhorn \ohorn ng 4.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1000--1001
-
- []
-
 [25
 
 ] [26]
-Overfull \hbox (39.36136pt too wide) in paragraph at lines 1048--1049
-\T5/cmr/bx/n/12 Nhªn x²t quan trång: \T5/cmr/m/n/12 2PC gi£i quy¸t chõ y¸u b i to¡n thèng nh§t quy¸t ^^_ành \T5/cmtt/m/n/12 COMMIT/ROLLBACK
+Overfull \hbox (20.84088pt too wide) in paragraph at lines 1048--1049
+\T5/cmr/bx/n/12 Nhªn x²t quan trång: \T5/cmr/m/n/12 2PC gi£i quy¸t chõ y¸u b i to¡n thèng nh§t quy¸t ^^_ành \T5/cmtt/m/n/12 COMMIT/ABORT
  []
 
 
@@ -1150,27 +1145,27 @@ Overfull \hbox (6.0407pt too wide) in paragraph at lines 1050--1050
  []
 
 [27] [28] [29] [30] [31]
-Overfull \hbox (14.13869pt too wide) in paragraph at lines 1251--1251
+Overfull \hbox (14.13869pt too wide) in paragraph at lines 1250--1250
 |[]\T5/cmr/bx/n/17.28 Giao Thùc Cam K¸t Ba Pha (Three-Phase Commit
  []
 
 [32]
-Overfull \hbox (20.03789pt too wide) in paragraph at lines 1257--1258
+Overfull \hbox (20.03789pt too wide) in paragraph at lines 1256--1257
 []\T5/cmr/bx/n/12 Giai ^^_o¤n 2 (PreCommit): \T5/cmr/m/n/12 Khi nhªn ^^_õ \T5/cmtt/m/n/12 YES\T5/cmr/m/n/12 , Coordinator gûi \T5/cmtt/m/n/12 PRE-COMMIT\T5/cmr/m/n/12 . Participant
  []
 
 
-Overfull \hbox (5.52765pt too wide) in paragraph at lines 1264--1265
+Overfull \hbox (5.52765pt too wide) in paragraph at lines 1263--1264
 []\T5/cmr/m/it/12 N¸u ch÷a câ nót cán sèng n o tîi PreCommit: \T5/cmr/m/n/12 C¡c nót cán sèng câ thº b¦u Coordinator
  []
 
-[33] [34] [35] [36] [37] [38] [39
+[33] [34] [35] [36] [37] [38
 
-] [40] [41]
+] [39] [40]
 Ch\uhorn \ohorn ng 5.
-[42
+[41
 
-] [43] [44
+] [42] [43
 
 ] (./main.aux)
  ***********
@@ -1181,18 +1176,18 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: B2BDE6F40448595E939273E9DF8DB974;23857.
  ) 
 Here is how much of TeX's memory you used:
- 28546 strings out of 468994
- 518013 string characters out of 5459060
+ 28545 strings out of 468994
+ 517979 string characters out of 5459060
  1205854 words of memory out of 5000000
  56611 multiletter control sequences out of 15000+600000
  665098 words of font info for 107 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 84i,14n,104p,852b,2001s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,14n,104p,849b,2001s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/sonsiunhan/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk> </home/sonsiunhan/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnitt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vnti8.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/vntex/vnr/vntt8.pfb>
-Output written on main.pdf (49 pages, 944052 bytes).
+Output written on main.pdf (48 pages, 943016 bytes).
 PDF statistics:
- 1008 PDF objects out of 1200 (max. 8388607)
- 872 compressed objects within 9 object streams
- 263 named destinations out of 1000 (max. 500000)
+ 1003 PDF objects out of 1200 (max. 8388607)
+ 868 compressed objects within 9 object streams
+ 262 named destinations out of 1000 (max. 500000)
  754 words of extra memory for PDF output out of 10000 (max. 10000000)
 
