@@ -4,6 +4,7 @@
 % CÁC GÓI THƯ VIỆN ĐỊNH DẠNG & TIẾNG VIỆT
 % =======================================================
 \usepackage[utf8]{inputenc}
+\usepackage{float}
 \usepackage[T5]{fontenc}
 \usepackage[vietnamese]{babel}
 \usepackage[a4paper, left=3cm, right=2cm, top=2.5cm, bottom=2.5cm]{geometry}
@@ -664,42 +665,53 @@ Trong hệ quản trị cơ sở dữ liệu phân tán (DDBMS), dữ liệu đ�
 
 Khác với hệ thống tập trung nơi chi phí thực thi chủ yếu bị chi phối bởi thao tác I/O đọc/ghi đĩa từ hoặc ổ cứng thể rắn (SSD) và chu kỳ tính toán của CPU, trong môi trường phân tán, \textbf{chi phí truyền thông qua mạng (Network Communication Cost)} đóng vai trò là điểm nghẽn lớn nhất (bottleneck) do băng thông hữu hạn và độ trễ đường truyền cao.
 
-Để biến đổi một câu lệnh truy vấn khai báo cấp cao (như SQL) từ người dùng thành các thao tác vật lý tối ưu trên mạng lưới phân tán, kiến trúc xử lý truy vấn phân tán tiêu chuẩn được tổ chức thành quy trình phân tầng gồm 3 giai đoạn trọng tâm:
+Để biến đổi một câu lệnh truy vấn khai báo cấp cao (như SQL) từ người dùng thành các thao tác vật lý tối ưu trên mạng lưới phân tán, kiến trúc xử lý truy vấn phân tán tiêu chuẩn được tổ chức thành quy trình phân tầng gồm \textbf{3 giai đoạn tối ưu hóa trọng tâm} trước khi chuyển giao cho tầng thực thi cục bộ tại các trạm (như minh họa ở Hình~\ref{fig:query_processing_flow}):
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=0.6cm,
     box/.style={rectangle, draw=myblue, fill=mybg, rounded corners=3pt, text width=10.5cm, align=left, inner sep=6pt, font=\small},
+    localbox/.style={rectangle, draw=codegreen, fill=codegreen!10, rounded corners=3pt, text width=10.5cm, align=left, inner sep=6pt, font=\small},
     arrow/.style={-{Stealth[length=2.5mm]}, thick, draw=myblue}
 ]
     \node[align=center, font=\small\bfseries\color{myblue}] (sql) {[Câu truy vấn SQL toàn cục]};
+    
     \node[box, below=of sql] (step1) {
         \textbf{1. Phân rã truy vấn (Query Decomposition)}\\
         $\bullet$ Phân tích cú pháp, kiểm tra ngữ nghĩa catalog toàn cục.\\
         $\bullet$ Chuẩn hóa biểu thức logic (CNF/DNF).\\
         $\bullet$ Tối ưu hóa đại số logic toàn cục (đẩy sớm $\sigma$, $\pi$).
     };
+    
     \node[box, below=of step1] (step2) {
         \textbf{2. Bản địa hóa dữ liệu (Data Localization)}\\
         $\bullet$ Ánh xạ quan hệ toàn cục vào các phân mảnh.\\
         $\bullet$ Tái thiết bảng bằng phép Hợp ($\bigcup$) hoặc Nối ($\bowtie$).\\
         $\bullet$ Rút gọn phân mảnh (Fragment Pruning / Elimination).
     };
+    
     \node[box, below=of step2] (step3) {
         \textbf{3. Tối ưu hóa toàn cục (Global Optimization)}\\
         $\bullet$ Chọn thứ tự thực hiện phép nối (Join Ordering).\\
         $\bullet$ Định vị trạm thực thi tối ưu (Site Selection).\\
         $\bullet$ Lựa chọn chiến lược truyền mạng (Data Shipping, Semi-join, Bloom Join).
     };
-    \node[align=center, font=\small\bfseries\color{codegreen}, below=of step3] (exec) {[Kế hoạch thực thi gửi tới các trạm để chạy cục bộ]};
+    
+    % BỔ SUNG TẦNG 4 ĐỂ HOÀN THIỆN KIẾN TRÚC 4 LỚP
+    \node[localbox, below=of step3] (step4) {
+        \textbf{\color{codegreen!80!black}4. Thực thi và Tối ưu hóa cục bộ (Local Query Optimization)}\\
+        $\bullet$ Mỗi trạm tiếp nhận truy vấn con (Sub-query) thuộc phạm vi dữ liệu của mình.\\
+        $\bullet$ Tối ưu hóa truy xuất vật lý cục bộ (chọn chỉ mục B-Tree, thuật toán Join cục bộ) và trả kết quả.
+    };
 
     \draw[arrow] (sql) -- (step1);
     \draw[arrow] (step1) -- node[right, font=\scriptsize\itshape]{Cây đại số logic toàn cục} (step2);
     \draw[arrow] (step2) -- node[right, font=\scriptsize\itshape]{Cây phân mảnh đã rút gọn} (step3);
-    \draw[arrow] (step3) -- (exec);
+    % BỔ SUNG NHÃN ĐẦU RA CHO BƯỚC 3
+    \draw[arrow] (step3) -- node[right, font=\scriptsize\itshape]{Kế hoạch thực thi phân tán tối ưu} (step4);
 \end{tikzpicture}
-\caption{Quy trình 3 giai đoạn xử lý và tối ưu hóa truy vấn phân tán}
+\caption{Kiến trúc phân tầng xử lý và tối ưu hóa truy vấn phân tán}
 \label{fig:query_processing_flow}
 \end{figure}
 
@@ -734,7 +746,7 @@ Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ t
     \item \textbf{Tối ưu hóa đại số logic toàn cục (Algebraic Optimization):}
     Áp dụng các quy tắc tương đương đại số quan hệ độc lập phân tán nhằm giảm kích thước dữ liệu trung gian:
     \begin{itemize}
-        \item \textbf{Đẩy sớm phép chọn (Push Down Selections):} $\sigma_\theta(R \bowtie S) \equiv (\sigma_\theta(R)) \bowtie S$ nếu điều kiện $\theta$ chỉ liên quan đến quan hệ $R$, giúp giảm nhanh số lượng bộ trước khi thực hiện phép nối đắt đỏ.
+        \item \textbf{Đẩy sớm phép chọn (Push Down Selections):} Biến đổi $\sigma_\theta(R \bowtie S) \equiv (\sigma_\theta(R)) \bowtie S$ nếu điều kiện $\theta$ chỉ liên quan đến quan hệ $R$, giúp giảm nhanh số lượng bộ trước khi thực hiện phép nối đắt đỏ.
         \item \textbf{Đẩy sớm phép chiếu (Push Down Projections):} $\Pi_L(R \bowtie S) \equiv \Pi_L(\Pi_{L_1}(R) \bowtie \Pi_{L_2}(S))$, loại bỏ sớm các cột không cần thiết để giảm độ rộng dòng dữ liệu.
         \item \textbf{Nhóm các toán tử đơn nguyên:} Gom các chuỗi phép chọn và chiếu liên tiếp để thực thi trong cùng một lần duyệt dữ liệu.
     \end{itemize}
@@ -745,10 +757,26 @@ Quá trình phân rã truy vấn được chuẩn hóa qua 4 giai đoạn kỹ t
 Sau khi có cây đại số quan hệ toàn cục, hệ thống bước vào giai đoạn Bản địa hóa dữ liệu. Tại đây, tính trong suốt phân mảnh (Fragmentation Transparency) được mở khóa: hệ thống bắt đầu xem xét cấu trúc phân mảnh và vị trí vật lý của dữ liệu. Nhiệm vụ của bản địa hóa là thay thế mỗi quan hệ toàn cục ở các nút lá bằng \textbf{chương trình tái thiết (Reconstruction Program)} tương ứng từ các phân mảnh cục bộ, sau đó thực hiện \textbf{cắt tỉa các phân mảnh không liên quan (Fragment Pruning / Elimination)}.
 
 \subsubsection{Các dạng phân mảnh và Quy tắc tái thiết}
-\begin{enumerate}[leftmargin=0.8cm, topsep=1pt, itemsep=1pt]
-    \item \textbf{Phân mảnh ngang (Horizontal Fragmentation):} $R = \bigcup_{i=1}^n R_i = R_1 \cup R_2 \cup \dots \cup R_n$.
-    \item \textbf{Phân mảnh dọc (Vertical Fragmentation):} $R = \bowtie_{K} R_j = R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m$ (với $K$ là khóa chính).
-    \item \textbf{Phân mảnh hỗn hợp (Hybrid Fragmentation):} Kết hợp đan xen giữa phép Hợp ($\bigcup$) và phép Nối ($\bowtie$).
+Tùy thuộc vào chiến lược phân mảnh đã áp dụng ở tầng thiết kế, bộ bản địa hóa sẽ thay thế quan hệ toàn cục $R$ bằng chương trình tái thiết tương ứng:
+\begin{enumerate}[leftmargin=0.8cm, topsep=2pt, itemsep=3pt]
+    \item \textbf{Phân mảnh ngang (Horizontal Fragmentation):} 
+    Quan hệ $R$ được phân chia theo các bộ dữ liệu (hàng) dựa trên vị từ chọn ($\sigma$). Chương trình tái thiết sử dụng \textbf{phép Hợp ($\bigcup$)} để gộp toàn bộ các phân mảnh ngang $R_1, R_2, \dots, R_n$ lại thành quan hệ gốc:
+    \[
+    R = \bigcup_{i=1}^n R_i = R_1 \cup R_2 \cup \dots \cup R_n
+    \]
+    
+    \item \textbf{Phân mảnh dọc (Vertical Fragmentation):} 
+    Quan hệ $R$ được phân chia theo các thuộc tính (cột) dựa trên phép chiếu ($\pi$), trong đó mỗi phân mảnh đều lưu kèm khóa chính $K$. Chương trình tái thiết sử dụng \textbf{phép Nối tự nhiên ($\bowtie_K$)} trên thuộc tính khóa chính để ghép nối các cột tương ứng (đảm bảo không mất mát thông tin):
+    \[
+    R = \bowtie_{K} R_j = R_1 \bowtie_K R_2 \bowtie_K \dots \bowtie_K R_m
+    \]
+    
+    \item \textbf{Phân mảnh hỗn hợp (Hybrid Fragmentation):} 
+    Được hình thành khi áp dụng lồng ghép nhiều phép phân mảnh ngang và dọc liên tiếp. Chương trình tái thiết sẽ thực hiện theo \textbf{trình tự đảo ngược lại quá trình phân mảnh}, kết hợp đan xen giữa phép Hợp ($\bigcup$) và phép Nối ($\bowtie$). 
+    \textit{Ví dụ:} Nếu $R$ được cắt ngang thành $R_1, R_2$, sau đó $R_1$ tiếp tục bị cắt dọc thành $R_{11}$ và $R_{12}$, thì biểu thức tái thiết là:
+    \[
+    R = (R_{11} \bowtie_K R_{12}) \cup R_2
+    \]
 \end{enumerate}
 
 \subsubsection{Cơ chế Rút gọn phân mảnh (Fragment Pruning)}
@@ -806,7 +834,7 @@ Hệ thống CSDL phân tán gồm 2 trạm kết nối qua mạng WAN:
         \item Số lượng bản ghi: $1.000$ dòng.
         \item Kích thước một bản ghi: $l_S = 50\text{ bytes}$.
         \item Thuộc tính nối: \texttt{CustomerID} ($4\text{ bytes}$).
-        \item \textit{Đặc điểm tập dữ liệu:} $1.000$ đơn hàng VIP này chỉ liên quan đến \textbf{500 khách hàng duy nhất} ($\Pi_{\text{CustomerID}}(S)$ chứa đúng $500$ giá trị ID).
+        \item \textit{Đặc điểm tập dữ liệu:} $1.000$ đơn hàng VIP này chỉ liên quan đến \textbf{500 khách hàng duy nhất} khác nhau ($\Pi_{\text{CustomerID}}(S)$ chứa đúng $500$ giá trị ID).
     \end{itemize}
     \item \textbf{Yêu cầu truy vấn:} Thực hiện phép nối $R \bowtie_{\text{CustomerID}} S$ và trả kết quả tại \textbf{Site 2}.
 \end{itemize}
@@ -961,26 +989,27 @@ Ba giai đoạn \textbf{Phân rã truy vấn}, \textbf{Bản địa hóa dữ li
 \section{Tổng Quan Giao Dịch Và Kiến Trúc Xử Lý Phân Tán}
 
 \subsection{Giao dịch phân tán là gì?}
-Giao dịch (transaction) là một đơn vị công việc logic gồm nhiều thao tác đọc/ghi dữ liệu, cần được thực hiện theo một kết quả cuối cùng thống nhất: hoặc được công nhận hoàn toàn, hoặc bị hủy bỏ trọn vẹn. Trong hệ phân tán, những thao tác của cùng một giao dịch có thể được thực thi ở nhiều nút lưu trữ (site/node) khác nhau. Vì không có một bộ nhớ và một bộ quản lý lỗi dùng chung, việc quyết định giao dịch thành công bắt buộc phải thông qua cơ chế trao đổi thông điệp điều phối giữa các nút.
+Giao dịch là một đơn vị công việc logic gồm nhiều thao tác đọc/ghi dữ liệu, cần được thực hiện theo một kết quả cuối cùng thống nhất: hoặc được công nhận hoàn toàn, hoặc bị hủy hoàn toàn. Trong hệ phân tán, những thao tác của cùng một giao dịch có thể được thực thi ở nhiều nút lưu trữ khác nhau. Vì không có một bộ nhớ và một bộ quản lý lỗi dùng chung, việc quyết định giao dịch thành công bắt buộc phải thông qua cơ chế trao đổi thông điệp điều phối giữa các nút.
 
 \subsection{Các thành phần chức năng}
-
-\begin{table}[!ht]
+Kiến trúc xử lý một giao dịch phân tán đòi hỏi sự phối hợp chặt chẽ giữa các thành phần chức năng.
+\begin{table}[H]
 \centering
-\small
-\caption{Các thành phần chức năng trong kiến trúc xử lý giao dịch phân tán}
-\label{tab:transaction_components}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|}
+\footnotesize
+\renewcommand{\baselinestretch}{1.0}\selectfont % <--- Triệt tiêu giãn dòng 1.3 của toàn cục bên trong bảng
+\label{tab:cac_thanh_phan_chuc_nang}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.9cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{Thành phần} & \textbf{Vai trò chính} \\ \hline
 Client / Ứng dụng & Khởi tạo giao dịch $T$ và phát yêu cầu \texttt{COMMIT} hoặc \texttt{ROLLBACK}. \\ \hline
 Transaction Coordinator & Điều phối các nút tham gia; tập hợp phiếu bầu, đưa ra quyết định cam kết toàn cục. \\ \hline
 Participant (các trạm) & Chạy phần giao dịch cục bộ, khóa dữ liệu, ghi log và thực thi quyết định cuối cùng. \\ \hline
 Concurrency Controller & Sắp lịch giao dịch bằng cơ chế khóa hoặc nhãn thời gian để ngăn ngừa xung đột. \\ \hline
-Log \& Recovery Manager & Ghi nhật ký lên bộ nhớ bền vững (WAL), thực hiện REDO/UNDO để phục hồi sau sự cố. \\ \hline
-Mạng truyền thông & Truyền thông điệp PREPARE, phiếu bầu, COMMIT/ABORT và ACK; chịu độ trễ hoặc lỗi mạng. \\ \hline
+Log \& Recovery Manager & Ghi nhật ký lên bộ nhớ bền vững (WAL), thực hiện \texttt{REDO/UNDO} để phục hồi sau sự cố. \\ \hline
+Mạng truyền thông & Truyền thông điệp \texttt{PREPARE}, phiếu bầu, \texttt{COMMIT/ABORT} và \texttt{ACK}; chịu độ trễ hoặc lỗi mạng. \\ \hline
 \end{tabularx}
+\caption{Các thành phần chức năng trong kiến trúc xử lý giao dịch phân tán}
 \end{table}
 
 \subsection{Phân biệt giao dịch, cam kết và sao chép dữ liệu}
@@ -991,17 +1020,17 @@ Giao dịch phân tán có thể truy cập các phân mảnh khác nhau; sao ch
 \begin{table}[!ht]
 \centering
 \small
-\caption{Bảo đảm 4 thuộc tính ACID trong môi trường phân tán}
 \label{tab:distributed_acid}
 \renewcommand{\arraystretch}{1.25}
 \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
-\hline
-\textbf{Thuộc tính} & \textbf{Ý nghĩa trong hệ phân tán} & \textbf{Cơ chế hỗ trợ} \\ \hline
-Atomicity -- Nguyên tử & Không xuất hiện tình trạng một phần trạm commit, phần trạm khác abort. & Giao thức 2PC/3PC và log khôi phục, điều phối quyết định toàn cục. \\ \hline
-Consistency -- Nhất quán & Nếu trạng thái trước hợp lệ và giao dịch thỏa mãn ràng buộc, trạng thái sau vẫn hợp lệ. & Ràng buộc dữ liệu, logic nghiệp vụ, kiểm soát thực thi và cam kết nguyên tử. \\ \hline
-Isolation -- Cô lập & Các giao dịch đồng thời không làm lộ kết quả trung gian; mức cao nhất là khả tuần tự. & Distributed 2PL, Timestamp Ordering, thuật toán điều khiển đồng thời. \\ \hline
-Durability -- Bền vững & Giao dịch đã commit phải phục hồi trọn vẹn sau sự cố trên các nút. & Write-Ahead Logging (WAL) trên lưu trữ bền vững và cơ chế sao chép. \\ \hline
+    \hline
+    \textbf{Thuộc tính} & \textbf{Ý nghĩa trong hệ phân tán} & \textbf{Cơ chế hỗ trợ} \\ \hline
+    Atomicity -- Nguyên tử & Không xuất hiện tình trạng một phần trạm commit, phần trạm khác abort. & Giao thức 2PC/3PC và log khôi phục, điều phối quyết định toàn cục. \\ \hline
+    Consistency -- Nhất quán & Nếu trạng thái trước hợp lệ và giao dịch thỏa mãn ràng buộc, trạng thái sau vẫn hợp lệ. & Ràng buộc dữ liệu, logic nghiệp vụ, kiểm soát thực thi và cam kết nguyên tử. \\ \hline
+    Isolation -- Cô lập & Các giao dịch đồng thời không làm lộ kết quả trung gian; mức cao nhất là khả tuần tự. & Distributed 2PL, Timestamp Ordering, thuật toán điều khiển đồng thời. \\ \hline
+    Durability -- Bền vững & Giao dịch đã commit phải phục hồi trọn vẹn sau sự cố trên các nút. & Write-Ahead Logging (WAL) trên lưu trữ bền vững và cơ chế sao chép. \\ \hline
 \end{tabularx}
+\caption{Bảo đảm 4 thuộc tính ACID trong môi trường phân tán}
 \end{table}
 
 \noindent\textbf{Nhận xét quan trọng:} 2PC giải quyết chủ yếu bài toán thống nhất quyết định COMMIT/ABORT (Atomicity), không tự nó giải quyết Isolation hay bảo đảm toàn vẹn ràng buộc nghiệp vụ. Một thiết kế ACID đầy đủ cần phối hợp lịch giao dịch hợp lệ và cơ chế lưu trữ/phục hồi tin cậy. Đặc biệt, không nên nhầm lẫn khái niệm Consistency trong ACID (bảo toàn bất biến toàn vẹn dữ liệu) với Consistency trong định lý CAP (tương đương với Linearizability).
@@ -1072,22 +1101,23 @@ Trong trường hợp lý tưởng có $n$ Participant, giao thức trao đổi 
 \end{figure}
 
 \subsection{Bảng trạng thái và thông điệp trong 2PC}
+Trong suốt quá trình thực thi 2PC, trạng thái chuyển tiếp của Coordinator và các Participant được quy định.
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{Các trạng thái cốt lõi của nút trong giao thức 2PC}
 \label{tab:2pc_states}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|}
-\hline
-\textbf{Vai trò nút} & \textbf{Trạng thái} & \textbf{Ý nghĩa / Hành động tương ứng} \\ \hline
-Coordinator & \texttt{WAITING / COLLECTING} & Đã phát thông điệp PREPARE, đang chờ thu thập phiếu bầu. \\ \hline
-Coordinator & \texttt{COMMITTED / ABORTED} & Quyết định toàn cục đã ghi log bền vững; gửi lại khi cần. \\ \hline
-Participant & \texttt{INIT / ACTIVE} & Đang thực hiện các thao tác giao dịch cục bộ. \\ \hline
-Participant & \texttt{PREPARED} & Đã ghi bền vững phiếu YES; không được tự ý quyết định. \\ \hline
-Participant & \texttt{COMMITTED / ABORTED} & Đã áp dụng quyết định cuối cùng, giải phóng tài nguyên. \\ \hline
+    \hline
+    \textbf{Vai trò nút} & \textbf{Trạng thái} & \textbf{Ý nghĩa / Hành động tương ứng} \\ \hline
+    Coordinator & \texttt{WAITING / COLLECTING} & Đã phát thông điệp PREPARE, đang chờ thu thập phiếu bầu. \\ \hline
+    Coordinator & \texttt{COMMITTED / ABORTED} & Quyết định toàn cục đã ghi log bền vững; gửi lại khi cần. \\ \hline
+    Participant & \texttt{INIT / ACTIVE} & Đang thực hiện các thao tác giao dịch cục bộ. \\ \hline
+    Participant & \texttt{PREPARED} & Đã ghi bền vững phiếu YES; không được tự ý quyết định. \\ \hline
+    Participant & \texttt{COMMITTED / ABORTED} & Đã áp dụng quyết định cuối cùng, giải phóng tài nguyên. \\ \hline
 \end{tabularx}
+\caption{Các trạng thái cốt lõi của nút trong giao thức 2PC}
 \end{table}
 
 \subsection{Ví dụ chi tiết: Giao dịch chuyển tiền giữa hai máy chủ}
@@ -1124,11 +1154,11 @@ Write-Ahead Logging (WAL) yêu cầu toàn bộ thông tin trạng thái phải 
 Mỗi thông điệp gửi lại khi phục hồi phải có tính bất biến lặp (\textit{Idempotent}) theo mã giao dịch để tránh thực thi cập nhật trùng lặp.
 
 \subsection{Phân tích các kịch bản sự cố và khả năng phục hồi}
+Bảng 4.5 dưới đây tổng hợp các kịch bản sự cố điển hình của Coordinator, Participant và đường truyền mạng cùng hướng xử lý tương ứng:
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \small
-\caption{Phân tích các kịch bản sự cố trong 2PC}
 \label{tab:2pc_failure_scenarios}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\bfseries}p{3.8cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.2cm}|}
@@ -1142,6 +1172,7 @@ Coordinator sập sau khi đã ghi COMMIT bền vững & Sau phục hồi, đọ
 Mạng bị phân hoạch (Network Partition) & Nút PREPARED không được tự ý đổi quyết định từ timeout; bắt buộc phải giữ tài nguyên chờ kết nối lại. & \textbf{Bị chặn (Blocking)}; thể hiện rõ hạn chế cố hữu của 2PC. \\ \hline
 Nhiều nút sập đồng thời mất log & Khôi phục từ các bản sao lưu chuyên biệt; có nguy cơ không thể tự động khôi phục. & Nguy cơ gián đoạn nghiêm trọng. \\ \hline
 \end{tabularx}
+\caption{Phân tích các kịch bản sự cố trong 2PC}
 \end{table}
 
 \subsection{Tại sao 2PC là giao thức Blocking?}
@@ -1149,7 +1180,7 @@ Xét trạm $S_1$ đã ghi \texttt{PREPARED(T)} và gửi \texttt{VOTE-YES}. Coo
 
 \subsection{Lưu đồ phục hồi tại Participant}
 
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
     node distance=0.55cm,
@@ -1470,6 +1501,11 @@ Abraham Silberschatz, Henry F. Korth, S. Sudarshan (2019),
 \bibitem{elmasri}
 Ramez Elmasri, Shamkant B. Navathe (2015),
 \textit{Fundamentals of Database Systems}, 7th Edition, Pearson.
+
+\bibitem{gilbert2002}
+Seth Gilbert, Nancy Lynch (2002),
+``Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services,''
+\textit{ACM SIGACT News}, vol.~33, no.~2, pp.~51--59. DOI: \texttt{10.1145/564585.564601}.
 
 \end{thebibliography}
 
